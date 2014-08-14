@@ -63,9 +63,8 @@ M.mod_scormform.init = function(Y) {
                 scormintro.setHTML(M.str.scorm.popupsblocked);
             }}, 800);
     }
-
     if (launch == true) {
-        setlaunchoptions();
+        //setlaunchoptions(); //dynamic: popups not working so reverted back to previous commit on github
         winobj = window.open(launch_url,'Popup', poptions);
         this.target='Popup';
         scormredirect(winobj);
@@ -73,18 +72,18 @@ M.mod_scormform.init = function(Y) {
     // Listen for view form submit and generate popup on user interaction.
     if (scormform) {
         Y.on('submit', function(e) {
-            setlaunchoptions();
+            //setlaunchoptions(); //dynamic: popups not working so reverted back to previous commit on github
             winobj = window.open(launch_url, 'Popup', poptions);
             this.target='Popup';
             scormredirect(winobj);
             e.preventDefault();
         }, scormform);
     }
-
-    var setlaunchoptions = function() {
+    //dynamic: popups not working so reverted back to previous commit on github
+    /*var setlaunchoptions = function() {
         var mode = Y.one('#scormviewform input[name=mode]:checked').get('value');
         launch_url += '&mode=' + (mode ? mode : 'normal');
         var newattempt = Y.one('#scormviewform #a');
         launch_url += (newattempt && newattempt.get('checked') ? '&newattempt=on' : '');
-    }
+    }*/
 }
