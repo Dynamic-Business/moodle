@@ -1112,24 +1112,56 @@ class completion_info {
      * @param int $groupid Group id
      * @return int Number of tracked users
      */
-    public function get_num_tracked_users($where = '', $whereparams = array(), $groupid = 0) {
+    public function get_num_tracked_users($where = '', $whereparams = array(), $groupid = 0,$gm = "false",$groupsList = "0") {
         global $DB;
 
         list($enrolledsql, $enrolledparams) = get_enrolled_sql(
                 context_course::instance($this->course->id), 'moodle/course:isincompletionreports', $groupid, true);
+
         $sql  = 'SELECT COUNT(eu.id) FROM (' . $enrolledsql . ') eu JOIN {user} u ON u.id = eu.id';
+
+        // dynamic - by group --------------
+            // echo $enrolledsql;die;
+            if($gm == "admin" && $groupsList == "0"){  
+                $groupsql .= "";
+            }else if($gm != "false"){
+                $groupsql .= " 
+                INNER JOIN (
+                    SELECT dug.userid FROM mdl_dynamic_managers_group dmg
+                    INNER JOIN mdl_dynamic_usersgroups dug ON dmg.groupid = dug.groupid ";
+                if ($gm != "admin" && $groupsList != "0"){
+                    $groupsql .= " WHERE dmg.groupid IN (" . $groupsList . ") ";
+                }else if ($gm == "admin" && $groupsList != "0"){
+                    
+                    $groupsql .= " WHERE dmg.groupid IN (" . $groupsList . ") GROUP BY dug.userid ";
+                }else if($gm != "admin" && $groupsList == "0"){
+                    $groupsql .= " WHERE dmg.userid = eu.id ";
+                }else{
+                
+                }
+                $groupsql .= ") uig ON uig.userid = eu1_u.id ";
+            }
+        
+        // inject the group sql into the sql.
+        $sql = str_replace(":eu1_courseid)", ":eu1_courseid) {$groupsql}" , $sql );
+        //dynamic code end --------------------
+
         if ($where) {
             $sql .= " WHERE $where";
         }
+        // echo "<pre>" . $sql . "<br>";
 
         $params = array_merge($enrolledparams, $whereparams);
+        // var_dump($params);
+        //echo $DB->count_records_sql($sql, $params) . " / ";
         return $DB->count_records_sql($sql, $params);
     }
 
+
     /**
-     * Return array of users whose progress is tracked in this course.
+     * Return array of users whose progress is tracked in this course
      *
-     * Optionally supply a search's where clause, group id, sorting, paging.
+     * Optionally supply a search's where caluse, group id, sorting, paging
      *
      * @param string $where Where clause sql, referring to 'u.' fields (optional)
      * @param array $whereparams Where clause params (optional)
@@ -1141,32 +1173,227 @@ class completion_info {
      *   as appropriate to display for current user in this context
      * @return array Array of user objects with standard user fields
      */
-    public function get_tracked_users($where = '', $whereparams = array(), $groupid = 0,
-             $sort = '', $limitfrom = '', $limitnum = '', context $extracontext = null) {
+   public function get_tracked_users($where = '', $where_params = array(), $groupid = 0,
+             $sort = '', $limitfrom = '', $limitnum = '', context $extracontext = null,$gm = "false",$groupsList = "0") {
 
         global $DB;
+        // var_dump($where_params);
 
         list($enrolledsql, $params) = get_enrolled_sql(
                 context_course::instance($this->course->id),
                 'moodle/course:isincompletionreports', $groupid, true);
 
-        $allusernames = get_all_user_name_fields(true, 'u');
-        $sql = 'SELECT u.id, u.idnumber, ' . $allusernames;
-        if ($extracontext) {
-            $sql .= get_extra_user_fields_sql($extracontext, 'u', '', array('idnumber'));
-        }
-        $sql .= ' FROM (' . $enrolledsql . ') eu JOIN {user} u ON u.id = eu.id';
+        $sql = "
+            SELECT
+                DISTINCT(u.id), 
+                u.firstname,
+                u.lastname,
+                u.idnumber,
+				ud.datestarted,
+				ud.dept,
+				ROUND((UNIX_TIMESTAMP() - ud.datestarted)/604800) AS 'weeksrole'
+        ";
+        $sql .= ' FROM (' . $enrolledsql . ') eu 
+        JOIN {user} u ON u.id = eu.id';
+        $sql .= ' LEFT JOIN mdl_dynamic_userdata ud ON ud.userid = u.id ';
+        //so the table can be sorted by 'activities completed'
+        $sql .= "
+            LEFT JOIN (SELECT userid,count(*) AS 'acomp' FROM mdl_course_completion_crit_compl comp
+            INNER JOIN mdl_course_completion_criteria crit ON comp.criteriaid = crit.id
+            WHERE crit.course = :courseid
+            GROUP BY userid) cmc ON u.id = cmc.userid 
+        ";
+        $params["courseid"] = $params["eu3_courseid"];
+        // dynamic - by group --------------
+        // echo $enrolledsql;die;
+            if($gm == "admin" && $groupsList == "0"){  
+                $groupsql .= "";
+            }else if($gm != "false"){
+                $groupsql .= " 
+                INNER JOIN (
+                    SELECT dug.userid FROM mdl_dynamic_managers_group dmg
+                    INNER JOIN mdl_dynamic_usersgroups dug ON dmg.groupid = dug.groupid ";
+                if ($gm != "admin" && $groupsList != "0"){
+                    $groupsql .= " WHERE dmg.groupid IN (" . $groupsList . ") ";
+                }else if ($gm == "admin" && $groupsList != "0"){
+                    
+                    $groupsql .= " WHERE dmg.groupid IN (" . $groupsList . ") GROUP BY dug.userid ";
+                }else if($gm != "admin" && $groupsList == "0"){
+                    $groupsql .= " WHERE dmg.userid = eu.id ";
+                }else{
+                
+                }
+                $groupsql .= ") uig ON uig.userid = eu3_u.id ";
+            }
+        
+        // inject the group sql into the sql.
+        $sql = str_replace(":eu3_courseid)", ":eu3_courseid) {$groupsql}" , $sql );
 
+        //---------------------
         if ($where) {
-            $sql .= " AND $where";
-            $params = array_merge($params, $whereparams);
+            $sql .= " WHERE $where";
+            $params = array_merge($params, $where_params);
         }
 
         if ($sort) {
             $sql .= " ORDER BY $sort";
         }
+		// echo "<pre>";
+        // var_dump($where);
+        // echo $sql;
+        // echo "</pre>";
+        
+		// echo "gm in get_tracked_users:" . $gm;
+        $users = $DB->get_records_sql($sql, $params, $limitfrom, $limitnum);
+        // echo "<pre>";
+        // var_dump($users);
+        return $users ? $users : array(); // In case it returns false
+    }
 
-        return $DB->get_records_sql($sql, $params, $limitfrom, $limitnum);
+
+    /**
+     * Generate the SQL for finding tracked users in this course
+     *
+     * Returns an object containing the sql fragment and an array of
+     * bound data params.
+     *
+     * @param   integer $groupid
+     * @return  object
+     */
+	 
+	 //dynamic -----
+    function generate_tracked_user_sql($groupid = 0,$gm = "false",$groupsList = "0") { 
+        global $CFG,$USER,$DB;
+		//echo "gl:" . $groupsList . "<br>";
+		//echo "gm:" . $gm . "<br>";
+        $return = new stdClass();
+        $return->sql = '';
+        $return->data = array();
+
+        if (!empty($CFG->gradebookroles)) {
+            $roles = ' AND ra.roleid IN ('.$CFG->gradebookroles.')';
+        } else {
+            // This causes it to default to everyone (if there is no student role)
+            $roles = '';
+        }
+
+        // Build context sql
+        $context = get_context_instance(CONTEXT_COURSE, $this->course->id);
+        $parentcontexts = substr($context->path, 1); // kill leading slash
+        $parentcontexts = str_replace('/', ',', $parentcontexts);
+        if ($parentcontexts !== '') {
+            $parentcontexts = ' OR ra.contextid IN ('.$parentcontexts.' )';
+        }
+
+        $groupjoin   = '';
+        $groupselect = '';
+        if ($groupid) {
+            $groupjoin   = "JOIN {groups_members} gm
+                              ON gm.userid = u.id";
+            $groupselect = " AND gm.groupid = :groupid ";
+            
+            $return->data['groupid'] = $groupid;
+        }
+
+        $return->sql = "
+           FROM
+                {user} u " . 
+            "LEFT JOIN mdl_dynamic_userdata ud ON ud.userid = u.id " . //NEW DYNAMIC LINE
+
+            "
+            INNER JOIN
+                {role_assignments} ra
+             ON ra.userid = u.id
+            INNER JOIN
+                {role} r
+             ON r.id = ra.roleid
+            INNER JOIN
+                {user_enrolments} ue
+             ON ue.userid = u.id
+            INNER JOIN
+                {enrol} e
+             ON e.id = ue.enrolid
+            INNER JOIN
+                {course} c
+             ON c.id = e.courseid
+            INNER JOIN 
+                {course_completions} cc
+            ON cc.course = c.id AND cc.userid = u.id
+            $groupjoin ";
+		
+		//dynamic --------------
+		//echo "gl:" . $groupsList . "<br>";
+		//echo "gm:" . $gm;
+		if($gm == "admin" && $groupsList == "0"){
+			
+			$return->sql .= "";
+		}else if($gm != "false"){
+			$return->sql .= " 
+			INNER JOIN (
+				SELECT dug.userid FROM mdl_dynamic_managers_group dmg
+				INNER JOIN mdl_dynamic_usersgroups dug ON dmg.groupid = dug.groupid ";
+			if ($gm != "admin" && $groupsList != "0"){
+				$return->sql .= " WHERE dmg.userid = :userid ";
+				$return->sql .= " AND dmg.groupid IN (" . $groupsList . ") ";
+			}else if ($gm == "admin" && $groupsList != "0"){
+				
+				$return->sql .= " WHERE dmg.groupid IN (" . $groupsList . ") GROUP BY dug.userid ";
+			}else if($gm != "admin" && $groupsList == "0"){
+				$return->sql .= " WHERE dmg.userid = :userid ";
+			}else{
+			
+			}
+			
+
+			//if($gm != "admin"){ $return->sql .= " WHERE dmg.userid = :userid ";}
+			//if($groupsList != "0"){ $return->sql .= " AND dmg.groupid IN (" . $groupsList . ") "; }
+			//echo $return->sql;
+			
+			
+			$return->sql .= ") uig ON uig.userid = u .id";
+		}//---------------------
+        $return->sql .= "
+            LEFT JOIN (SELECT userid,count(*) AS 'acomp' FROM mdl_course_completion_crit_compl comp
+            INNER JOIN mdl_course_completion_criteria crit ON comp.criteriaid = crit.id
+            WHERE crit.course = :courseid2
+            GROUP BY userid) cmc ON u.id = cmc.userid 
+        ";
+		//-----------------------
+         $return->sql .= "   WHERE
+                (ra.contextid = :contextid $parentcontexts)
+            AND c.id = :courseid
+            AND ue.status = 0
+            AND e.status = 0
+            AND ue.timestart < :now1
+            AND (ue.timeend > :now2 OR ue.timeend = 0)
+            AND (cc.timecompleted IS NULL OR (cc.timecompleted IS NOT NULL AND cc.timecompleted > :now3))
+                $groupselect
+                $roles
+        ";
+  //       echo "<pre>";
+		// echo $return->sql;die;
+        $now = time();
+        $return->data['now1'] = $now;
+        $return->data['now2'] = $now;
+        //Update - only courses that are within Retail, Management & Apprenticeships
+        $sql = "
+            SELECT * FROM {course} c
+            INNER JOIN {course_categories} cat ON cat.id = c.category
+            WHERE (path LIKE '/36%' OR path LIKE '/2%' OR path LIKE '/39%')
+            AND c.id = ".$this->course->id;
+
+        if ($DB->record_exists_sql($sql)){
+            $return->data['now3'] = strtotime("-1 month", $now);
+        }else{
+            $return->data['now3'] = 0;
+        }
+        // ===========
+        $return->data['contextid'] = $context->id;
+        $return->data['courseid'] = $this->course->id;
+        $return->data['courseid2'] = $this->course->id;
+		$return->data['userid'] = $USER->id; //dynamic --------------------
+
+        return $return;
     }
 
     /**
@@ -1193,12 +1420,13 @@ class completion_info {
      *   containing an additional ->progress array of coursemoduleid => completionstate
      */
     public function get_progress_all($where = '', $where_params = array(), $groupid = 0,
-            $sort = '', $pagesize = '', $start = '', context $extracontext = null) {
+            $sort = '', $pagesize = '', $start = '', context $extracontext = null,$gm="false",$groupsList = "0") {
         global $CFG, $DB;
-
+		
+		//echo "gm in get_proress_all:" . $gm;
+		//echo "<br>";
         // Get list of applicable users
-        $users = $this->get_tracked_users($where, $where_params, $groupid, $sort,
-                $start, $pagesize, $extracontext);
+        $users = $this->get_tracked_users($where, $where_params, $groupid, $sort, $start, $pagesize,NULL,$gm,$groupsList);
 
         // Get progress information for these users in groups of 1, 000 (if needed)
         // to avoid making the SQL IN too long
@@ -1222,7 +1450,8 @@ class completion_info {
                     {course_modules} cm
                     INNER JOIN {course_modules_completion} cmc ON cm.id=cmc.coursemoduleid
                 WHERE
-                    cm.course=? AND cmc.userid $insql", $params);
+                    cm.course=? AND cmc.userid $insql
+    ", $params);
             foreach ($rs as $progress) {
                 $progress = (object)$progress;
                 $results[$progress->userid]->progress[$progress->coursemoduleid] = $progress;

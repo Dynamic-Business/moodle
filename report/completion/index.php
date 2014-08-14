@@ -30,7 +30,7 @@ require_once("{$CFG->libdir}/completionlib.php");
 /**
  * Configuration
  */
-define('COMPLETION_REPORT_PAGE',        25);
+define('COMPLETION_REPORT_PAGE',        1000);
 define('COMPLETION_REPORT_COL_TITLES',  true);
 
 /*
@@ -39,11 +39,28 @@ define('COMPLETION_REPORT_COL_TITLES',  true);
 
 // Get course
 $courseid = required_param('course', PARAM_INT);
+//if a post is set then it came from the reports, therefore overwrite the GET variable above
+if(isset($_POST['course'])){
+	$courseid = $_POST['course'];
+}
+$groupsList = "0";
+if(isset($_POST['groups'])){
+	$groups = $_POST['groups'];
+	$groupsList = implode("," , $groups);
+}else if (isset($_GET['groups']	)){
+	$groupsList = $_GET['groups'];
+}
+//echo "groups:" . $groupsList;
+
+//echo $courseid;
+//
+//dynamic - catch whether group manager has called this page
+if(isset($_GET["gm"]) && $_GET["gm"] != ""){$gm = $_GET['gm'];}
+//
 $format = optional_param('format','',PARAM_ALPHA);
 $sort = optional_param('sort','',PARAM_ALPHA);
 $edituser = optional_param('edituser', 0, PARAM_INT);
-
-
+//
 $course = $DB->get_record('course', array('id' => $courseid), '*', MUST_EXIST);
 $context = context_course::instance($course->id);
 
@@ -51,7 +68,39 @@ $url = new moodle_url('/report/completion/index.php', array('course'=>$course->i
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('report');
 
+//dynamic
 $firstnamesort = ($sort == 'firstname');
+//echo "<br>fn sort:  $firstnamesort <br>";
+switch ($sort) {
+    case 'firstname':
+        //$sort = "u.firstname ASC";
+		$sort = "firstname";
+        break;
+    case 'dept':
+        //$sort = "ud.dept ASC, u.lastname ASC "; //can't put these as it breaks when clicking pag links
+		$sort = "dept";
+        break;
+    case 'lastname':
+         //$sort = "u.lastname ASC";
+		 $sort = "lastname";
+        break;
+	case 'datestarted':
+         //$sort = "ud.datestarted DESC, u.lastname ASC";
+		 $sort = "datestarted";
+        break;
+    case 'acomp':
+         //$sort = "ud.datestarted DESC, u.lastname ASC";
+         $sort = "acomp";
+        break;
+	case 'weeksrole':
+         //$sort = "ud.datestarted DESC, u.lastname ASC";
+         $sort = "weeksrole";
+        break;
+    default:
+        # code...
+        break;
+}
+//--
 $excel = ($format == 'excelcsv');
 $csv = ($format == 'csv' || $excel);
 
@@ -177,11 +226,20 @@ if ($silast !== 'all') {
     $where_params['silast'] = $silast.'%';
 }
 
-// Get user match count
-$total = $completion->get_num_tracked_users(implode(' AND ', $where), $where_params, $group);
 
-// Total user count
-$grandtotal = $completion->get_num_tracked_users('', array(), $group);
+//dynamic -- edit the calls above to include $gm variable
+if (isset($gm)){
+	//overwrite variabls above
+	$total = $completion->get_num_tracked_users(implode(' AND ', $where), $where_params, $group, $gm,$groupsList);
+	$grandtotal = $completion->get_num_tracked_users('', array(), $group, $gm,$groupsList);
+}else{
+	// Get user match count
+	$total = $completion->get_num_tracked_users(implode(' AND ', $where), $where_params, $group);
+	// Total user count
+	$grandtotal = $completion->get_num_tracked_users('', array(), $group);
+}
+
+
 
 // If no users in this course what-so-ever
 if (!$grandtotal) {
@@ -193,20 +251,48 @@ if (!$grandtotal) {
 // Get user data
 $progress = array();
 
-if ($total) {
-    $progress = $completion->get_progress_all(
-        implode(' AND ', $where),
-        $where_params,
-        $group,
-        $firstnamesort ? 'u.firstname ASC' : 'u.lastname ASC',
-        $csv ? 0 : COMPLETION_REPORT_PAGE,
-        $csv ? 0 : $start,
-        $context
-    );
+//dynamic -----
+if (isset($gm)){
+	if ($total) {
+		$progress = $completion->get_progress_all(
+			implode(' AND ', $where),
+			$where_params,
+			$group,
+			//$firstnamesort ? 'u.firstname ASC' : 'u.lastname ASC',
+            $sort,
+			$csv ? 0 : COMPLETION_REPORT_PAGE,
+			$csv ? 0 : $start,
+            NULL,
+			$gm,
+			$groupsList
+		);
+	}
+}else{
+	if ($total) {
+		$progress = $completion->get_progress_all(
+			implode(' AND ', $where),
+			$where_params,
+			$group,
+			//$firstnamesort ? 'u.firstname ASC' : 'u.lastname ASC',
+            $sort,
+			$csv ? 0 : COMPLETION_REPORT_PAGE,
+			$csv ? 0 : $start
+		);
+	}
+
+
 }
 
+
 // Build link for paging
-$link = $CFG->wwwroot.'/report/completion/?course='.$course->id;
+//dynamic -------
+//echo "gm:" . $gm;
+if (isset($gm)){
+	$link = $CFG->wwwroot.'/report/completion/?course='.$course->id."&gm=".$gm. "&groups=" . $groupsList;
+}else{
+	$link = $CFG->wwwroot.'/report/completion/?course='.$course->id;
+}
+//---------------
 if (strlen($sort)) {
     $link .= '&amp;sort='.$sort;
 }
@@ -314,9 +400,9 @@ if (!$csv) {
     print '<table id="completion-progress" class="generaltable flexible boxaligncenter completionreport" style="text-align: left" cellpadding="5" border="1">';
 
     // Print criteria group names
-    print PHP_EOL.'<thead><tr style="vertical-align: top">';
-    echo '<th scope="row" class="rowheader" colspan="' . $leftcols . '">' .
-            get_string('criteriagroup', 'completion') . '</th>';
+    /*print PHP_EOL.'<tr style="vertical-align: top">';
+    print '<th scope="row" colspan="'.($idnumbers ? 2 : 1).'" class="rowheader">'.get_string('criteriagroup', 'completion').'</th>';
+	print '<th>&nbsp;</th>'; //dynamic
 
     $current_group = false;
     $col_count = 0;
@@ -346,12 +432,12 @@ if (!$csv) {
     // Overall course completion status
     print '<th style="text-align: center;">'.get_string('course').'</th>';
 
-    print '</tr>';
+    print '</tr>';*/
 
     // Print aggregation methods
-    print PHP_EOL.'<tr style="vertical-align: top">';
-    echo '<th scope="row" class="rowheader" colspan="' . $leftcols . '">' .
-            get_string('aggregationmethod', 'completion').'</th>';
+    /*print PHP_EOL.'<tr style="vertical-align: top">';
+    print '<th scope="row" colspan="'.($idnumbers ? 2: 1).'" class="rowheader">'.get_string('aggregationmethod', 'completion').'</th>';
+	print '<th>&nbsp;</th>'; //dynamic
 
     $current_group = false;
     $col_count = 0;
@@ -403,52 +489,89 @@ if (!$csv) {
     print $method == 1 ? get_string('all') : get_string('any');
     print '</th>';
 
-    print '</tr>';
+    print '</tr>';*/
+
 
     // Print criteria titles
     if (COMPLETION_REPORT_COL_TITLES) {
 
         print PHP_EOL.'<tr>';
-        echo '<th scope="row" class="rowheader" colspan="' . $leftcols . '">' .
-                get_string('criteria', 'completion') . '</th>';
+        print '<th scope="row" colspan="'.($idnumbers ? 2 : 1).'" class="rowheader">'.get_string('criteria', 'completion').'</th>';
+		print '<th>&nbsp;</th>'; //dynamic
+        print '<th>&nbsp;</th>'; //dynamic
+		print '<th>&nbsp;</th>'; //dynamic
+		
+		print '<th><span class="completion-criterianame" style="line-height:12px !important">&nbsp;</span></th>'; //dynamic	
 
         foreach ($criteria as $criterion) {
             // Get criteria details
             $details = $criterion->get_title_detailed();
-            print '<th scope="col" class="colheader criterianame">';
-            print '<span class="completion-criterianame">'.$details.'</span>';
+            print '<th scope="col" class="colheader criterianame" valign="bottom">';
+            //print '<span class="completion-criterianame">'. $details .'</span>'; //DYNAMIC
+            /*if(preg_match('/(?i)msie [1-8]/',$_SERVER['HTTP_USER_AGENT'])) { 
+                $detailsA = str_split($details);
+                $details = implode("<br>", $detailsA);
+                print '<span class="completion-criterianame" style="line-height:14px !important">'. $details .'</span>';
+            }else{*/
+                print '<span class="completion-criterianame" >'. $details .'</span>';
+            //}
+
+
             print '</th>';
         }
 
         // Overall course completion status
         print '<th scope="col" class="colheader criterianame">';
+
         print '<span class="completion-criterianame">'.get_string('coursecomplete', 'completion').'</span>';
+
         print '</th></tr>';
     }
 
     // Print user heading and icons
     print '<tr>';
 
+    // ====================================
+
+	//FIX 17-10-12
+	if (isset($gm)){
+        print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=dept&gm='.$gm. '&groups=' . $groupsList.'">Department</a></th>'; //dynamic
+		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=datestarted&gm='.$gm. '&groups=' . $groupsList.'">Start Date</a></th>'; //dynamic
+		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=weeksrole&gm='.$gm. '&groups=' . $groupsList.'">Weeks in Role</a></th>'; //dynamic
+		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=acomp&gm='.$gm. '&groups=' . $groupsList.'">Completed</a></th>'; //dynamic
+		
+	}else{
+        print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=dept">Department</a></th>'; //dynamic
+		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=datestarted">Start Date</a></th>'; //dynamic
+		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=weeksrole">Weeks in Role</a></th>'; //dynamic
+		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=acomp">Completed</a></th>'; //dynamic
+		 
+	}
+	
     // User heading / sort option
     print '<th scope="col" class="completion-sortchoice" style="clear: both;">';
-
-    $sistring = "&amp;silast={$silast}&amp;sifirst={$sifirst}";
-
-    if ($firstnamesort) {
-        print
-            get_string('firstname')." / <a href=\"./?course={$course->id}{$sistring}\">".
-            get_string('lastname').'</a>';
+    if($firstnamesort) {
+        if (isset($gm)){
+            print get_string('firstname').' / <a href="./?course='.$course->id.'&gm='.$gm. '&groups=' . $groupsList.'">'. get_string('lastname').'</a>';
+        }else{
+            print get_string('firstname').' / <a href="./?course='.$course->id.'">'. get_string('lastname').'</a>';
+        }
     } else {
-        print "<a href=\"./?course={$course->id}&amp;sort=firstname{$sistring}\">".
-            get_string('firstname').'</a> / '.
-            get_string('lastname');
+        if (isset($gm)){
+            print '<a href="./?course='.$course->id.'&amp;sort=firstname&gm='.$gm. '&groups=' . $groupsList.'">'. get_string('firstname').'</a> / '. get_string('lastname');
+        }else{
+            print '<a href="./?course='.$course->id.'&amp;sort=firstname">'. get_string('firstname').'</a> / '. get_string('lastname');
+        }
     }
     print '</th>';
+    // END OF FIX 17-10-12
 
-    // Print user identity columns
-    foreach ($extrafields as $field) {
-        echo '<th scope="col" class="completion-identifyfield">' .
-                get_user_field_name($field) . '</th>';
+    // ====================================
+
+
+    // Print user id number column
+    if($idnumbers) {
+        print '<th>'.get_string('idnumber').'</th>';
     }
 
     ///
@@ -511,9 +634,9 @@ if (!$csv) {
     print '<img src="'.$OUTPUT->pix_url('i/course').'" class="icon" alt="'.get_string('course').'" title="'.get_string('coursecomplete', 'completion').'" />';
     print '</th>';
 
-    print '</tr></thead>';
+    print '</tr>';
 
-    echo '<tbody>';
+
 } else {
     // The CSV headers
     $row = array();
@@ -560,17 +683,55 @@ foreach ($progress as $user) {
             $row[] = $user->{$field};
         }
     } else {
-        print PHP_EOL.'<tr id="user-'.$user->id.'">';
+	
+		
+        // Dynamic hack to hide completed users ----------------------------------------------------------
+        $params = array(
+            'userid'    => $user->id,
+            'course'    => $course->id
+        );
 
-        if (completion_can_view_data($user->id, $course)) {
-            $userurl = new moodle_url('/blocks/completionstatus/details.php', array('course' => $course->id, 'user' => $user->id));
-        } else {
-            $userurl = new moodle_url('/user/view.php', array('id' => $user->id, 'course' => $course->id));
+        $ccompletion = new completion_completion($params);
+        $completiontype =  $ccompletion->is_complete() ? 'y' : 'n';
+        $style = "";
+        if($ccompletion->is_complete() == 1){
+            //$style = ' style="display:none" ';
         }
 
-        print '<th scope="row"><a href="'.$userurl->out().'">'.fullname($user).'</a></th>';
-        foreach ($extrafields as $field) {
-            echo '<td>'.s($user->{$field}).'</td>';
+        print PHP_EOL.'<tr ' .  $style  . ' id="user-'.$user->id.'">'; //Start of individual user rows.
+
+        // -----------------------------------------------------------------------------------------------
+		
+        //print PHP_EOL.'<tr id="user-'.$user->id.'">';
+
+       
+	   // ====================================
+
+        //ROW DATA
+        //print PHP_EOL.'<tr id="user-'.$user->id.'">'; //Start of individual user rows.
+        print '<th scope="row" style="font-weight:normal"> ' . $user->dept .'</th>'; 
+        print '<th scope="row" style="font-weight:normal"> ' . date("d/m/y",$user->datestarted) .'</th>';
+        print '<th scope="row" style="font-weight:normal"> ' . $user->weeksrole .'</th>';
+
+        //-----------------------------------------------------------------------------------------------
+        $completions = $completion->get_completions($user->id);
+
+        $activities = count($completions);
+        $activities_complete = 0;
+        foreach($completions AS $c){
+            if($c->timecompleted != NULL AND $c->deleted != 1){
+                $activities_complete++;
+            }
+        }
+
+        print '<th scope="row" style="font-weight:normal">'. $activities_complete . ' of ' . $activities . '</th>'; //dynamic ---------
+
+        print '<th scope="row"><a href="'.$CFG->wwwroot.'/user/view.php?id='.$user->id.'&amp;course='.$course->id.'">'.fullname($user).'</a></th>';
+			
+		// ====================================	
+		
+        if($idnumbers) {
+            print '<td>'.htmlspecialchars($user->idnumber).'</td>';
         }
     }
 
@@ -672,10 +833,14 @@ foreach ($progress as $user) {
                     )
                 );
 
-                print '<a href="'.$toggleurl->out().'"><img src="'.$OUTPUT->pix_url('i/completion-manual-'.($is_complete ? 'y' : 'n')).
-                    '" alt="'.$describe.'" class="icon" title="'.get_string('markcomplete', 'completion').'" /></a></td>';
+                // print '<a href="'.$toggleurl->out().'"><img src="'.$OUTPUT->pix_url('i/completion-manual-'.($is_complete ? 'y' : 'n')).
+                //     '" alt="'.$describe.'" class="icon" title="'.get_string('markcomplete', 'completion').'" /></a></td>';
+
+                print '<a href="'.$toggleurl->out().'" onclick="return confirm(\' Are you sure? Once you have ticked this box, there is no going back! The trainee must have completed the Competent, Experienced and Final quizzes to receive a payrise after the relevant length of service\')">'.
+                    '<img src="'.$OUTPUT->pix_url('i/completion-manual-'.($is_complete ? 'y' : 'n')).
+                    '" alt="'.$describe.'" class="icon" title="'.get_string('markcomplete', 'completion').'" /></a>';
             } else {
-                print '<img src="'.$OUTPUT->pix_url('i/'.$completionicon).'" alt="'.$describe.'" class="icon" title="'.$fulldescribe.'" /></td>';
+                print '<img src="'.$OUTPUT->pix_url('i/'.$completionicon).'" alt="'.$describe.'" class="icon" title="'.$fulldescribe.'" />';
             }
 
             print '</td>';
@@ -704,6 +869,7 @@ foreach ($progress as $user) {
     }
 
     $a->state    = $describe;
+    $a->date     = '';
     $a->user     = fullname($user);
     $a->activity = strip_tags(get_string('coursecomplete', 'completion'));
     $fulldescribe = get_string('progress-title', 'completion', $a);
