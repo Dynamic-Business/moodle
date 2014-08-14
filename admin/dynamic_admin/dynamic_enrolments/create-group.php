@@ -23,9 +23,13 @@ To do
 	if (isset($_GET['action'])){$action = filter_var( $_GET['action'], FILTER_SANITIZE_STRING);} else{$action = "";}
 	if (isset($_POST['name'])){$groupname = filter_var( $_POST['name'], FILTER_SANITIZE_STRING);} else { $groupname = "";}
 	if (isset($_POST['description'])){$groupdesc = filter_var( $_POST['description'], FILTER_SANITIZE_STRING);} else{ $groupdesc = "";}
-	if (isset($_POST['grouptype'])){$grouptype = filter_var( $_POST['grouptype'], FILTER_SANITIZE_STRING);} else{ $grouptype = "";}
-	if (isset($_POST['academy'])){$academy = filter_var( $_POST['academy'], FILTER_SANITIZE_STRING);} else{ $academy = 0;}
-	
+	//if (isset($_POST['grouptype'])){$grouptype = filter_var( $_POST['grouptype'], FILTER_SANITIZE_STRING);} else{ $grouptype = "";}
+	//if (isset($_POST['academy'])){$academy = filter_var( $_POST['academy'], FILTER_SANITIZE_STRING);} else{ $academy = 0;}
+
+	if (isset($_POST['dateafter'])){$dateafter = filter_var( $_POST['dateafter'], FILTER_SANITIZE_STRING);} else{ $dateafter = "";}
+	if (isset($_POST['datebefore'])){$datebefore = filter_var( $_POST['datebefore'], FILTER_SANITIZE_STRING);} else{ $datebefore = "";}
+
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -36,6 +40,48 @@ To do
 
 <?php echo $OUTPUT->standard_head_html() ;?>
 <link href="../_css/styles.css" rel="stylesheet" type="text/css" />
+
+    <link type="text/css" href="../_css/ui-lightness/jquery-ui-1.8.4.custom.css" rel="stylesheet" />	
+	<script type="text/javascript" src="../_js/jquery-1.4.2.min.js"></script>
+    <script type="text/javascript" src="../_js/jquery.validate.min.js"></script>
+	<script type="text/javascript" src="../_js/jquery-ui-1.8.4.custom.min.js"></script>
+
+	<script type="text/javascript">
+		// Form Validation 
+
+		// Date / Checkbox enable
+		$(document).ready(function(){
+
+			$("#dateafter,#datebefore").datepicker({maxDate: 'Now',minDate: null});
+			$("#dateafter,#datebefore").attr('disabled',true);
+			$("#dateafter,#datebefore").attr('value', 'N/A');
+
+			var currentTime = new Date();
+			var day = currentTime.getDate();
+			if (day < 10){
+				day = "0" + day;
+			}
+			var month = currentTime.getMonth() + 1;
+			if (month < 10){
+				month = "0" + month;
+			}
+			var year = currentTime.getFullYear();
+			var now = day + "/" + month + "/" + year;
+			$('#datepickerto').attr('value', now);
+
+			$('.enable_date').click(function () {
+				if($(this).attr('checked')){
+					$(this).next().removeAttr('disabled');
+					$(this).next().attr('value', now);	
+				}else{
+					$(this).next().attr('disabled',true);
+					$(this).next().attr('value', 'N/A');
+				}
+			
+			});
+		});
+	</script>
+
 </head>
 
 <body>
@@ -58,22 +104,27 @@ To do
 			//connection code went here (deleted)-------------------------------------
 			
 			//$query =  "INSERT INTO dynamic_group (name, description) VALUES (\"" . $groupname . "\",\"" . $groupdesc . "\")";
-			
+
+			$da = DateTime::createFromFormat('d/m/Y', $dateafter);
+			$dateafter =  $da->getTimestamp();
+			$db = DateTime::createFromFormat('d/m/Y', $datebefore);
+			$datebefore =  $db->getTimestamp(); 
+
 			$gprecord = new stdClass();
             $gprecord->name = $groupname;
             $gprecord->description = $groupdesc;
-			$gprecord->grouptype = $grouptype;
-			$gprecord->academy = $academy;
-			
-			//print_r($gprecord);
+			$gprecord->dateafter = $dateafter;
+			$gprecord->datebefore = $datebefore;
+
+			// print_r($gprecord);
+			// $DB->set_debug(true);
 			$groupId = $DB->insert_record("dynamic_group", $gprecord , true);
-			
 			
 			if($groupId > 0 ){
 				echo "<p class='highlight'>Group: <b>" . $groupname . "</b> has been created successfully. Use the links below to setup your group.</p>";
-				$gprecord2 = new stdClass();
-				$gprecord2->groupid = $groupId;
-				$DB->insert_record("dynamic_groupdata", $gprecord2,false);
+				// $gprecord2 = new stdClass();
+				// $gprecord2->groupid = $groupId;
+				// $DB->insert_record("dynamic_groupdata", $gprecord2,false);
 			}else{
 				echo "<p class='warning-msg'>An error has occurred!</p><br>";
 			}
@@ -87,7 +138,7 @@ To do
     <?php if ($action == 'add'){ include('../_inc/inc.inner-group-admin.php'); } ?>
     
     
-    	 <form action="<?php echo $_SERVER['PHP_SELF'] . "?action=add" ?>" method="POST" id="styled-form" class="small-width">
+    	<form action="<?php echo $_SERVER['PHP_SELF'] . "?action=add" ?>" method="POST" id="styled-form" class="small-width">
              <div class="form-section">
              <label for="name">Group Name:</label>
              <input name="name" type="text" id="name" />
@@ -95,20 +146,18 @@ To do
              <div class="form-section">   
               <label for="name">Group Description:</label>
               <textarea name="description" cols="20" rows="4"></textarea><br />
-             </div>
-             
+             </div> 
 
-              <div class="form-section">   
-                  <label for="name">Academy Group:</label>
-                  <div class="checkbox-group-outer">
-                      <div class="radio-holder">
-                        <input type="radio" name="academy" value="1"  />Yes<input type="radio" name="academy" value="0" checked="true" />No<br />
-                      </div>
-                  </div>
-              </div>
+            <div class="form-section">  
+            	<label>Started after:</label>
+	            <input type="checkbox" class="enable_date" />
+	            <input type="text" id="dateafter" name="dateafter" value='<?php echo date("d/m/Y"); ?>' class='cb' />
+	            <label>Started before:</label>
+	            <input type="checkbox" class="enable_date" />
+	            <input type="text" id="datebefore" name="datebefore" value="<?php echo date("d/m/Y"); ?>" class='cb' />
+     		</div>
 
-
-              <div class="form-section last">  
+            <div class="form-section last">  
               <input name="submit" type="submit" value="Submit"/>
               </div>
               <input type="hidden" value="submitted">
