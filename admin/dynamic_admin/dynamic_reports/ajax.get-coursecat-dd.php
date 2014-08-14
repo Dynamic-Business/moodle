@@ -32,17 +32,17 @@ if(isadmin() || ismanager()){
 		// $sql = "SELECT d.data AS 'data',d.id AS 'id',f.shortname AS 'shortname' FROM mdl_user_info_data d INNER JOIN mdl_user_info_field f ON f.id = d.fieldid  WHERE d.data != '' AND f.shortname = ? GROUP BY d.data";
 
 		$sql = "
-			SELECT c.id,fullname,idnumber 
+			SELECT c.id,fullname,c.idnumber
 			FROM mdl_course c " . 
 			"INNER JOIN mdl_course_categories cat ON c.category = cat.id " .
-			"WHERE idnumber != '' AND enablecompletion = 1 ";
+			"WHERE c.idnumber != '' AND enablecompletion = 1 ";
 		if ($id > 0){
 			//$sql .= "  AND category = " . $id . " ";
 			$sql .= "  AND (cat.path LIKE '/" . $id . "'  OR cat.path LIKE '%/" . $id . "%') ";
 		}
 		$sql .= "  ORDER BY CAST(c.sortorder AS SIGNED),fullname" ;
-		/*echo $sql;
-		die;*/
+		// echo $sql;
+		// die;
 		$rs = $DB->get_records_sql($sql);
 
 

@@ -29,7 +29,7 @@
 	<script type="text/javascript" src="../_js/jquery-1.4.2.min.js"></script>
     <script type="text/javascript" src="../_js/jquery.validate.min.js"></script>
 	<script type="text/javascript" src="../_js/jquery-ui-1.8.4.custom.min.js"></script>
-    <!--<script type="text/javascript" src="../_js/custom.js"></script>-->
+    <script type="text/javascript" src="../_js/custom.js"></script>
     <script type="text/javascript" src="../_js/custom.activity.js"></script>
     <script type="text/javascript" src="../_js/custom.coursecat.dd.js"></script>
     
