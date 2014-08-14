@@ -1,0 +1,11 @@
+FIELDSET { position:relative;padding:8px 5px 12px}
+legend {position: absolute;top: -.5em;left: .001em;}
+
+
+#styled-form INPUT[type='submit'] {margin-left:455px;}
+DIV.cgo-status {padding-bottom:10px !important}
+DIV.checkbox-group INPUT[type="checkbox"],DIV.checkbox-group-thin INPUT[type="checkbox"] {margin:0px 4px;clear:left;float:left}
+DIV.checkbox-group P {margin:4px 5px 0px 0px!important; display:block;float:left;/*;width:235px*/}
+DIV.checkbox-group-thin P {margin:4px 2px 0px 0px !important;display:block;float:left;}
+
+

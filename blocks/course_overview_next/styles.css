@@ -1,0 +1,14 @@
+.block_course_overview_next {font-size:12px}
+.block_course_overview_next  .header{background: none repeat scroll 0 0 /*#E9E9E9*/ !important;}
+.block_course_overview_next  .content{background: none repeat scroll 0 0 /*#E9E9E9*/ !important;float:left;width:100%}
+.block_course_overview_next  .coursebox{margin:2px 0px;float:left;width:100%}
+.block_course_overview_next  .heading {font-weight:bold}
+/* ----- */
+DIV.overview-info-course {width:44%;display:block;float:left;margin-right:4px}
+DIV.overview-info-other {display:block;float:left;margin:0px;margin-right:4px;text-align:center}
+	.de {width:12%;}
+	.cs {width:12%;}
+	.ac {width:12%;}
+	.dc {width:12%;}
+DIV.overview-info-icon {width:2%;display:block;float:left;margin: 0px;margin-right:7px}
+DIV.nottracked DIV.overview-info-other {color:#AAA !important}
