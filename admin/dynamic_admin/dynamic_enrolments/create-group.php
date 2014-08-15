@@ -100,15 +100,19 @@ To do
 	if(isset($_SESSION['permission:creategroup'])){
 	
 		if($action == "add"){
-		
-			//connection code went here (deleted)-------------------------------------
-			
-			//$query =  "INSERT INTO dynamic_group (name, description) VALUES (\"" . $groupname . "\",\"" . $groupdesc . "\")";
 
-			$da = DateTime::createFromFormat('d/m/Y', $dateafter);
-			$dateafter =  $da->getTimestamp();
-			$db = DateTime::createFromFormat('d/m/Y', $datebefore);
-			$datebefore =  $db->getTimestamp(); 
+			if($dateafter != "" && $dateafter != "N/A"){
+				$da = DateTime::createFromFormat('d/m/Y', $dateafter);
+				$dateafter =  $da->getTimestamp();
+			}else{
+				$dateafter = "";
+			}
+			if($datebefore != "" && $datebefore != "N/A"){
+				$db = DateTime::createFromFormat('d/m/Y', $datebefore);
+				$datebefore =  $db->getTimestamp();
+			}else{
+				$datebefore = "";
+			}
 
 			$gprecord = new stdClass();
             $gprecord->name = $groupname;
@@ -116,8 +120,6 @@ To do
 			$gprecord->dateafter = $dateafter;
 			$gprecord->datebefore = $datebefore;
 
-			// print_r($gprecord);
-			// $DB->set_debug(true);
 			$groupId = $DB->insert_record("dynamic_group", $gprecord , true);
 			
 			if($groupId > 0 ){

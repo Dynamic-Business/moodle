@@ -2088,6 +2088,14 @@
 
 		return ($val == 1) ?  'Yes' :  'No';
 	}
+
+	function convertGroupDates($after,$before){
+		$a = ($after == 0) ? ""  : "After: <b>" . date('d/m/Y', $after) . "</b><br />";
+		$b = ($before == 0) ? "" : "Before: <b>" . date('d/m/Y', $before) . "</b>";
+		
+		return $a . $b;
+
+	}
 	
 	function getDefinitions($groupid){
 		global $CFG, $DB;

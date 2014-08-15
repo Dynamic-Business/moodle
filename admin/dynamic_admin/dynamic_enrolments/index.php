@@ -147,7 +147,7 @@ if (isadmin() || ismanager() ) {
         	<th width=20>Id</th>
 			<th>Name</th>
 			<th>Description</th>
-            <th>Academy Group</th>
+            <th>Start Date</th>
             <th>Definitions Set</th>
             <th>Courses Enrolled</th>
 			<th>Options</th>
@@ -161,7 +161,7 @@ if (isadmin() || ismanager() ) {
 	foreach ($result2 as $row) 
 	  {
 	  
-	  echo "<tr><td>" . $row->id . " </td><td><a class='table-link' href='edit-group.php?id=" . $row->id . "'> " . $row->name . " </a></td><td> " . $row->description. " </td><td> " . convertGroupTypeDisplay($row->academy). " </td><td>" . getDefinitions($row->id) . "</td><td>" . getCourseIds($row->id)  . "</td>";
+	  echo "<tr><td>" . $row->id . " </td><td><a class='table-link' href='edit-group.php?id=" . $row->id . "'> " . $row->name . " </a></td><td> " . $row->description. " </td><td> " . convertGroupDates($row->dateafter,$row->datebefore). " </td><td>" . getDefinitions($row->id) . "</td><td>" . getCourseIds($row->id)  . "</td>";
 	  echo "<td class='admin'>";
 	  if(isset($_SESSION['permission:editgroup'])){
 	  	echo "<a href=\"edit-group.php?id=" . $row->id . "\"><img src='../_img/users_edit.png' alt='Edit Group' title='Edit Group'/></a>";
