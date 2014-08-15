@@ -80,9 +80,10 @@ To do
 		
 		//2. Query to show all users in group
 		$queryUsers = "
-		SELECT u.id,idnumber,firstname,lastname 
+		SELECT u.id,idnumber,firstname,lastname,ud.datestarted AS 'datestarted' 
 		FROM mdl_dynamic_usersgroups dug
 		INNER JOIN mdl_user u ON u.id = dug.userid
+		INNER JOIN mdl_dynamic_userdata ud On u.id = ud.userid
 		 WHERE dug.groupid = " .$groupId. " AND u.deleted != 1";
 
 		$_SESSION['query'] = $queryUsers; 
@@ -104,6 +105,7 @@ To do
                     <th width=100>Id Number</th>
                     <th>First Name</th>
                     <th>Last Name</th>
+                    <th>Start Date</th>
                 </tr>
             </thead>
             <tbody>
@@ -113,7 +115,7 @@ To do
 				
 				if ($row->idnumber == NULL){echo "<tr class='red'>";$showWarningMessage = TRUE;}else{ echo "<tr>";}
 				echo "<td>" . $row->idnumber . " </td><td> " . $row->firstname . " </td><td> " . $row->lastname;
-				echo "</td></tr>";
+				echo "</td><td>" . date('d/m/Y',$row->datestarted) . " </td></tr>";
              }
                     
             ?>

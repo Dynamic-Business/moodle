@@ -55,14 +55,14 @@
 
 		//Get all the group ids of groups with at least one defintion has been set 
 		$sql = " 
-			SELECT DISTINCT(g.id),academy FROM mdl_dynamic_group g
+			SELECT DISTINCT(g.id),dateafter,datebefore FROM mdl_dynamic_group g
 			LEFT JOIN mdl_dynamic_propertiesforgroup pg ON g.id = pg.groupid
 			WHERE groupid IS NOT NULL ";
 		$result = mysql_query($sql);
 		while ($row = mysql_fetch_array($result)) {
 			//Get all the fields for each groupid 
 			$groupid = $row['id'];
-			$academy = $row['academy'];
+			//$academy = $row['academy'];
 			$sql = " SELECT DISTINCT(field) FROM mdl_dynamic_propertiesforgroup WHERE groupid = " . $groupid;
 			$rs = mysql_query($sql);
 			$ins = array();
@@ -88,9 +88,17 @@
 				$sql .= $key . " IN (" .  implode(',',$value) . ")";
 				$firstrun = FALSE;		
 			}
-			if($academy == 1){
+			/*if($academy == 1){
 				$sql .= " AND datestarted > 1335830460 ";
+			}*/
+
+			if($row['dateafter'] != 0){
+				$sql .= " AND datestarted > {$row['dateafter']} ";
 			}
+			if($row['datebefore'] != 0){
+				$sql .= " AND datestarted < {$row['datebefore']} ";
+			}
+
 			echo $sql . "<br>"; //debug
 
 			if (mysql_query($sql)){
