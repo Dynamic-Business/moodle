@@ -50,7 +50,7 @@ BUTTON.but-search {height:30px;width:100px;margin-left:10px}
 #styled-form INPUT[type="radio"]{margin:3px 5px 5px 10px}
 #styled-form .radio-holder{padding:5px;line-height:18px}
 /* New for date driven groups*/
-#styled-form INPUT[type="checkbox"]{float:left;margin:8px 5px 5px 0px}
+#styled-form INPUT[type="checkbox"].enable_date{float:left;margin:8px 5px 5px 0px}
 #styled-form INPUT[type='text'].cb {width:390px}
 
 #styled-form .form-section {float:left;clear:left;margin-bottom:20px;}
