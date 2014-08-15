@@ -303,7 +303,7 @@
 		$courseSql = getWhereCourseSQL($courses,"c","id",true);
 		$statusSql = getWhereStatusSQL($status);
 		$pfieldSql = "";
-		$groupSql = getWhereGroupSQL($groups,"ug","groupid",true);
+		$groupSql = getWhereGroupSQL($groups,"ugroup","groupid",true);
 		$profileFieldsSQL = getProfileDataSQL();
 		
 		//Select user details and attach all sco names
@@ -312,13 +312,13 @@
 		INNER JOIN mdl_scorm_scoes_track st on u.ID = st.userid
 		INNER JOIN mdl_scorm s on st.scormid = s.id
 		INNER JOIN mdl_scorm_scoes sco on st.scoid = sco.id
-		INNER JOIN (SELECT * FROM mdl_course c WHERE " . $courseSql . ") c ON s.course = c.id 
-		INNER JOIN mdl_dynamic_userdata ud ON u.id = ud.userid " .
+		INNER JOIN mdl_course c ON s.course = c.id
+		INNER JOIN mdl_dynamic_userdata ud ON u.id = ud.userid 
 		
-		"INNER JOIN (SELECT * FROM mdl_dynamic_usersgroups ug WHERE  " . $groupSql .  " GROUP BY userid) AS ugroup ON u.id = ugroup.userid "  .
-		
-		//Get SCO records data
-		"WHERE st.element = 'cmi.core.lesson_status'
+		INNER JOIN mdl_dynamic_usersgroups ugroup ON u.id = ugroup.userid 
+		WHERE st.element = 'cmi.core.lesson_status'
+		AND " . $groupSql .  "
+		AND " . $courseSql . "
 		AND st.id IN
 		 (SELECT MAX(st1.id)
 		  FROM mdl_scorm_scoes_track st1
@@ -331,7 +331,7 @@
 		  " AND st.timemodified <= "  . getDayEnd(strtotime(convertDateUkToUS($datepickerto))) .
 		 ")" .
 		" ORDER BY " . $orderby . ",c.fullname,s.name";	
-		//echo $sql;
+		// echo $sql;
 		return $sql;
 	}
 	
@@ -504,11 +504,13 @@
 		INNER JOIN mdl_scorm_scoes_track st ON u.ID = st.userid
 		INNER JOIN mdl_scorm s ON st.scormid = s.id 
 		INNER JOIN mdl_scorm_scoes sco ON st.scoid = sco.id 
-		INNER JOIN (SELECT * FROM mdl_course c WHERE " . $courseSql . ") c ON s.course = c.id 
-		INNER JOIN (SELECT * FROM mdl_dynamic_userdata ud WHERE " . $pdataSql . ") ud ON u.id = ud.userid " .
+		INNER JOIN mdl_course c ON s.course = c.id
+		INNER JOIN mdl_dynamic_userdata ud  ON u.id = ud.userid 
 		
 
-		"WHERE st.element = 'cmi.core.lesson_status'
+		WHERE st.element = 'cmi.core.lesson_status'
+		AND " . $pdataSql . "
+		AND ". $courseSql . "
 		AND u.deleted != 1 
 		AND u.idnumber != '' 
 		AND st.id in
@@ -1127,7 +1129,7 @@
 			$sql .= " AND (cc.timecompleted IS NULL AND cc.timestarted != 0) " ;
 			$sql .= " AND (cc.timestarted >= " . getDayStart(strtotime(convertDateUkToUS($datepickerfrom))) . " AND cc.timestarted <= " . getDayEnd(strtotime(convertDateUkToUS($datepickerto))) . ") ";
 		}
-		$sql .= " AND " . $groupSql .  " GROUP BY ug.userid ";
+		$sql .= " AND " . $groupSql .  " GROUP BY ug.userid,c.id ";
 		$sql .= " ORDER BY " . $orderby . ",c.fullname";	
 		// echo "<pre>" . $sql;die;
 		return $sql;
