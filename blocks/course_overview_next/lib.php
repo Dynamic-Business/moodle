@@ -28,6 +28,7 @@ function print_overview_next($courses, array $remote_courses=array()) {
 	echo $OUTPUT->box_start('coursebox');
 	echo "<div class='overview-info-icon heading'>&nbsp;</div>";
 	echo "<div class='overview-info-course heading'>Training Session</div>";
+	echo "<div class='overview-info-other prog heading'>Progress</div>";
 	echo "<div class='overview-info-other de heading'>Date<br>Enrolled</div>";
 	echo "<div class='overview-info-other cs heading'>Status</div>";
 	echo "<div class='overview-info-other ac heading'>Activities<br>Completed</div>";
@@ -75,10 +76,19 @@ function print_overview_next($courses, array $remote_courses=array()) {
 		
 		if($statusVal != "Not Tracked"){
 			$activitesCombined = $activitiesCompleted . " of " . $totalActivities;
+			$progress = round((100 / $totalActivities) *  $activitiesCompleted,2);
+
 		}else{
 			//$activitesCombined = "&nbsp;";
 			$activitesCombined = "N/A";
+			$progress = 0;
 		}
+
+		if($progress >= 100){
+			$bartype = " bar-success ";
+		}else{
+			$bartype = " bar-warning ";
+		}		
 		//
 		
 		//echo $OUTPUT->box_start('coursebox');
@@ -108,6 +118,9 @@ function print_overview_next($courses, array $remote_courses=array()) {
 		echo "<div class='box overview-info-course'>";
 		echo "<h6><a href='" . $CFG->wwwroot . "/course/view.php?id=" . $course->id . "'>" . $course->fullname . "</a></h6>"; 
 		echo "</div>";
+		echo "<div class='box overview-info-other prog'>
+		<div class='progress'><div class='bar {$bartype}' style='width: {$progress}%;'></div> </div>
+		</div>";
 		
         /*if (array_key_exists($course->id,$htmlarray)) {foreach ($htmlarray[$course->id] as $modname => $html) {echo $html;}}*/ //commented out from original
 		echo "<div class='overview-info-other de'>" . $enrolledVal . "</div>";
