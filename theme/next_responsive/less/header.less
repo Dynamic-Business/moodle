@@ -3,22 +3,33 @@
 	//#gradient .vertical(@greyDark, @black);
 	padding:0;
 }
-
+.menu-btn{
+	background: @black;
+	color:@white;
+	font-weight: bold;
+	img{
+		margin-right:5px;
+	}
+}
 .navbar-inner-wrap{
 	//#gradient .vertical(@greyDark, @black);
 	&.top{
 		#gradient .vertical(@greyDark, @black);
 	}
 	&.bottom{
-		#gradient .vertical(@grey, @black);
+		#gradient .vertical(@black, @greyDark);
+		@media(min-width:768px){
+			#gradient .vertical(@grey, @black);
+		}
 	}
 	padding-left:20px;
 	padding-right:20px;
 }
-
-.nav, .nav li {
-	border: solid 1px #000;
-	border-width: 0 1px 0;
+@media(min-width:768px){
+	.nav, .nav li {
+		border: solid 1px #000;
+		border-width: 0 1px 0;
+	}
 }
 
 .dropdown-toggle, .nav-text{
@@ -40,6 +51,10 @@ li.dropdown li.dropdown{
 }
 
 .dropdown{
+	a{
+		display:block;
+		background-color:transparent;
+	}
 	@media(min-width:768px){
 		&:hover{
 			@import "../../dynamicbase/less/bootstrap/dropdowns";
@@ -84,14 +99,43 @@ li.dropdown li.dropdown{
 	}
 }
 
-.dropdown-menu.right{
-	.dropdown-dropdown(@greyDark);
-}
-
 .logininfo{
 	padding:5px 15px;
 }
 
 .bread-crumb, .bread-crumb li {
 	border: none;
+}
+
+@media(max-width:768px){
+	.navbar .nav > li > a {
+	    padding-left: 35px;
+	    background-color:transparent;
+	    background-image: url('[[pix:core|t/collapsed]]');  
+	    background-repeat: no-repeat;
+	    background-position: 15px center;
+	}
+	.navbar .nav > li.open > a{
+	    background-image: url('[[pix:core|t/expanded]]');
+	    background-color:transparent;
+	    background-repeat: no-repeat;
+	    background-position: 15px center;
+	}
+	.navbar .nav > li > .nav-text {
+	    padding-left: 35px;
+	    background: transparent;
+	}
+	.dropdown .dropdown-menu{
+		left: 6px;
+	    top: 69%;
+		.dropdown-toggle {
+	    	background-image: url('[[pix:core|t/collapsed]]');  
+	    	background-repeat: no-repeat;
+	    	background-position: 98% center;
+		}
+	}
+}
+
+.dropdown-menu.right{
+	.dropdown-dropdown(@greyDark);
 }

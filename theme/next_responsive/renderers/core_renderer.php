@@ -34,10 +34,10 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 <?php }
 
     public function navHTML(){
-        global $CFG; ?>
+        global $CFG, $OUTPUT; ?>
         
         <a class="menu-btn" data-toggle="collapse" data-target=".nav-collapse">
-            Menu
+            <img src="<?php echo $OUTPUT->pix_url('menu-btn','theme'); ?>" width="20" height="20" alt="Open"/>Menu
         </a>
         <div class="navbar-inner-wrap bottom">
             <div class="nav-wrap">

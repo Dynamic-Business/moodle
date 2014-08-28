@@ -1,0 +1,30 @@
+#login-main{
+	max-width:1024px;
+	*width:980px;
+	margin:0 auto;
+}
+.login-form-box,.extra-info-box,.final-info-box{
+	.clearfix();
+}
+.login-form-box{
+	#grid .fluid .span(6);
+	.pull-right();
+}
+.extra-info-box{
+	#grid .fluid .span(6);
+}
+@media(min-width:768px){
+	.final-info-box, .loginpanel{
+		#grid .fluid .span(12);
+	}
+}
+.final-info-box, .loginpanel{
+	// Hack to get around IE not understanding @media
+	*width:100%; // == what span(12) is anyway.
+}
+
+@media(max-width:768px){
+	.login-form-box,.extra-info-box,.final-info-box{
+		#grid .fluid .span(12);
+	}
+}

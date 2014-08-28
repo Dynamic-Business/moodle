@@ -5176,27 +5176,27 @@ span.editinstructions {
 .course_category_tree .category > .info > .categoryname {
   padding: 2px 18px;
   margin: 3px;
-  background-image: url([[pix:moodle|t/collapsed_empty]]);
+  background-image: url([[pix:core|t/collapsed_empty&svg=1]]);
   background-position: center left;
   background-repeat: no-repeat;
 }
 
 .dir-rtl .course_category_tree .category > .info > .categoryname {
-  background-image: url([[pix:moodle|t/collapsed_empty_rtl]]);
+  background-image: url([[pix:core|t/collapsed_empty_rtl]]);
   background-position: center right;
 }
 
 .course_category_tree .category.with_children > .info > .categoryname {
   cursor: pointer;
-  background-image: url([[pix:moodle|t/expanded]]);
+  background-image: url([[pix:core|t/expanded]]);
 }
 
 .course_category_tree .category.with_children.collapsed > .info > .categoryname {
-  background-image: url([[pix:moodle|t/collapsed]]);
+  background-image: url([[pix:core|t/collapsed]]);
 }
 
 .dir-rtl .course_category_tree .category.with_children.collapsed > .info > .categoryname {
-  background-image: url([[pix:moodle|t/collapsed_rtl]]);
+  background-image: url([[pix:core|t/collapsed_rtl]]);
 }
 
 .course_category_tree .category.collapsed > .content {
@@ -5916,6 +5916,52 @@ span.editinstructions {
   #course-category-listings.columns-3 #course-detail > div {
     background-color: transparent;
   }
+}
+
+.courses .coursebox.collapsed {
+  padding: 0 5px;
+}
+
+.coursebox > .info > .coursename {
+  margin: 5px 5px 0;
+}
+
+.coursebox > .info > .coursename a {
+  background-position: left center;
+}
+
+.course_category_tree .category > .info,
+.coursebox {
+  margin: 2px 0 0;
+}
+
+.course_category_tree .category > .info .categoryname,
+.coursebox .categoryname {
+  padding: 0 18px;
+  margin: 0 3px 0 5px;
+  line-height: 40px;
+}
+
+.coursesearchbox {
+  display: block;
+  width: 400px;
+  margin: 8px auto 0;
+  text-align: center;
+}
+
+.coursebox > .info > h3.coursename {
+  padding-top: 3px;
+  margin-bottom: 0;
+  font-size: 18px;
+  line-height: normal;
+}
+
+.coursebox {
+  padding: 0 5px;
+}
+
+#page-course-index-category .singlebutton {
+  margin-top: 13px;
 }
 
 .filemanager,
