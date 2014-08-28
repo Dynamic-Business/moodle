@@ -83,12 +83,28 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
  */
 ?>
                     <li><?php $this->myLearningMenu(); ?></li>
+
+                    <?php if($this->showRetailTab()){ ?>
                     <li class="dropdown"><?php $this->retailAcademyMenu(); ?></li>
+                    <?php } ?>
+
+                    <?php if($this->showManagementTab()){ ?>
                     <li class="dropdown"><?php $this->managementAcademyMenu(); ?></li>
+                    <?php } ?>
+
                     <li class="dropdown"><?php $this->howToMenu(); ?></li>
+
+                    <?php if($this->is_administrator()){ ?>
                     <li><a href="<?php echo $CFG->wwwroot; ?>/course/" class="nav-text">All Courses</a></li>
+                    <?php } ?>
+
+                    <?php if($this->showManagementTab()){ ?>
                     <li class="dropdown"><?php $this->reportsMenu(); ?></li>
+                    <?php } ?>
+
+                    <?php if($this->is_administrator()){ ?>
                     <li><?php $this->adminMenu(); ?></li>
+                    <?php } ?>
                 </ul>
             </div>
         </div>
@@ -98,7 +114,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
     protected function myLearningMenu(){
         global $CFG; ?>
 
-            <a href="#" class="nav-text">My Learning</a>
+            <a href="<?php echo $CFG->wwwroot . '/my'; ?>" class="nav-text">My Learning</a>
 
 <?php }
 
@@ -218,10 +234,10 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
         
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Reports</a>
             <ul class="dropdown-menu">
-                <li><a href="#">Learning Tracker</a></li>    
-                <li><a href="#">Individual Learning Report</a></li>
-                <li><a href="#">Exception Report</a></li>
-                <li><a href="#">Overview Report</a></li>
+                <li><a href="<?php echo $CFG->wwwroot . '/admin/dynamic_admin/dynamic_reports/reportactivity-builder.php'; ?>">Learning Tracker</a></li>    
+                <li><a href="<?php echo $CFG->wwwroot . '/admin/dynamic_admin/dynamic_reports/reportuser-builder.php'; ?>">Individual Learning Report</a></li>
+                <li><a href="<?php echo $CFG->wwwroot . '/admin/dynamic_admin/dynamic_reports/reportstoreprogress-builder.php'; ?>">Exception Report</a></li>
+                <li><a href="<?php echo $CFG->wwwroot . '/admin/dynamic_admin/dynamic_reports/reportcourse-builder.php'; ?>">Overview Report</a></li>
             </ul>
 
 <?php }
@@ -230,8 +246,63 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
         global $CFG; ?>
 
         
-            <a href="#" class="nav-text">Admin</a>
+            <a href="<?php echo $CFG->wwwroot . '/admin/dynamic_admin/dynamic_enrolments'; ?>" class="nav-text">Group Admin</a>
+
 
 <?php }
+    protected function is_administrator(){
+        global $CFG,$DB,$USER;
+        $sql = "SELECT value FROM mdl_config WHERE name = 'siteadmins'";
+        $data = $DB->get_field_sql($sql);
+        $arr = explode(',',$data);
+        $exists = array_search($USER->id,$arr);
+        if($exists === FALSE){
+            return FALSE;
+        }else{
+            return TRUE;
+        }
+    }
+
+    protected function showRetailTab(){
+        global $CFG,$DB,$USER;
+        if($this->is_administrator()){
+            return TRUE;
+        }
+        $sql = "
+            SELECT u.id 
+            FROM mdl_user u
+            LEFT JOIN mdl_dynamic_userdata ud ON u.id = ud.userid
+            WHERE u.id = ? 
+            AND (ud.jobcode IN('SCON','APRN','VAND'))
+        ";
+        $data = $DB->get_record_sql($sql,array($USER->id));
+        if ($data){
+            return TRUE;
+        }else{
+            return FALSE;
+        }
+    }
+
+    protected function showManagementTab(){
+        global $CFG,$DB,$USER; 
+        if($this->is_administrator()){
+            return TRUE;
+        } 
+        $sql = "
+            SELECT u.id 
+            FROM mdl_user u
+            LEFT JOIN mdl_dynamic_userdata ud ON u.id = ud.userid
+            WHERE u.id = ? 
+            AND (ud.jobcode IN('MGRB','MGRA','MGRC','MGRC','MSAM','MGRS','MOPA','MOFF','MSTK','MPTM','MDEP','MNDM','MOWM','MPTO','MSEC','SECO','MCDE','MCOF','MCSA'))
+        ";
+        $data = $DB->get_record_sql($sql,array($USER->id));
+        //var_dump($data);
+        if ($data){
+            return TRUE;
+        }else{
+            return FALSE;
+        }
+
+    }
 
 }
