@@ -1,0 +1,97 @@
+.navbar-inner-dyn{
+	//background:@black;
+	//#gradient .vertical(@greyDark, @black);
+	padding:0;
+}
+
+.navbar-inner-wrap{
+	//#gradient .vertical(@greyDark, @black);
+	&.top{
+		#gradient .vertical(@greyDark, @black);
+	}
+	&.bottom{
+		#gradient .vertical(@grey, @black);
+	}
+	padding-left:20px;
+	padding-right:20px;
+}
+
+.nav, .nav li {
+	border: solid 1px #000;
+	border-width: 0 1px 0;
+}
+
+.dropdown-toggle, .nav-text{
+	color:@white;
+}
+
+.dropdown.open > .dropdown-toggle {
+	color:@aqua;
+	background: transparent;
+}
+
+.navbar .nav > li > .dropdown-menu:after{
+	border-bottom-color: @greyDark;
+}
+
+li.dropdown li.dropdown{
+	border:none;
+	border-width:0;
+}
+
+.dropdown{
+	@media(min-width:768px){
+		&:hover{
+			@import "../../dynamicbase/less/bootstrap/dropdowns";
+			.open();
+			.dropdown-toggle{
+				color:@aqua;
+			}
+			.dropdown-menu{
+				background:@greyDark;
+				top: 97%;
+				li > a{
+					padding:3px 20px 3px 8px;
+					color:@white;
+					&:hover{
+						// Nuke
+						text-decoration: none;
+						background-color: transparent;
+						background-image: none; // Remove CSS gradient
+						.reset-filter();
+						background-color:@aqua;
+						color:@white;
+					}
+				}
+			}
+			.dropdown-menu.right{
+				.dropdown-dropdown(@greyDark);
+			}
+		}
+	}
+	.open{
+		background-color:darken(@aqua, 15%);
+	}
+	.dropdown-menu{
+		background:@greyDark;
+		top: 97%;
+		li > a{
+			color:@white;
+		}
+		.dropdown-toggle{
+			color:@white;
+		}
+	}
+}
+
+.dropdown-menu.right{
+	.dropdown-dropdown(@greyDark);
+}
+
+.logininfo{
+	padding:5px 15px;
+}
+
+.bread-crumb, .bread-crumb li {
+	border: none;
+}

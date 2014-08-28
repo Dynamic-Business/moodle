@@ -1,0 +1,57 @@
+.navbar{
+	margin-bottom:5px;
+}
+
+.nav{
+	&.dynamic-reports{
+		.pull-right;
+		margin-right:0;
+	}
+}
+
+.nav-header, .navbar .brand {
+	text-shadow:none;
+}
+
+.nav-header {
+	text-shadow:none;
+	text-transform: capitalize;
+}
+
+.nav-wrap{
+	.container-fluid();
+}
+
+.menu-btn{
+	display: none;
+	padding: 10px 15px 10px;
+	text-align: center;
+	color: #777777;
+	text-decoration: none;
+	&:hover,&:active,&:focus{
+		text-decoration:none;
+	}
+}
+
+@media (max-width: 767px){
+	.menu-btn{
+		display:block;
+	}
+	.nav-wrap{
+		padding:0;
+		height:0;
+		overflow:hidden;
+		&.active{
+			height:auto;
+			overflow: visible;
+		}
+	}
+	.navbar .main-nav, .navbar .dynamic-reports{
+		width:100%;
+		margin:0;
+		li{
+			width:100%;
+		}
+	}
+
+}
