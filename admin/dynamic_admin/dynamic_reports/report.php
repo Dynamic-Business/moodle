@@ -443,7 +443,7 @@
 				$noResults = TRUE;
 			}
 			
-			$linkBack = "<p><a href='". $CFG->wwwroot . "'>Moodle</a> &raquo; <a href='" .  $linkBackToReports . "'>Reports</a> &raquo; <a href='" . $linkBackToUserRepBuilder . "'>Individual User Report</a> &raquo; Report</p>";
+			$linkBack = "<p><a href='". $CFG->wwwroot . "'>Moodle</a> &raquo; <a href='" .  $linkBackToReports . "'>Reports</a> &raquo; <a href='" . $linkBackToUserRepBuilder . "'>Individual Learning Report</a> &raquo; Report</p>";
 			
 		 break;
 		 
@@ -456,7 +456,7 @@
 				$noResults = TRUE;
 			}
 			
-			$linkBack = "<p><a href='". $CFG->wwwroot . "'>Moodle</a> &raquo; <a href='" .  $linkBackToReports . "'>Reports</a> &raquo; <a href='" . $linkBackToOverviewRepBuilder . "'>Overview Report</a> &raquo; Report</p>";
+			$linkBack = "<p><a href='". $CFG->wwwroot . "'>Moodle</a> &raquo; <a href='" .  $linkBackToReports . "'>Reports</a> &raquo; <a href='" . $linkBackToOverviewRepBuilder . "'>Progress Report</a> &raquo; Report</p>";
 			$courseList = getCourseNames($courses);
 			$reportInfo = "<p class='rep-info'>You selected the following course(s): " . $courseList . "</p>";
 		 break;

@@ -61,21 +61,23 @@ if (isadmin() || ismanager()) { ?>
         <?php } ?>
 		<h3 class='red'>Main Report</h3>
 		<p>The Training Tracker report shows completed topics of a training programme, e.g. Retail Academy.</p>
-		<li><a href="reportactivity-builder.php">Training Trackers</a></li><!-- (Manual Group Report (Activity Completions))-->
+		<li><a href="reportactivity-builder.php">Learning Tracker</a></li><!-- (Manual Group Report (Activity Completions))-->
+
+		<p>The Individual Training Records report shows what training has been completed, or is outstanding, for a specific member of staff.</p>
+		<li class='exspace'><a href="reportuser-builder.php">Individual Learning Report</a></li><!--(Individual User Report (Course Completions))-->
 		
 		<h3>Other Reports</h3>
 		<p>The Exception report shows people that are behind with their training (Retail Academy and Apprentice Programmes only).</p>
 		<li class="exspace"><a href="reportstoreprogress-builder.php" >Exception Report</a></li>
 
 		<p>The Store Training Records report shows training that's not been started, or has been completed.</p>
-		<li class='exspace'><a href="reportcourse-builder.php">Store Training Records</a></li><!--(Manual Group Report (Course Completions))-->
+		<li class='exspace'><a href="reportcourse-builder.php">Progress Report</a></li><!--(Manual Group Report (Course Completions))-->
 
-		<p>The Quiz Results report shows quiz scores and the number of attempts.</p>
+		<!--<p>The Quiz Results report shows quiz scores and the number of attempts.</p>
 		<li class='exspace'><a href="reportquiz-builder.php">Quiz Results</a></li><!-- (Manual Group Report (Quiz Activities))-->
-		<p>The E-learning Trackers report shows e-learning within training sessions that needs to be, or has been completed.</p>
+		<!--<p>The E-learning Trackers report shows e-learning within training sessions that needs to be, or has been completed.</p>
     	<li class='exspace'><a href="reportscorm-builder.php">E-learning Trackers</a></li><!-- (Manual Group Report (Scorm Activities))-->
-		<p>The Individual Training Records report shows what training has been completed, or is outstanding, for a specific member of staff.</p>
-		<li class='exspace'><a href="reportuser-builder.php">Individual Training Records</a></li><!--(Individual User Report (Course Completions))-->
+
         
        <!-- <li class="separator"><a href="reportclassroom-builder.php" >Manual Group Report (Classroom Sessions)</a></li>-->
         <!-- skips the builder screen and goes directly to report -->
