@@ -224,10 +224,14 @@ class block_course_overview_next extends block_base {
         foreach ($courses as $id=>$course) {
             context_instance_preload($course);
             if (!$course->visible) {
+
                 /*if (!$context = context_course::instance($id, IGNORE_MISSING)) {
                     unset($courses[$id]);
                     continue;
                 }*/
+
+                $context = context_system::instance();
+
                 if (!has_capability('moodle/course:viewhiddencourses', $context)) {
                     unset($courses[$id]);
                     continue;
