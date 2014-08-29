@@ -23,7 +23,7 @@ $THEME->name = 'next_responsive';
 //
 $THEME->doctype = 'html5';
 $THEME->parents = array('dynamicbase');
-$THEME->sheets = array('style');
+$THEME->sheets = array('style','custom_next');
 $THEME->supportscssoptimisation = false;
 $THEME->yuicssmodules = array();
 $THEME->enable_dock = false;

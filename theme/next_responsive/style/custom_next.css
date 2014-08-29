@@ -1,0 +1,19 @@
+#fitem_id_maildisplay,
+#fitem_id_maildigest,
+#fitem_id_mailformat,
+#fitem_id_autosubscribe,
+#fitem_id_trackforums,
+#fitem_id_preference_htmleditor,
+#fitem_id_city,
+#fitem_id_country,
+#fitem_id_timezone,
+#fitem_id_lang,
+#fitem_id_description_editor,
+#id_moodle_picture,
+#id_moodle_additional_names,
+#id_moodle_interests,
+#id_moodle_optional,
+#id_category_1
+{display:none}
+
+.navbar .nav.bread-crumb>li>a {background-image:none}
