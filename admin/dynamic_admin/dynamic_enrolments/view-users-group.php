@@ -63,7 +63,7 @@ To do
 
 	<div class="links">
 		<?php //echo $linkBackToEnrolments ?>
-		<p><a href="<?php echo $CFG->wwwroot ?>">Moodle</a> &raquo; <a href="<?php echo $linkBackToEnrolments ?>">Group &amp; Enrolment Management</a> &raquo; View Users In Group "<?php echo $groupname; ?>"</p>
+		<p><a href="<?php echo $CFG->wwwroot ?>"><?php echo $SITE->fullname; ?></a> &raquo; <a href="<?php echo $linkBackToEnrolments ?>">Group &amp; Enrolment Management</a> &raquo; View Users In Group "<?php echo $groupname; ?>"</p>
 	</div>
 
 

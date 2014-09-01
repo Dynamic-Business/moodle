@@ -36,7 +36,7 @@
 	<?php include "../_inc/header.php"; ?>
 <h2 class="report-header">Reports</h2>
 <div class="links">
-    <p><a href="<?php echo $CFG->wwwroot ?>">Moodle</a> &raquo; Reports</p>
+    <p><a href="<?php echo $CFG->wwwroot ?>"><?php echo $SITE->fullname; ?></a> &raquo; Reports</p>
 </div>
 
 

@@ -42,7 +42,7 @@
 
 <h2 class="report-header">Reports: User Login Report</h2>
 <div class="links">
-    <p><a href="<?php echo $CFG->wwwroot ?>">Moodle</a> &raquo; <a href="<?php echo $linkBackToReports ?>">Reports</a> &raquo; User Login Report </p>
+    <p><a href="<?php echo $CFG->wwwroot ?>"><?php echo $SITE->fullname; ?></a> &raquo; <a href="<?php echo $linkBackToReports ?>">Reports</a> &raquo; User Login Report </p>
 </div>
 
 

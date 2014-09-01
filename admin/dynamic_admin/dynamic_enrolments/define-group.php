@@ -121,7 +121,7 @@
 <?php include "../_inc/header.php"; ?>
 <h2 class="enrolments">Group &amp; Enrolment Management: Define Group "<?php echo $groupname; ?>"</h2>
 <div class="links">
-    <p><a href="<?php echo $CFG->wwwroot ?>">Moodle</a> &raquo; <a href="<?php echo $linkBackToEnrolments ?>">Group &amp; Enrolment Management</a> &raquo; Define Group "<?php echo $groupname; ?>"</p>
+    <p><a href="<?php echo $CFG->wwwroot ?>"><?php echo $SITE->fullname; ?></a> &raquo; <a href="<?php echo $linkBackToEnrolments ?>">Group &amp; Enrolment Management</a> &raquo; Define Group "<?php echo $groupname; ?>"</p>
 </div>
 
 <!--<p class="description">

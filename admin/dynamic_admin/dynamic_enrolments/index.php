@@ -86,7 +86,7 @@
 <h2 class="enrolments">Group &amp; Enrolment Management</h2>
 <div class="links">
 	<?php //echo $linkBackToEnrolments ?>
-    <p><a href="<?php echo $CFG->wwwroot ?>">Moodle</a> &raquo; Group &amp; Enrolment Management</p>
+    <p><a href="<?php echo $CFG->wwwroot ?>"><?php echo $SITE->fullname; ?></a> &raquo; Group &amp; Enrolment Management</p>
 </div>
 
 <?php
