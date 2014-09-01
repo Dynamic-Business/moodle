@@ -19,7 +19,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                 <div class="navbar-inner-wrap top">
                     <div class="container-fluid">
                         <a class="brand" href="<?php echo $CFG->wwwroot;?>">
-                            <img src="<?php echo $OUTPUT->pix_url('Site-logo','theme'); ?>" width="114" height="34" alt="" />
+                            <img src="<?php echo $OUTPUT->pix_url('Site-logo','theme'); ?>" width="97" height="29" alt="" />
                         </a>
                     </div>
                 </div>
@@ -96,6 +96,10 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 
                     <?php if($this->is_administrator()){ ?>
                     <li><a href="<?php echo $CFG->wwwroot; ?>/course/" class="nav-text">All Courses</a></li>
+                    <?php } ?>
+
+                    <?php if($this->showManagementTab()){ ?>
+                    <li><a href="<?php echo $CFG->wwwroot; ?>/admin/user.php"  class="nav-text">Admin</a></li> <!-- admin tab shows to Managers -->
                     <?php } ?>
 
                     <?php if($this->showManagementTab()){ ?>

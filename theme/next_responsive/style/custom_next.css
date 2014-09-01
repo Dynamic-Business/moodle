@@ -18,3 +18,13 @@
 
 .navbar .nav.bread-crumb>li>a {background-image:none}
 .block {width:100%;border:1px solid #c9c9c9}
+
+/* Theme amends after meeting */
+#page-login-index .loginbox {margin: 5px 15px 0;}
+#page-login-index .loginpanel H2{padding:10px 30px 0}
+#page-login-index .loginbox .loginform {margin: 0 40px 0;}
+#page-login-index .forgetpass A {color:#ccc}
+.page-title-header H1{font-size:24px;line-height:30px}
+.menu-btn {padding: 0 15px 5px;}
+.main-nav li {line-height:10px}
+.menu-btn {text-transform: uppercase;text-align: right;cursor: pointer;}

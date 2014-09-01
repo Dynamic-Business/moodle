@@ -26,13 +26,14 @@ function print_overview_next($courses, array $remote_courses=array()) {
         }
     }
 	echo $OUTPUT->box_start('coursebox');
-	echo "<div class='overview-info-icon heading'>&nbsp;</div>";
 	echo "<div class='overview-info-course heading'>Training Session</div>";
 	echo "<div class='overview-info-other prog heading'>Progress</div>";
-	echo "<div class='overview-info-other de heading'>Date<br>Enrolled</div>";
-	echo "<div class='overview-info-other cs heading'>Status</div>";
-	echo "<div class='overview-info-other ac heading'>Activities<br>Completed</div>";
-	echo "<div class='overview-info-other dc heading'>Date<br>Completed</div>";
+	echo "<div class='overview-info-other pct'>&nbsp;</div>";
+	echo "<div class='overview-info-other ac heading'>Activities Completed</div>";
+	echo "<div class='overview-info-other de heading'>Date Enrolled</div>";
+	//echo "<div class='overview-info-other cs heading'>Status</div>";
+	
+	//echo "<div class='overview-info-other dc heading'>Date<br>Completed</div>";
 	echo $OUTPUT->box_end();
 	
     foreach ($courses as $course) {
@@ -76,7 +77,7 @@ function print_overview_next($courses, array $remote_courses=array()) {
 		
 		if($statusVal != "Not Tracked"){
 			$activitesCombined = $activitiesCompleted . " of " . $totalActivities;
-			$progress = round((100 / $totalActivities) *  $activitiesCompleted,2);
+			$progress = round((100 / $totalActivities) *  $activitiesCompleted);
 
 		}else{
 			//$activitesCombined = "&nbsp;";
@@ -103,14 +104,6 @@ function print_overview_next($courses, array $remote_courses=array()) {
 		}
 		
 		
-		echo "<div class='overview-info-icon'>";
-		//echo "SV:2 . $statusVal";
-		if ($statusimg != "0"){
-			echo "<img src='" . $OUTPUT->pix_url($statusimg, 'scorm') . "' alt='icon' />";
-		}else{
-			echo "&nbsp;";
-		}
-		echo "</div>";
         $attributes = array('title' => s($course->fullname));
         if (empty($course->visible)) {
             $attributes['class'] = 'dimmed';
@@ -118,15 +111,20 @@ function print_overview_next($courses, array $remote_courses=array()) {
 		echo "<div class='box overview-info-course'>";
 		echo "<h6><a href='" . $CFG->wwwroot . "/course/view.php?id=" . $course->id . "'>" . $course->fullname . "</a></h6>"; 
 		echo "</div>";
-		echo "<div class='box overview-info-other prog'>
-		<div class='progress'><div class='bar {$bartype}' style='width: {$progress}%;'></div> </div>
+
+		echo "
+			<div class='box overview-info-other prog'>	
+				<div class='progress'><div class='bar {$bartype}' style='width: {$progress}%;'></div> 
+			</div>
+
 		</div>";
-		
+		echo "<div class='overview-info-other pct'>{$progress}%</div>";
+		echo "<div class='overview-info-other ac'>". $activitesCombined . "</div>";
         /*if (array_key_exists($course->id,$htmlarray)) {foreach ($htmlarray[$course->id] as $modname => $html) {echo $html;}}*/ //commented out from original
 		echo "<div class='overview-info-other de'>" . $enrolledVal . "</div>";
-		echo "<div class='overview-info-other cs'>" . $statusVal . "</div>";
-		echo "<div class='overview-info-other ac'>". $activitesCombined . "</div>";
-		echo "<div class='overview-info-other dc'>" . $completedVal  . "</div>";
+		//echo "<div class='overview-info-other cs'>" . $statusVal . "</div>";
+		
+		//echo "<div class='overview-info-other dc'>" . $completedVal  . "</div>";
 
 		//---- DYNAMIC CODE END
 		echo $OUTPUT->box_end();
