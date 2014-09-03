@@ -56,19 +56,19 @@ if (isadmin() || ismanager()) { ?>
 			<label>Groups:</label><div class="checkbox-group-outer"><?php build_groups_formlist() ;?><div class="button-holder"><button type="button" class='check-options'>Select All</button><button type="button" class='uncheck-options'>Clear</button></div></div>
     </div>
     <div class="form-section-builder">
-            <label>Category:</label><?php build_category_dropdown(true,true);?>
+            <label>Category:</label><div class="checkbox-group-outer"><?php build_category_dropdown(true,true);?></div>
     </div>
     <div class="form-section-builder">
             <label>Courses:</label><div class="checkbox-group-outer"><?php build_courses_formlist(true);?><div class="button-holder"><button type="button" class='check-options'>Select All</button><button type="button" class='uncheck-options'>Clear</button></div></div>
     </div>
     <div class="form-section-builder">      
-            <label>Status:</label><div class="checkbox-group-outer"><?php build_status_formlist_cc();?><div class="button-holder"></div></div>
+            <label>Status:</label><div class="checkbox-group-outer"><?php build_status_formlist_cc();?></div></div>
     </div>
     <div class="form-section-builder">  
             <label>Date from:</label>
-            <input type="text" id="datepickerfrom" name="datepickerfrom" value="<?php echo $startDateForPicker; ?>" /><br />
+            <div class="checkbox-group-outer"><input type="text" id="datepickerfrom" name="datepickerfrom" value="<?php echo $startDateForPicker; ?>" class='datepicker' /></div><br />
             <label>Date to:</label>
-            <input type="text" id="datepickerto" name="datepickerto" value='<?php echo date("d/m/Y"); ?>' />
+            <div class="checkbox-group-outer"><input type="text" id="datepickerto" name="datepickerto" value='<?php echo date("d/m/Y"); ?>' class='datepicker' /></div>
      </div>
      <div class="form-section-builder last"> 
             <input type="submit" value="Submit" />

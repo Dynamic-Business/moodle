@@ -52,7 +52,7 @@ To do
             
 </head>
 
-<body>
+<body class='enrolments'>
 <?php include "../_inc/header.php"; ?>
 <h2 class="enrolments">Group &amp; Enrolment Management: Add Course to Group "<?php echo $groupname; ?>"</h2>
 <div class="links">
@@ -117,6 +117,7 @@ if(isset($_SESSION['permission:addcourses'])){
 		<form action="<?php echo $_SERVER["PHP_SELF"] . "?action=add&id=" . $groupId . "&courseIdForm=" .  $courseIdForm ?>" method="POST" id="styled-form">
         	<div class="form-section">
         	<label>Course:</label>
+        	 <div class="checkbox-group-outer">
         	<select name="courses">
            
         <?php
@@ -129,6 +130,7 @@ if(isset($_SESSION['permission:addcourses'])){
 		?>
 
             </select>
+        </div>
             </div>
                 <div class="form-section last">
                 <input type="submit" value="Add Course" />

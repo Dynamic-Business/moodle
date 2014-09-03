@@ -57,7 +57,7 @@ To do
         
 </head>
 
-<body>
+<body class='enrolments'>
 	<?php include "../_inc/header.php"; ?>
 	<h2 class="enrolments">Group &amp; Enrolment Management: View Users In Group "<?php echo $groupname; ?>"</h2>
 
@@ -94,7 +94,7 @@ To do
 ?>
       <?php	include('../_inc/inc.inner-group-admin.php');  ?>  
 
- <div id="admin-buttons" style="float:left;margin-top:0px">
+ <div id="admin-buttons" >
      <button class='but' onClick="window.location='../dynamic_reports/download.php?type=usersingroup' ">Download to Excel</button>
  </div>
 

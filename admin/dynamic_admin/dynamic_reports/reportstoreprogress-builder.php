@@ -34,14 +34,6 @@
     <script type="text/javascript" src="../_js/custom.sp.js"></script>
     <script type="text/javascript" src="../_js/custom.coursecat.dd.js"></script>
     <!--<script type="text/javascript" src="../_js/custom.logins.js"></script>-->
-	
-	<style>
-        DIV.checkbox-group {width:445px}
-        DIV.checkbox-group-outer,#styled-form SELECT {width:465px}
-        #styled-form INPUT[type='submit'] {margin-left:523px}
-
-
-    </style>
     
 
 </head>

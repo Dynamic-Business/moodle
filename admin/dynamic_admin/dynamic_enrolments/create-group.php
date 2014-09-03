@@ -84,7 +84,7 @@ To do
 
 </head>
 
-<body>
+<body class='enrolments'>
 <?php include "../_inc/header.php"; ?>
 <h2 class="enrolments">Group &amp; Enrolment Management: Create New Group</h2>
 <div class="links">

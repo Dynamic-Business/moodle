@@ -50,13 +50,13 @@ if (isadmin()) { ?>
     <p class="description">Please note that this only returns users who have been assigned to a group. Remember the hierarchy: Course-Module-Lesson. This report will return all modules and lessons of the selected course. The list of courses is not dependent on the selected group. Reports can take a long time to generate and therefore it is recommended that you use the filtering options where possible. </p>
 		<form action="<?php echo $CFG->wwwroot . "/admin/dynamic_admin/dynamic_reports/report.php?type=byHRQuiz";  ?>" method="POST" id="styled-form">
         <div class="form-section-builder first">
-			<label>Profile Field:</label><?php build_fields_formlist("byConfig") ;?>
+			<label>Profile Field:</label><div class="checkbox-group-outer"><?php build_fields_formlist("byConfig") ;?></div>
         </div>
         <div class="form-section-builder first">
                 <label>Profile Data:</label><div class="checkbox-group-outer"><div class='checkbox-group ajax-cbg'><p class='no-data'>-- no data available --</p></div><div class="button-holder"><button type="button" class='check-options'>Select All</button><button type="button" class='uncheck-options'>Clear</button></div></div>
         </div>
         <div class="form-section-builder">
-                <label>Category:</label><?php build_category_dropdown(true,true);?>
+                <label>Category:</label><div class="checkbox-group-outer"><?php build_category_dropdown(true,true);?></div>
         </div>
         <div class="form-section-builder">
             <label>Courses:</label><div class="checkbox-group-outer"><?php build_courses_formlist();?><div class="button-holder"><button type="button" class='check-options'>Select All</button><button type="button" class='uncheck-options'>Clear</button></div></div>
@@ -66,9 +66,9 @@ if (isadmin()) { ?>
     	</div>
         <div class="form-section-builder">
              <label>Date from:</label>
-            <input type="text" id="datepickerfrom" name="datepickerfrom" value="<?php echo $startDateForPicker; ?>" /><br />
+            <div class="checkbox-group-outer"><input type="text" id="datepickerfrom" name="datepickerfrom" value="<?php echo $startDateForPicker; ?>" class='datepicker' /></div><br />
             <label>Date to:</label>
-            <input type="text" id="datepickerto" name="datepickerto" value='<?php echo date("d/m/Y"); ?>' />
+            <div class="checkbox-group-outer"><input type="text" id="datepickerto" name="datepickerto" value='<?php echo date("d/m/Y"); ?>' class='datepicker' /></div>
             </div>
      <div class="form-section-builder last"> 
             <input type="submit" value="Submit" />

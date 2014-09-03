@@ -128,7 +128,7 @@ if ($row->datebefore == 0){
      
 </head>
 
-<body>
+<body class='enrolments'>
 <?php include "../_inc/header.php"; ?>
 <h2 class="enrolments">Group &amp; Enrolment Management: Edit Group "<?php echo $disp_name; ?>"</h2>
 <div class="links">
@@ -154,11 +154,11 @@ if ($row->datebefore == 0){
     	 <form action="<?php echo $_SERVER['PHP_SELF'] . "?action=edit&id=" . $groupId ?>" method="POST" id="styled-form" class="small-width">
          	<div class="form-section">
                 <label for="name">Group Name:</label>
-                <input name="name" type="text" id="name" value="<?php echo $row->name;?>" />
+                <div class="checkbox-group-outer"><input name="name" type="text" id="name" value="<?php echo $row->name;?>" /></div>
             </div>
             <div class="form-section">
                 <label for="name">Group Description:</label>
-                <textarea name="description"  ><?php echo $row->description;?></textarea>
+                <div class="checkbox-group-outer"><textarea name="description"  ><?php echo $row->description;?></textarea></div>
             </div>
 
             <div class="form-section">  

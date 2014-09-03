@@ -78,7 +78,7 @@
 
 </head>
 
-<body>
+<body class='enrolments'>
 
 	<?php include "../_inc/header.php"; ?>
     

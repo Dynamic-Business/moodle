@@ -56,7 +56,7 @@ if (isadmin()) { ?>
      
 	<form action="<?php echo $CFG->wwwroot . "/admin/dynamic_admin/dynamic_reports/report.php?type=byOverview";  ?>" method="POST" id="styled-form">
     <div class="form-section-builder first">
-			<label>Profile Field:</label><?php build_fields_formlist("byConfig") ;?>
+			<label>Profile Field:</label><div class="checkbox-group-outer"><?php build_fields_formlist("byConfig") ;?></div>
     </div>
     <div class="form-section-builder first">
 			<label>Profile Data:</label><div class="checkbox-group-outer"><div class='checkbox-group ajax-cbg'><p class='no-data'>-- no data available --</p></div><div class="button-holder"><button type="button" class='check-options'>Select All</button><button type="button" class='uncheck-options'>Clear</button></div></div>

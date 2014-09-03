@@ -78,7 +78,7 @@ To do
 
 </head>
 
-<body>
+<body class='enrolments'>
 <?php include "../_inc/header.php"; ?>
 <h2 class="enrolments">Group &amp; Enrolment Management: Assign Group Manager "<?php echo $groupname; ?>"</h2>
 <div class="links">
@@ -145,14 +145,14 @@ To do
 				<form action="<?php echo $_SERVER['PHP_SELF'] . "?action=add&id=" . $groupId ?>" method="POST" id="styled-form" >	
                     <div class="form-section">
                         <label for="name">Group Manager:</label>
-                        <SELECT name="userid">
+                        <div class="checkbox-group-outer"><SELECT name="userid">
                         
                     	<?php
 						foreach($resultManagers as $row){
                             echo "<option value='" . $row->id   . "'>". $row->firstname . " " . $row->lastname . "</option>";
                         }
                      	?>
-                        </SELECT>
+                        </SELECT></div>
                     </div>
                     
                     <div class="form-section last">
