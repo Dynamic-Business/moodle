@@ -30,6 +30,61 @@ echo $OUTPUT->doctype() ?>
     <link rel="shortcut icon" href="<?php echo $OUTPUT->favicon(); ?>" />
     <?php echo $OUTPUT->standard_head_html() ?>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <?php if (!isloggedin()){ ?>
+        
+        <SCRIPT LANGUAGE=JavaScript>
+            <!--
+
+            /*
+            // ///////////////////////////
+            // checkCapsLock v1.0
+            // 
+            // If a user enters his password in a Web-based form with Caps Lock 
+            // accidentally on, he can become frustrated because his password is not 
+            // being accepted... and he may assume the application is the source of the 
+            // problem.
+            // 
+            // This JavaScript function will let the user know his Caps Lock is on and 
+            // about the potential for error.
+            // ///////////////////////////
+            */
+
+            function checkCapsLock( e ) {
+                var myKeyCode=0;
+                var myShiftKey=false;
+                var myMsg='Caps Lock is On.\n\nTo prevent entering your password incorrectly,\nyou should press Caps Lock to turn it off.';
+
+                // Internet Explorer 4+
+                if ( document.all ) {
+                    myKeyCode=e.keyCode;
+                    myShiftKey=e.shiftKey;
+
+                // Netscape 4
+                } else if ( document.layers ) {
+                    myKeyCode=e.which;
+                    myShiftKey=( myKeyCode == 16 ) ? true : false;
+
+                // Netscape 6
+                } else if ( document.getElementById ) {
+                    myKeyCode=e.which;
+                    myShiftKey=( myKeyCode == 16 ) ? true : false;
+
+                }
+
+                // Upper case letters are seen without depressing the Shift key, therefore Caps Lock is on
+                if ( ( myKeyCode >= 65 && myKeyCode <= 90 ) && !myShiftKey ) {
+                    alert( myMsg );
+
+                // Lower case letters are seen while depressing the Shift key, therefore Caps Lock is on
+                } else if ( ( myKeyCode >= 97 && myKeyCode <= 122 ) && myShiftKey ) {
+                    alert( myMsg );
+                }
+            }
+            // -->
+            </SCRIPT>   
+        
+        <?php }?>
 </head>
 
 <body <?php echo $OUTPUT->body_attributes('two-column'); ?>>
