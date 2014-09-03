@@ -241,7 +241,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                 <li><a href="<?php echo $CFG->wwwroot . '/admin/dynamic_admin/dynamic_reports/reportactivity-builder.php'; ?>">Learning Tracker</a></li>    
                 <li><a href="<?php echo $CFG->wwwroot . '/admin/dynamic_admin/dynamic_reports/reportuser-builder.php'; ?>">Individual Learning Report</a></li>
                 <li><a href="<?php echo $CFG->wwwroot . '/admin/dynamic_admin/dynamic_reports/reportstoreprogress-builder.php'; ?>">Exception Report</a></li>
-                <li><a href="<?php echo $CFG->wwwroot . '/admin/dynamic_admin/dynamic_reports/reportcourse-builder.php'; ?>">Overview Report</a></li>
+                <li><a href="<?php echo $CFG->wwwroot . '/admin/dynamic_admin/dynamic_reports/reportcourse-builder.php'; ?>">Progress Report</a></li>
             </ul>
 
 <?php }
