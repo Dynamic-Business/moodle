@@ -257,20 +257,6 @@ $formdata3->profile_field_isover21 = 0;
 $formdata3->profile_field_leaverindicator = 0;
 $formdata3->profile_field_teamcoach = 0;
 $formdata3->profile_field_headteamcoach = 0;
-$formdata3->profile_field_homedesignconsultant = 0;
-$formdata3->profile_field_stylist = 0;
-$formdata3->profile_field_tailoring = 0;
-$formdata3->profile_field_shoe = 0;
-$formdata3->profile_field_firstaider = 0;
-$formdata3->profile_field_appointed = 0; //new 20-03-13
-$formdata3->profile_field_vandriver = 0;
-$formdata3->profile_field_area = '';
-$formdata3->profile_field_region = '';
-$formdata3->profile_field_homespecialist = 0;
-$formdata3->profile_field_areavm = 0;
-$formdata3->profile_field_banksman = 0;
-$formdata3->profile_field_cia = 0;
-$formdata3->profile_field_lingerie = 0;
 
 
 /*$formdata3->profile_field_jobrole =	'';
