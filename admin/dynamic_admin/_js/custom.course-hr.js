@@ -53,7 +53,7 @@ $(document).ready(function(){
 				$("#datepickerfrom").datepicker({minDate: null,maxDate: 'Now', autoSize: true, width:100, dateFormat: 'dd/mm/yy'  });
 				$('#datepickerto').removeAttr('disabled');
 				$('#datepickerfrom').removeAttr('disabled');
-				$('#datepickerfrom').attr('value', '01/05/2012');
+				$('#datepickerfrom').attr('value', '01/05/2014');
 				$('#datepickerto').attr('value', now);
 				$("#datepickerto,#datepickerfrom ").datepicker({maxDate: 'Now',minDate: null});
 			break;
@@ -65,7 +65,7 @@ $(document).ready(function(){
 				$("#datepickerfrom").datepicker({minDate: null,maxDate: 'Now', autoSize: true, width:100, dateFormat: 'dd/mm/yy'  });
 				$('#datepickerto').removeAttr('disabled');
 				$('#datepickerfrom').removeAttr('disabled');
-				$('#datepickerfrom').attr('value', '01/05/2012');
+				$('#datepickerfrom').attr('value', '01/05/2014');
 				$('#datepickerto').attr('value', now);
 				$("#datepickerto,#datepickerfrom ").datepicker({maxDate: 'Now',minDate: null});
 			break;

@@ -80,10 +80,7 @@ if ($row->datebefore == 0){
 		<?php echo $OUTPUT->standard_head_html() ;?>
 
 		<link href="../_css/styles.css" rel="stylesheet" type="text/css" />
-        <!--[if IE 7]>
-            <link href="../_css/iefixes.css" rel="stylesheet" type="text/css" />
-            <link href="../_css/ie7fixes.css" rel="stylesheet" type="text/css" />
-        <![endif]-->
+        <?php require_once('../_inc/inc.iefixes.php'); ?>
 
         <link type="text/css" href="../_css/ui-lightness/jquery-ui-1.8.4.custom.css" rel="stylesheet" />  
         <script type="text/javascript" src="../_js/jquery-1.4.2.min.js"></script>

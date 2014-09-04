@@ -29,9 +29,7 @@ To do
 <title>Moodle Enrolments</title>
 		<?php echo $OUTPUT->standard_head_html() ;?>
 		<link href="../_css/styles.css" rel="stylesheet" type="text/css" />
-        <!--[if IE 7]>
-        	 <link href="../_css/ie7fixes.css" rel="stylesheet" type="text/css" />
-		<![endif]--> 
+        <?php require_once('../_inc/inc.iefixes.php'); ?>
       	
         <style type="text/css" title="currentStyle">
                 @import "../_datatables/media/css/demo_page.css";

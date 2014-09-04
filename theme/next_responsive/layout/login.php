@@ -51,6 +51,7 @@ echo $OUTPUT->doctype() ?>
             */
 
             function checkCapsLock( e ) {
+                //console.log(e);
                 var myKeyCode=0;
                 var myShiftKey=false;
                 var myMsg='Caps Lock is On.\n\nTo prevent entering your password incorrectly,\nyou should press Caps Lock to turn it off.';
@@ -67,11 +68,13 @@ echo $OUTPUT->doctype() ?>
 
                 // Netscape 6
                 } else if ( document.getElementById ) {
-                    myKeyCode=e.which;
-                    myShiftKey=( myKeyCode == 16 ) ? true : false;
+                    if (!window.chrome){
+                        myKeyCode=e.which;
+                        myShiftKey=( myKeyCode == 16 ) ? true : false;
+                    }
 
                 }
-
+                //console.log(myShiftKey);
                 // Upper case letters are seen without depressing the Shift key, therefore Caps Lock is on
                 if ( ( myKeyCode >= 65 && myKeyCode <= 90 ) && !myShiftKey ) {
                     alert( myMsg );

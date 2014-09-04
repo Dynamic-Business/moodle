@@ -26,7 +26,7 @@ $(document).ready(function(){
 			$(this).parent().prev().children("INPUT").removeAttr('disabled');
 			$(this).parent().next().children("BUTTON").removeAttr('disabled');
 			$('#datepickerfrom').removeAttr('disabled');
-			$('#datepickerfrom').attr('value', '01/05/2012');
+			$('#datepickerfrom').attr('value', '01/05/2014');
 			$('#datepickerto').removeAttr('disabled');
 			var currentTime = new Date();
 			var day = currentTime.getDate();
