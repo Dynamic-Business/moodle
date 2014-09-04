@@ -60,12 +60,12 @@ if (isadmin() || ismanager()) { ?>
         	<li class="separator"><a href="report.php?type=viewManagers">View all Group Managers</a> </li> 
         <?php } ?>
 		<h3 class='red'>Main Report</h3>
-		<p>The Training Tracker report shows completed topics of a training programme, e.g. Retail Academy.</p>
-		<li><a href="reportactivity-builder.php">Training Trackers</a></li><!-- (Manual Group Report (Activity Completions))-->
+		<p>The Learning Tracker report shows completed topics of a training programme, e.g. Retail Academy.</p>
+		<li><a href="reportactivity-builder.php">Learning Trackers</a></li><!-- (Manual Group Report (Activity Completions))-->
 		
 		<h3>Other Reports</h3>
-		<p>The Store Training Records report shows training that's not been started, or has been completed.</p>
-		<li class='exspace'><a href="reportcourse-builder.php">Store Training Records</a></li><!--(Manual Group Report (Course Completions))-->
+		<p>The Progress report shows training that's not been started, or has been completed.</p>
+		<li class='exspace'><a href="reportcourse-builder.php">Progress Report</a></li><!--(Manual Group Report (Course Completions))-->
 
 		<p>The Quiz Results report shows quiz scores and the number of attempts.</p>
 		<li class='exspace'><a href="reportquiz-builder.php">Quiz Results</a></li><!-- (Manual Group Report (Quiz Activities))-->

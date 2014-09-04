@@ -54,9 +54,9 @@ if (isadmin() || ismanager()) { ?>
             <li class="separator"><a href="reportquiz-builder-hr.php" >HR Profile Data Report (Quiz Activities)</a></li>
             <!--<li class="separator"><a href="reportclassroom-builder-hr.php" >HR Profile Data Report (Classroom Sessions)</a></li>-->
         <?php } ?>
-		<li><a href="reportcourse-builder.php">Store Training Records</a></li><!--(Manual Group Report (Course Completions))-->
-		<!--<li><a href="#" style='color:#ccc'>Store Training Records [UNDER MAINTENANCE]</a></li>-->
-		<li><a href="reportactivity-builder.php">Training Trackers</a></li><!-- (Manual Group Report (Activity Completions))-->
+		<li><a href="reportcourse-builder.php">Progress Report</a></li><!--(Manual Group Report (Course Completions))-->
+		<!--<li><a href="#" style='color:#ccc'>Progress Report [UNDER MAINTENANCE]</a></li>-->
+		<li><a href="reportactivity-builder.php">Learning Trackers</a></li><!-- (Manual Group Report (Activity Completions))-->
     	<li><a href="reportscorm-builder.php">E-learning Trackers</a></li><!-- (Manual Group Report (Scorm Activities))-->
         <li class="separator"><a href="reportquiz-builder.php">Quiz Results</a></li><!-- (Manual Group Report (Quiz Activities))-->
        <!-- <li class="separator"><a href="reportclassroom-builder.php" >Manual Group Report (Classroom Sessions)</a></li>-->

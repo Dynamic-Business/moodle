@@ -38,9 +38,9 @@
 <body>
 <?php include "../_inc/header.php"; ?>
 
-<h2 class="report-header">Reports: Training Trackers</h2>
+<h2 class="report-header">Reports: Learning Trackers</h2>
 <div class="links">
-    <p><a href="<?php echo $CFG->wwwroot ?>"><?php echo $SITE->fullname; ?></a> &raquo; <a href="<?php echo $linkBackToReports ?>">Reports</a> &raquo; Training Trackers </p>
+    <p><a href="<?php echo $CFG->wwwroot ?>"><?php echo $SITE->fullname; ?></a> &raquo; <a href="<?php echo $linkBackToReports ?>">Reports</a> &raquo; Learning Trackers </p>
 </div>
 
 <?php
@@ -49,7 +49,7 @@ if (isadmin() || ismanager()) { ?>
 
 	<!--<h3>Report by Profile Data</h3>-->
     
-     <p class="description">After clicking the Submit button you will be taken into the Training Tracker for the selected course. It will show the users of the selected Groups</p>
+     <p class="description">After clicking the Submit button you will be taken into the Learning Tracker for the selected course. It will show the users of the selected Groups</p>
      
 	<?php if (isadmin()){ ?>
 		<form action="<?php echo $CFG->wwwroot . "/report/completion/index.php?gm=admin"; ?>" method="POST" id="styled-form">

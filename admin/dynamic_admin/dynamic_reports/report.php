@@ -424,14 +424,14 @@
 		 break;
 		 
 		 case "byCourse":
-			$title = "Report: Store Training Records";
+			$title = "Report: Progress Report";
 		  	$htmlReportTable = reportByCourse($groups,$courses,$course_status);
 			if (!$htmlReportTable){
 				$htmlReportTable = "<p class='no-results'>Your report returned no results</p>";
 				$noResults = TRUE;
 			}
 			
-			$linkBack = "<p><a href='". $CFG->wwwroot . "'>Moodle</a> &raquo; <a href='" .  $linkBackToReports . "'>Reports</a> &raquo; <a href='" . $linkBackToCourseRepBuilder . "'>Store Training Records</a> &raquo; Report</p>";
+			$linkBack = "<p><a href='". $CFG->wwwroot . "'>Moodle</a> &raquo; <a href='" .  $linkBackToReports . "'>Reports</a> &raquo; <a href='" . $linkBackToCourseRepBuilder . "'>Progress Report</a> &raquo; Report</p>";
 			
 		 break;
 		 
