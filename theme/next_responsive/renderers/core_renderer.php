@@ -33,6 +33,14 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 
 <?php }
 
+    public function body_attributes($additionalclasses = array()) {
+        if (!is_array($additionalclasses)) {
+            $additionalclasses = explode(' ', $additionalclasses);
+        }
+        $userTypeClass = (!$this->is_administrator()) ? 'student-user ' : '';
+        return ' id="'. $this->body_id().'" class="'.$userTypeClass.''.$this->body_css_classes($additionalclasses).' '.$this->develeopment_css_class().'"';
+    }
+
     public function navHTML(){
         global $CFG, $OUTPUT; ?>
         

@@ -543,6 +543,15 @@ li.dropdown li.dropdown {
   }
 }
 
+.student-user #region-main {
+  width: 100%;
+  *width: 99.94680851063829%;
+}
+
+.student-user #block-region-side-pre {
+  display: none;
+}
+
 .extra-info-box,
 .final-info-box {
   margin-top: 15px;
