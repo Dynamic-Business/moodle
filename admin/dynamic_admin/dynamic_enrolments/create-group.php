@@ -143,11 +143,11 @@ To do
     	<form action="<?php echo $_SERVER['PHP_SELF'] . "?action=add" ?>" method="POST" id="styled-form" class="small-width">
              <div class="form-section">
              <label for="name">Group Name:</label>
-             <input name="name" type="text" id="name" />
+             <div class="checkbox-group-outer"><input name="name" type="text" id="name" /></div>
              </div>
              <div class="form-section">   
               <label for="name">Group Description:</label>
-              <textarea name="description" cols="20" rows="4"></textarea><br />
+              <div class="checkbox-group-outer"><textarea name="description" cols="20" rows="4"></textarea><br /></div>
              </div> 
 
             <div class="form-section">  
