@@ -1,6 +1,6 @@
-/**
- * Dropdown within a dropdown mixin.
- */
+///**
+// * Dropdown within a dropdown mixin.
+// */
 
 .dropdown-dropdown(@col:#FFF){
     top:-3px;
@@ -28,4 +28,15 @@
 	    border-bottom: 6px solid transparent;
 	    content: '';
 	}
+}
+
+///**
+// * Arrows for drops downs - Saves repeats
+// */
+
+.dropdown-arrows(@position: 15px, @pix:'[[pix:core|t/collapsed]]'){
+	background-image: url(@pix);  
+    background-color:transparent;
+    background-repeat: no-repeat;
+    background-position: @position center;
 }

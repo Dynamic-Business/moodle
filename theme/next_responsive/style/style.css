@@ -54,10 +54,6 @@
   position: fixed;
 }
 
-/**
- * Dropdown within a dropdown mixin.
- */
-
 a {
   color: #010101;
 }
@@ -447,8 +443,33 @@ li.dropdown li.dropdown {
     left: 6px;
   }
   .dropdown .dropdown-menu .dropdown-toggle {
+    background-color: transparent;
     background-image: url('[[pix:core|t/collapsed]]');
-    background-position: 98% center;
+    background-position: 97% center;
+    background-repeat: no-repeat;
+  }
+}
+
+@media (min-width: 786px) {
+  .navbar .nav > .dropdown > a {
+    padding-right: 35px;
+    background-color: transparent;
+    background-image: url('[[pix:core|t/collapsed]]');
+    background-position: 97% center;
+    background-repeat: no-repeat;
+  }
+  .navbar .nav > .dropdown:hover > a,
+  .navbar .nav > .dropdown.open > a {
+    padding-right: 35px;
+    background-color: transparent;
+    background-image: url('[[pix:core|t/expanded]]');
+    background-position: 97% center;
+    background-repeat: no-repeat;
+  }
+  .dropdown .dropdown-menu .dropdown-toggle {
+    background-color: transparent;
+    background-image: url('[[pix:core|t/collapsed]]');
+    background-position: 97% center;
     background-repeat: no-repeat;
   }
 }
