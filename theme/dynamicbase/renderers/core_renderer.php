@@ -331,4 +331,20 @@ class theme_dynamicbase_core_renderer_maintenance extends core_renderer_maintena
         }
         return "<div class=\"$type\">$message</div>";
     }
+
+    public function dynamic_header(){
+        global $CFG, $SITE; ?>
+
+        <header role="banner" class="navbar moodle-has-zindex">
+            <nav role="navigation" class="navbar-inner-dyn">
+                <div class="container-fluid">
+                    <div class="pull-right">
+                        <?php echo $this->login_info(); ?>
+                    </div>
+                    <a class="brand" href="<?php echo $CFG->wwwroot;?>"><?php echo $SITE->shortname; ?></a>
+                </div>
+            </nav>
+        </header>
+
+<?php }
 }

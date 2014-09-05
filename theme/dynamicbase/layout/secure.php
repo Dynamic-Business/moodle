@@ -48,7 +48,7 @@ echo $OUTPUT->doctype() ?>
     </header>
 
     <div id="page-content" class="row-fluid">
-        <section id="region-main" class="<?php if ($left) { echo ' pull-right'; } ?>">
+        <section id="region-main" class="<?php echo ($left) ? ' pull-right' : ' pull-left'; ?>">
             <div class="page-title-header clearfix">
                 <?php echo $OUTPUT->page_heading(); ?>
                 <div id="course-header">
@@ -66,7 +66,7 @@ echo $OUTPUT->doctype() ?>
         if ($left) {
             $classextra = ' desktop-first-column';
         }
-        echo $OUTPUT->blocks('side-pre', 'span3 '.$classextra);
+        echo $OUTPUT->blocks('side-pre', (!$left) ? 'pull-right ' : 'pull-left ' . $classextra);
         ?>
     </div>
 
