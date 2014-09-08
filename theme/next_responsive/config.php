@@ -36,6 +36,10 @@ $THEME->blockrtlmanipulations = array(
     'side-post' => 'side-pre'
 );
 
+if (check_browser_version('MSIE') && !check_browser_version('MSIE', '9.0')) {
+    $THEME->javascripts[] = 'respond.min';
+}
+
 /**
  * $THEME->layouts = array(
  *      Use this if you want to use a custom layout (e.g. add some
