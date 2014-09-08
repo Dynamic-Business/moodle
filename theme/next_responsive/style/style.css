@@ -129,8 +129,8 @@ a:hover {
 }
 
 @media (min-width: 768px) {
-  .nav,
-  .nav li {
+  .main-nav,
+  .main-nav li {
     border: solid 1px #000;
     border-width: 0 1px 0;
   }
@@ -500,6 +500,68 @@ li.dropdown li.dropdown {
   border-right: 6px solid #333333;
   border-bottom: 6px solid transparent;
   content: '';
+}
+
+@media (max-width: 1063px) {
+  .admin-user .menu-btn {
+    display: block;
+  }
+  .admin-user .nav-wrap {
+    height: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+  .admin-user .nav-wrap.active {
+    height: auto;
+    overflow: visible;
+  }
+  .admin-user .navbar .main-nav,
+  .admin-user .navbar .dynamic-reports {
+    width: 100%;
+    margin: 0;
+  }
+  .admin-user .navbar .main-nav li,
+  .admin-user .navbar .dynamic-reports li {
+    width: 100%;
+  }
+  .admin-user .main-nav,
+  .admin-user .main-nav li {
+    border: solid 1px #000;
+    border-width: 0 1px 0;
+  }
+  .admin-user .dropdown:hover .dropdown-menu,
+  .admin-user .dropdown .dropdown-menu {
+    top: 80%;
+    left: 6px;
+  }
+  .admin-user .dropdown:hover .dropdown-menu.right,
+  .admin-user .dropdown .dropdown-menu.right {
+    top: -3px;
+    left: 102%;
+  }
+  .admin-user .navbar .nav > li > a {
+    padding-left: 35px;
+    background-color: transparent;
+    background-image: url('[[pix:core|t/collapsed]]');
+    background-position: 15px center;
+    background-repeat: no-repeat;
+  }
+  .admin-user .navbar .nav > li.open > a {
+    background-color: transparent;
+    background-image: url('[[pix:core|t/expanded]]');
+    background-position: 15px center;
+    background-repeat: no-repeat;
+  }
+  .admin-user .navbar .nav > li > .nav-text {
+    padding-left: 35px;
+    background: transparent;
+  }
+  .admin-user .navbar .nav > .dropdown:hover > a {
+    background-color: transparent;
+    background-image: url('[[pix:core|t/expanded]]');
+    background-position: 15px center;
+    background-repeat: no-repeat;
+  }
 }
 
 #login-main {

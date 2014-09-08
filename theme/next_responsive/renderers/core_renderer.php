@@ -37,7 +37,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
         if (!is_array($additionalclasses)) {
             $additionalclasses = explode(' ', $additionalclasses);
         }
-        $userTypeClass = (!$this->is_administrator()) ? 'student-user ' : '';
+        $userTypeClass = (!$this->is_administrator()) ? 'student-user ' : 'admin-user ';
         return ' id="'. $this->body_id().'" class="'.$userTypeClass.''.$this->body_css_classes($additionalclasses).' '.$this->develeopment_css_class().'"';
     }
 
