@@ -104,7 +104,7 @@ echo $OUTPUT->doctype() ?>
         </div>
         <div class="extra-info-box">
             <div class="login-info-wrap">
-                <h1><img src="<?php echo $OUTPUT->pix_url('Site-logo','theme'); ?>" alt="next"></br>learning</br><span>portal</span></h1>
+                <h1><img src="<?php echo $OUTPUT->pix_url('Site-logo','theme'); ?>" alt="next"><br/>learning<br/><span>portal</span></h1>
             </div>
         </div>
         <div class="final-info-box">
