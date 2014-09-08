@@ -4,9 +4,13 @@
 	padding:0;
 }
 .menu-btn{
+	padding: 0 15px 5px;
 	background: @black;
 	color:@white;
 	font-weight: bold;
+	text-transform: uppercase;
+	text-align: right;
+	cursor: pointer;
 	img{
 		margin-right:5px;
 	}
@@ -25,13 +29,13 @@
 	padding-left:20px;
 	padding-right:20px;
 }
+.main-nav li {line-height:10px}
 @media(min-width:768px){
 	.main-nav, .main-nav li {
 		border: solid 1px #000;
 		border-width: 0 1px 0;
 	}
 }
-
 .dropdown-toggle, .nav-text{
 	color:@white;
 }
@@ -105,6 +109,13 @@ li.dropdown li.dropdown{
 
 .bread-crumb, .bread-crumb li {
 	border: none;
+}
+
+.admin-user, .student-user{
+	.navbar .nav.bread-crumb>li>a {
+		background-image: none;
+		padding-left: 12px;
+	}
 }
 
 @media(max-width:768px){
@@ -198,3 +209,4 @@ li.dropdown li.dropdown{
 		}
 	}
 }
+

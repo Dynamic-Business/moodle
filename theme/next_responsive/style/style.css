@@ -79,8 +79,12 @@ a:hover {
 }
 
 .menu-btn {
+  padding: 0 15px 5px;
   font-weight: bold;
   color: #ffffff;
+  text-align: right;
+  text-transform: uppercase;
+  cursor: pointer;
   background: #010101;
 }
 
@@ -126,6 +130,10 @@ a:hover {
     background-repeat: repeat-x;
     filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#ff555555', endColorstr='#ff010101', GradientType=0);
   }
+}
+
+.main-nav li {
+  line-height: 10px;
 }
 
 @media (min-width: 768px) {
@@ -420,6 +428,12 @@ li.dropdown li.dropdown {
   border: none;
 }
 
+.admin-user .navbar .nav.bread-crumb > li > a,
+.student-user .navbar .nav.bread-crumb > li > a {
+  padding-left: 12px;
+  background-image: none;
+}
+
 @media (max-width: 768px) {
   .navbar .nav > li > a {
     padding-left: 35px;
@@ -564,6 +578,11 @@ li.dropdown li.dropdown {
   }
 }
 
+.block {
+  width: 100%;
+  border: 1px solid #c9c9c9;
+}
+
 #login-main {
   *width: 980px;
   max-width: 1024px;
@@ -692,11 +711,15 @@ li.dropdown li.dropdown {
 }
 
 .loginbox h2 {
-  padding: 10px 30px;
+  padding: 10px 30px 0;
+}
+
+.loginbox {
+  margin: 15px 15px 0;
 }
 
 .loginbox .loginform {
-  margin: 1em 45px 0;
+  margin: 0 40px 0;
 }
 
 .loginbox .loginform .form-input {
@@ -711,6 +734,10 @@ li.dropdown li.dropdown {
 .loginbox .loginform .form-label {
   float: none;
   text-align: left;
+}
+
+.forgetpass a {
+  color: #eeeeee;
 }
 
 .course-content ul .section {
@@ -734,4 +761,28 @@ li.dropdown li.dropdown {
 
 .completionprogress {
   margin: 10px 15px 15px 25px;
+}
+
+.page-title-header h1 {
+  font-size: 24px;
+  line-height: 30px;
+}
+
+#fitem_id_maildisplay,
+#fitem_id_maildigest,
+#fitem_id_mailformat,
+#fitem_id_autosubscribe,
+#fitem_id_trackforums,
+#fitem_id_preference_htmleditor,
+#fitem_id_city,
+#fitem_id_country,
+#fitem_id_timezone,
+#fitem_id_lang,
+#fitem_id_description_editor,
+#id_moodle_picture,
+#id_moodle_additional_names,
+#id_moodle_interests,
+#id_moodle_optional,
+#id_category_1 {
+  display: none;
 }
