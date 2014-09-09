@@ -62,7 +62,7 @@ if (isadmin() || ismanager()) { ?>
             <label>Courses:</label><div class="checkbox-group-outer"><?php build_courses_formlist(true);?><div class="button-holder"><button type="button" class='check-options'>Select All</button><button type="button" class='uncheck-options'>Clear</button></div></div>
     </div>
     <div class="form-section-builder">      
-            <label>Status:</label><div class="checkbox-group-outer"><?php build_status_formlist_cc();?></div></div>
+            <label>Status:</label><div class="checkbox-group-outer"><?php build_status_formlist_cc();?></div>
     </div>
     <div class="form-section-builder">  
             <label>Date from:</label>

@@ -68,7 +68,7 @@ if (isadmin()) { ?>
             <label>Courses:</label><div class="checkbox-group-outer"><?php build_courses_formlist();?><div class="button-holder"><button type="button" class='check-options'>Select All</button><button type="button" class='uncheck-options'>Clear</button></div></div>
     </div>
     <div class="form-section-builder">      
-            <label>Report Type:</label><div class="checkbox-group-outer"><div class="radio-holder"><input type="radio" name="overviewtype" value="accumulative" checked=true />Accumulative Courses <input type="radio" name="overviewtype" value="separate" />Separate Courses</div></div>
+            <label>Report Type:</label><div class="checkbox-group-outer"><div class="radio-holder"><input type="radio" name="overviewtype" value="accumulative" checked />Accumulative Courses <input type="radio" name="overviewtype" value="separate" />Separate Courses</div></div>
     </div>
      <div class="form-section-builder last"> 
             <input type="submit" value="Submit" />

@@ -159,7 +159,7 @@
 		//print_r($data);
 		
 		if($data){ 
-			$html = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='styled-table'>";
+			$html = "<table class='display' id='styled-table'>";
 			$html .= "<thead>";
 			$html .= "<tr>";
 			//Start at 1 because we don't want to show the db-id in the report, but we need for other functionality
@@ -1226,7 +1226,7 @@
 			$chartArray =  array();
 			array_push($chartArray, array($profile_field,'Completion Rate (%)'));
 					
-			$html = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='styled-table'>
+			$html = "<table class='display' id='styled-table'>
 					<thead>
 							<tr><th>" . $profile_field . "</th><th>Number of Enrolments</th><th>Number of Completions</th><th>Completion Rate (%)</th></tr>
 					</thead>
@@ -1340,7 +1340,7 @@
 			//-----------------------
 			
 			
-			$html = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='styled-table'>
+			$html = "<table class='display' id='styled-table'>
 					<thead>
 							<tr><th>" . $profile_field . "</th><th>Course</th><th>Number of Enrolments</th><th>Number of Completions</th><th>Completion Rate (%)</th></tr>
 					</thead>
@@ -1593,7 +1593,7 @@
 		$numFields = mysql_num_fields($data);
 		
 		if(@mysql_num_rows($data)!=0){
-			$html = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='styled-table'>
+			$html = "<table class='display' id='styled-table'>
 			<thead>
 				<tr>";
 					//Code to make datastarted appear after lastname field
@@ -1685,7 +1685,7 @@
 		//echo "numrows:" . mysql_num_rows($data);
 		if(mysql_num_rows($data)!=0){
 
-			$html = "<table cellpadding='0' cellspacing='0' border='0' class='display' id='styled-table'>
+			$html = "<table class='display' id='styled-table'>
 			<thead>
 				<tr>";
 				$numfields = mysql_num_fields($data);

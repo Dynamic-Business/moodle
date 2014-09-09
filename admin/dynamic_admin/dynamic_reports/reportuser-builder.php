@@ -56,7 +56,7 @@ if (isadmin() || ismanager()) { ?>
      
 	<form action="<?php echo $CFG->wwwroot . "/admin/dynamic_admin/dynamic_reports/report.php?type=byUser";  ?>" method="POST" id="styled-form">
     <div class="form-section-builder first">
-			<label>Search User:</label><input type="text" name="search" class="search" /><button type="button" class='but-search'>Search</button></div>
+			<label>Search User:</label><input type="text" name="search" class="search" /><button type="button" class='but-search'>Search</button>
     </div>
     <div class="form-section-builder">
 			<label>Search Results:</label><div class="checkbox-group-outer"><div class='checkbox-group ajax-cbg'><p class='no-data'>-- no data available --</p></div><div class="button-holder"><button type="button" class='but-add'>Add User(s)</button></div></div>

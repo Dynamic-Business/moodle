@@ -223,9 +223,9 @@
 			@import "../_datatables/themes/smoothness/jquery-ui-1.8.4.custom.css";
 	</style>
 	<?php if (isadmin()){ ?>
-	<script type="text/javascript" language="javascript" src="../_datatables/media/js/jquery.js"></script>
-	<script type="text/javascript" language="javascript" src="../_datatables/media/js/jquery.dataTables.js"></script>
-	<script type="text/javascript" charset="utf-8">
+	<script type="text/javascript" src="../_datatables/media/js/jquery.js"></script>
+	<script type="text/javascript" src="../_datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript">
 		$(document).ready(function() {
 			var oTable = $('#styled-table').dataTable({
 				"bJQueryUI": true,
@@ -253,8 +253,8 @@
 		} );		
 	</script>
     <?php }else if (ismanager()){ ?>
-	<script type="text/javascript" language="javascript" src="../_datatables/media/js/jquery.js"></script>
-	<script type="text/javascript" language="javascript" src="../_datatables/media/js/jquery.dataTables.js"></script>
+	<script type="text/javascript" src="../_datatables/media/js/jquery.js"></script>
+	<script type="text/javascript" src="../_datatables/media/js/jquery.dataTables.js"></script>
 	<script type="text/javascript" charset="utf-8">
 		$(document).ready(function() {
 			var oTable = $('#styled-table').dataTable({
