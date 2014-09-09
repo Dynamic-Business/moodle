@@ -58,7 +58,8 @@ a {
   color: #010101;
 }
 
-a:hover {
+a:hover,
+a:focus {
   color: #269e94;
   -webkit-transition: color 0.25s;
      -moz-transition: color 0.25s;
@@ -74,8 +75,10 @@ a:hover {
   src: url('[[font:theme|akzidenzgrotesk-light-webfont.eot?#iefix]]') format('embedded-opentype'), url('[[font:theme|akzidenzgrotesk-light-webfont.woff]]') format('woff'), url('[[font:theme|akzidenzgrotesk-light-webfont.ttf]]') format('truetype'), url('[[font:theme|akzidenzgrotesk-light-webfont.svg#akzidenz-grotesk_bqregular]]') format('svg');
 }
 
-.navbar-inner-dyn {
-  padding: 0;
+@media (min-width: 767px) {
+  .navbar-inner-dyn {
+    padding: 0;
+  }
 }
 
 .menu-btn {
