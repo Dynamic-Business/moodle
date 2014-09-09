@@ -143,6 +143,9 @@ p.report-message {margin:10px;}
 /*For the DataTables*/
 .dataTables_wrapper {margin:10px 20px;}
 .dataTables_wrapper {min-height:0px !important} /*overide*/
+table{
+	max-width:none;
+}
 
 #page-header{min-height:70px}
 
