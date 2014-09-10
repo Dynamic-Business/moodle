@@ -145,12 +145,12 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salesfloor</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=5" ?>" class="dropdown-toggle" data-toggle="dropdown">Salesfloor</a>
                     <ul class="dropdown-menu right">  
-                        <li><a href="#">Service</a></li>
-                        <li><a href="#">Replenishment</a></li>
-                        <li><a href="#">Product Knowledge</a></li>
-                        <li><a href="#">Visual Merchandising</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=10" ?>">Service</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=11" ?>">Replenishment</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=12" ?>">Product Knowledge</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=13" ?>">Visual Merchandising</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
