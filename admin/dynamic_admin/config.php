@@ -52,19 +52,7 @@
 	/*ALL after here are hidden from reports*/
 	"headteamcoach",
 	"teamcoach",
-	"homedesignconsultant",
-	"stylist",
-	"tailoring",
-	"shoe",
-	"firstaider",
-	"appointed",
-	"vandriver",
-	"area",
-	"homespecialist",
-	"areavm",
-	"banksman",
-	"cia",
-	"lingerie");
+	"area");
 	
 	//..and these are the corresponding ids of the shortnames							
 	$reportAdditionalIds = array(
@@ -78,19 +66,7 @@
 	/*ALL after here are hidden from reports*/
 	12,
 	11,
-	13,
-	14,
-	15,
-	16,
-	17,
-	27,
-	18,
-	20,
-	22,
-	23,
-	24,
-	25,
-	26);
+	20);
 	
 	//Email address to mail error reports to:
 	$tableReportEmail = "pmcgovern@dynamicbusiness.co.uk";

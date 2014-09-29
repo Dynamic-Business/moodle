@@ -138,50 +138,50 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Home</a>
                     <ul class="dropdown-menu right">
-                        <li><a href="#">Home PC</a></li>    
-                        <li><a href="#">Roomsets</a></li>
-                        <li><a href="#">Shelved Stock</a></li>
-                        <li><a href="#">Product Knowledge</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=14" ?>">Home PC</a></li>    
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=15" ?>">Roomsets</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=16" ?>">Shelved Stock</a></li>
+                        
                     </ul>
                 </li>
                 <li class="dropdown">
                     <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=5" ?>" class="dropdown-toggle" data-toggle="dropdown">Salesfloor</a>
                     <ul class="dropdown-menu right">  
-                        <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=10" ?>">Service</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=11" ?>">Replenishment</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=12" ?>">Product Knowledge</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=13" ?>">Visual Merchandising</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=8" ?>">Service</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=10" ?>">Replen</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=12" ?>">Product Knowledge</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=13" ?>">VM</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Delivery</a>
                     <ul class="dropdown-menu right">  
-                        <li><a href="#">Tubs / Sets</a></li>
-                        <li><a href="#">Home</a></li>
-                        <li><a href="#">3 Way Scan</a></li>
-                        <li><a href="#">Orders</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=17" ?>">Tubs/Sets</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=18" ?>">Home</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=19" ?>">3 Way Scan</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=20" ?>">Orders</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin</a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Administration</a>
                     <ul class="dropdown-menu right">  
-                        <li><a href="#">Cash</a></li>
-                        <li><a href="#">Stock</a></li>
-                        <li><a href="#">Paperwork</a></li>
-                        <li><a href="#">People</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=21" ?>">Cash</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=22" ?>">Stock</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=23" ?>">Paperwork</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=24" ?>">People</a></li>
                     </ul>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Additional Learning</a>
                     <ul class="dropdown-menu right">  
-                        <li><a href="#">Floor Moves</a></li>
-                        <li><a href="#">Product Specialist</a></li>
-                        <li><a href="#">Lingerie Specialist</a></li>
-                        <li><a href="#">Style Advisor</a></li>
-                        <li><a href="#">Team Coach</a></li>
-                        <li><a href="#">Dressing Roomsets</a></li>
-                        <li><a href="#">Home Design Consultant</a></li>
-                        <li><a href="#">Table Leader</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=28" ?>">Product Specialist</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=29" ?>">Tailoring Specialist</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=30" ?>">Lingerie Specialist</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=31" ?>">Style Advisor</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=32" ?>">Dressing Room Sets</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=33" ?>">Furniture Deliveries</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=34" ?>">Table Leader</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=36" ?>">Team Coach</a></li>
                     </ul>
                 </li>
             </ul>

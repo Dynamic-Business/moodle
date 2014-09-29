@@ -52,7 +52,7 @@ To do
 		// Date / Checkbox enable
 		$(document).ready(function(){
 
-			$("#dateafter,#datebefore").datepicker({maxDate: 'Now',minDate: null});
+			$("#dateafter,#datebefore").datepicker({maxDate: 'Now',minDate: null,dateFormat: 'dd/mm/yy'});
 			$("#dateafter,#datebefore").attr('disabled',true);
 			$("#dateafter,#datebefore").attr('value', 'N/A');
 
