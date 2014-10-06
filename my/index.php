@@ -58,13 +58,15 @@ if (isguestuser()) {  // Force them to see system default, no editing allowed
     $USER->editing = $edit = 0;  // Just in case
     $context = context_system::instance();
     $PAGE->set_blocks_editing_capability('moodle/my:configsyspages');  // unlikely :)
-    $header = "$SITE->shortname: $strmymoodle (GUEST)";
+    // $header = "$SITE->shortname: $strmymoodle (GUEST)";
+    $header = "$SITE->shortname";
 
 } else {        // We are trying to view or edit our own My Moodle page
     $userid = $USER->id;  // Owner of the page
     $context = context_user::instance($USER->id);
     $PAGE->set_blocks_editing_capability('moodle/my:manageblocks');
-    $header = "$SITE->shortname: $strmymoodle";
+    // $header = "$SITE->shortname: $strmymoodle";
+    $header = $SITE->shortname;
 }
 
 // Get the My Moodle page info.  Should always return something unless the database is broken.
