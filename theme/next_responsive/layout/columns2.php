@@ -41,6 +41,8 @@ echo $OUTPUT->doctype() ?>
 <div id="page" class="container-fluid">
     <div class="login-info"><?php echo $this->login_info(); ?></div>
     <header id="page-header" class="clearfix">
+
+
         <div id="page-navbar" class="clearfix">
             <nav class="breadcrumb-nav navbar"><?php echo $OUTPUT->navbar(); ?></nav>
             <div class="breadcrumb-button"><?php echo $OUTPUT->page_heading_button(); ?></div>

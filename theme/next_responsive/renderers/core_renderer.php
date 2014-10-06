@@ -14,6 +14,16 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
     public function dynamic_header($displayNav = true){
         global $CFG, $SITE, $OUTPUT; ?>
 
+        <div class="closebtn">
+            <?php if(isloggedin()){ ?>
+                <a href="javascript:window.location='<?php echo $CFG->wwwroot . "/login/logout.php?sesskey=" . $USER->sesskey; ?>'; window.opener='x';window.close();">Close</a>
+
+            <?php }else{ ?>
+                <a href="javascript:window.opener='x';window.close();"></a>
+            <?php } ?>
+        </div>
+
+
         <header role="banner" class="navbar moodle-has-zindex">
             <nav role="navigation" class="navbar-inner-dyn">
                 <div class="navbar-inner-wrap top">
@@ -230,7 +240,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
     protected function howToMenu(){
         global $CFG; ?>
 
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">How To..</a>
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown">How To...</a>
             <ul class="dropdown-menu">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salesfloor</a>
