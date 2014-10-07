@@ -33,59 +33,79 @@ echo $OUTPUT->doctype() ?>
 
     <?php if (!isloggedin()){ ?>
         
-        <SCRIPT LANGUAGE=JavaScript>
-            <!--
-
-            /*
-            // ///////////////////////////
-            // checkCapsLock v1.0
-            // 
-            // If a user enters his password in a Web-based form with Caps Lock 
-            // accidentally on, he can become frustrated because his password is not 
-            // being accepted... and he may assume the application is the source of the 
-            // problem.
-            // 
-            // This JavaScript function will let the user know his Caps Lock is on and 
-            // about the potential for error.
-            // ///////////////////////////
-            */
-
-            function checkCapsLock( e ) {
-                //console.log(e);
-                var myKeyCode=0;
-                var myShiftKey=false;
-                var myMsg='Caps Lock is On.\n\nTo prevent entering your password incorrectly,\nyou should press Caps Lock to turn it off.';
-
-                // Internet Explorer 4+
-                if ( document.all ) {
-                    myKeyCode=e.keyCode;
-                    myShiftKey=e.shiftKey;
-
-                // Netscape 4
-                } else if ( document.layers ) {
-                    myKeyCode=e.which;
-                    myShiftKey=( myKeyCode == 16 ) ? true : false;
-
-                // Netscape 6
-                } else if ( document.getElementById ) {
-                    if (!window.chrome){
-                        myKeyCode=e.which;
-                        myShiftKey=( myKeyCode == 16 ) ? true : false;
+        <script type="text/javascript">
+                var existing = window.onload;
+                window.onload = function()
+                { 
+                    if(typeof(existing) == "function")
+                    {
+                          existing();
                     }
-
+                    loadCapsChecker();
                 }
-                //console.log(myShiftKey);
-                // Upper case letters are seen without depressing the Shift key, therefore Caps Lock is on
-                if ( ( myKeyCode >= 65 && myKeyCode <= 90 ) && !myShiftKey ) {
-                    alert( myMsg );
-
-                // Lower case letters are seen while depressing the Shift key, therefore Caps Lock is on
-                } else if ( ( myKeyCode >= 97 && myKeyCode <= 122 ) && myShiftKey ) {
-                    alert( myMsg );
+                  
+                function loadCapsChecker()
+                {   
+                    capsClass = "capLocksCheck";
+                    capsNotice = "capsLockNotice";
+                    
+                    var inputs = document.getElementsByTagName('INPUT');
+                    var elements = new Array();
+                    for(var i=0; i<inputs.length; i++)
+                    {
+                        if(inputs[i].className.indexOf(capsClass) != -1)
+                        {
+                            elements[elements.length] = inputs[i];
+                        }
+                    }   
+                    for(var i=0; i<elements.length; i++)
+                    {
+                        if(document.addEventListener)
+                        {
+                            elements[i].addEventListener("keypress",checkCaps,"false");
+                        }
+                        else
+                        {
+                            elements[i].attachEvent("onkeypress",checkCaps);
+                        }
+                    }   
                 }
-            }
-            // -->
-            </SCRIPT>   
+                
+                function checkCaps(e)
+                {
+                    var pushed = (e.charCode) ? e.charCode : e.keyCode;
+                    var shifted = false;        
+                    if(e.shiftKey)
+                    {
+                        shifted = e.shiftKey;
+                    }
+                    else if (e.modifiers)
+                    {
+                        shifted = !!(e.modifiers & 4);
+                    }           
+                    var upper = (pushed >= 65 && pushed <= 90);
+                    var lower = (pushed >= 97 && pushed <= 122);
+                    if((upper && !shifted) || (lower && shifted))
+                    {
+                        if(document.getElementById(capsNotice))
+                        {
+                            //document.getElementById(capsNotice).style.display = 'block';
+                            alert("Caps Lock is turned on");
+                        }
+                        else
+                        {
+                            alert("Caps Lock is turned on");
+                        }
+                    }
+                    else if((lower && !shifted) || (upper && shifted))
+                    {
+                        if(document.getElementById(capsNotice))
+                        {
+                            //document.getElementById(capsNotice).style.display = 'none';
+                        }
+                    }
+                }
+            </script>  
         
         <?php }?>
 </head>

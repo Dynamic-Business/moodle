@@ -42,7 +42,7 @@ if (empty($CFG->authloginviaemail)) {
             <div class="clearer"><!-- --></div>
             <div class="form-label"><label for="password"><?php print_string("password") ?></label></div>
             <div class="form-input">
-              <input type="password" name="password" id="password" size="15" value="" <?php echo $autocomplete; ?> onKeyPress="checkCapsLock(event)" />
+              <input type="password" name="password" id="password" class='capLocksCheck' size="15" value="" <?php echo $autocomplete; ?> />
             </div>
           </div>
             <div class="clearer"><!-- --></div>
