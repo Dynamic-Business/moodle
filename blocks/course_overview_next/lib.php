@@ -29,7 +29,7 @@ function print_overview_next($courses, array $remote_courses=array()) {
 	echo "<div class='overview-info-course heading'>Training Session</div>";
 	echo "<div class='overview-info-other prog heading'>Progress</div>";
 	echo "<div class='overview-info-other pct'>&nbsp;</div>";
-	echo "<div class='overview-info-other ac heading'>Activities Completed</div>";
+	echo "<div class='overview-info-other ac heading'>Completed</div>";
 	echo "<div class='overview-info-other de heading'>Date Enrolled</div>";
 	//echo "<div class='overview-info-other cs heading'>Status</div>";
 	

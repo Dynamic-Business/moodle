@@ -2,16 +2,16 @@
 .block_course_overview_next  .header{background: none repeat scroll 0 0 /*#E9E9E9*/ !important;}
 .block_course_overview_next  .content{background: none repeat scroll 0 0 /*#E9E9E9*/ !important;/*float:left;*/width:98%;padding:4px 1% !important}
 .block_course_overview_next  .coursebox{margin:2px 0px;float:left;width:98%;padding: 5px;}
-.block_course_overview_next  .heading {font-weight:bold}
+.block_course_overview_next  .heading {font-weight:bold;font-size:12px}
 .content .box:first-child {border:0}
 .coursebox H6 {margin-top:0px;font-size:14px}
 /* ----- */
-DIV.overview-info-course {width:28%;display:block;float:left;margin-right:4px}
+DIV.overview-info-course {width:32%;display:block;float:left;margin-right:2%}
 DIV.overview-info-other {display:block;float:left;margin:0px;margin-right:4px;text-align:center}
 	.prog {width:24%;}
 	.de {width:16%;}
 	/*.cs {width:12%;}*/
-	.ac {width:16%;}
+	.ac {width:14%;}
 	.pct {width:8%;text-align: left !important;}
 	/*.dc {width:16%;}*/
 DIV.overview-info-icon {width:2%;display:block;float:left;margin: 0px;margin-right:7px}
