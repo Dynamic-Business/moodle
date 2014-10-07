@@ -231,7 +231,7 @@
 
 	}
 
-	function reportByStoreProgress($groups,$courseid){
+	/*function reportByStoreProgress($groups,$courseid){
 		global $page, $resultsPerPage ,$DB, $reportAdditionalColumns,$datepickerto, $datepickerfrom;
 		$groupSql = getWhereGroupSQL($groups,"ug","groupid",true);
 		$sql = "
@@ -276,21 +276,44 @@
 			GROUP BY cc.userid #because user can be in more than one of the selected groups
 			ORDER BY ud.storedetails, ud.dept,u.lastname
 			";
-/*
-			AND (
-			    (ch1.chkcompl = 0 OR ch1.chkcompl IS NULL) 
-			    OR (ch2.chkcompl = 0 OR ch2.chkcompl IS NULL) 
-			    OR (ch3.chkcompl = 0 OR ch3.chkcompl IS NULL) 
-			    OR (ch4.chkcompl = 0 OR ch4.chkcompl IS NULL)
-			) ";
-*/
+
 		// echo "<pre>";
 		// echo $sql;die;
 		$_SESSION['query'] = $sql; //used for the download page
-		return buildHTMLTable($sql,TRUE);
+		return buildHTMLTable($sql);
+	}*/
+
+	function reportByAcademyOverdue($groups){
+		global $DB;
+		$groupSql = getWhereGroupSQL($groups,"ug","groupid",true);
+
+		$sql = "
+			SELECT
+				u.id,
+				ud.storedetails AS 'Store Details',
+				c.fullname AS 'Programme Name',
+				u.firstname AS 'First Name',
+				u.lastname AS 'Last Name',
+				ud.dept AS 'Dept',
+				ROUND((UNIX_TIMESTAMP() - cc.timeenrolled)/604800) AS 'Weeks_Enrolled',
+				ud.contractedhours AS 'Hours'
+			FROM mdl_course_completions cc
+			JOIN mdl_course c ON c.id = cc.course
+			JOIN mdl_user u ON u.id = cc.userid
+			JOIN mdl_dynamic_userdata ud ON u.id = ud.userid
+			JOIN mdl_dynamic_usersgroups ug ON ug.userid = cc.userid 
+			WHERE c.idnumber IN ('SHB04','SHB19','SHB20','dtc1','dtc2')
+			AND timecompleted IS NULL 
+			AND (UNIX_TIMESTAMP()) - 9676800 > timeenrolled #should be '>'. Used < for testing
+			AND u.deleted = 0 AND u.idnumber != ''
+			AND " . $groupSql . "
+			GROUP BY cc.userid,cc.course
+			ORDER By storedetails,dept,Weeks_Enrolled,lastname
+		";
+		// echo "<pre>" . $sql;die;
+		$_SESSION['query'] = $sql; //used for the download page
+		return buildHTMLTable($sql);
 	}
-
-
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------
 	// 2. Functions above call these to build the actual SQL query
