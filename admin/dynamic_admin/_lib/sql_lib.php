@@ -302,7 +302,7 @@
 			JOIN mdl_user u ON u.id = cc.userid
 			JOIN mdl_dynamic_userdata ud ON u.id = ud.userid
 			JOIN mdl_dynamic_usersgroups ug ON ug.userid = cc.userid 
-			WHERE c.idnumber IN ('SHB04','SHB19','SHB20','dtc1','dtc2')
+			WHERE c.idnumber IN ('SHB04','SHB19','SHB20')
 			AND timecompleted IS NULL 
 			AND (UNIX_TIMESTAMP()) - 9676800 > timeenrolled #should be '>'. Used < for testing
 			AND u.deleted = 0 AND u.idnumber != ''
