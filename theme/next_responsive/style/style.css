@@ -544,12 +544,20 @@ li.dropdown li.dropdown {
   height: 35px;
   width: 55px;
   float: right;
-  margin: 5px 5px 0px 0px;
+  margin: 5px 0 0 ;
   text-indent: -99999px;
 }
 /*fixes rollver bug on menu */
 .main-nav li {
   line-height: 16px;
+}
+.ie8 .dropdown-menu {
+  margin: 0px;
+}
+@media (min-width: 768px) {
+  .ie8 .dropdown:hover .dropdown-menu {
+    margin: 0px;
+  }
 }
 .block {
   *zoom: 1;

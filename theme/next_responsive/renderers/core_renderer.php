@@ -14,19 +14,26 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
     public function dynamic_header($displayNav = true){
         global $CFG, $SITE, $OUTPUT; ?>
 
-        <div class="closebtn">
-            <?php if(isloggedin()){ ?>
-                <a href="javascript:window.location='<?php echo $CFG->wwwroot . "/login/logout.php?sesskey=" . $USER->sesskey; ?>'; window.opener='x';window.close();">Close</a>
 
-            <?php }else{ ?>
-                <a href="javascript:window.opener='x';window.close();"></a>
-            <?php } ?>
-        </div>
 
 
         <header role="banner" class="navbar moodle-has-zindex">
+
+
+
             <nav role="navigation" class="navbar-inner-dyn">
                 <div class="navbar-inner-wrap top">
+
+                    <div class="closebtn">
+                        <?php if(isloggedin()){ ?>
+                            <a href="javascript:window.location='<?php echo $CFG->wwwroot . "/login/logout.php?sesskey=" . $USER->sesskey; ?>'; window.opener='x';window.close();">Close</a>
+
+                        <?php }else{ ?>
+                            <a href="javascript:window.opener='x';window.close();"></a>
+                        <?php } ?>
+                    </div>
+
+
                     <div class="container-fluid">
                         <a class="brand" href="<?php echo $CFG->wwwroot;?>">
                             <img src="<?php echo $OUTPUT->pix_url('Site-logo','theme'); ?>" width="97" height="29" alt="" />
