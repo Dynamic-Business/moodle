@@ -150,24 +150,29 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
     protected function retailAcademyMenu(){
         global $CFG; ?>
 
+            <!--
+            
+            Under the new heading of Salesfloor & Home the next level should be as follows: 
+            Tills, Using Your Initiative, Service, Replen, Product Knowledge, VM, Home PC, Room Sets, Shelved Stock
+
+            -->
+
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Retail Academy</a>
             <ul class="dropdown-menu">
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Home</a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salesfloor &amp; Home</a>
                     <ul class="dropdown-menu right">
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=14" ?>">Home PC</a></li>    
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=15" ?>">Roomsets</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=16" ?>">Shelved Stock</a></li>
-                        
-                    </ul>
-                </li>
-                <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=5" ?>" class="dropdown-toggle" data-toggle="dropdown">Salesfloor</a>
-                    <ul class="dropdown-menu right">  
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=8" ?>">Service</a></li>
+
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=57" ?>">Tills</a></li> 
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=58" ?>">Using Your Initiative</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=7" ?>">Service</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=10" ?>">Replen</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=12" ?>">Product Knowledge</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=13" ?>">VM</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=14" ?>">Home PC</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=15" ?>">Roomsets</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=16" ?>">Shelved Stock</a></li>
+                        
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -211,34 +216,35 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Management Academy</a>
             <ul class="dropdown-menu">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Co-ordinator</a>
-                    <ul class="dropdown-menu right">
-                        <li><a href="#">Salesfloor</a></li>    
-                        <li><a href="#">Delivery</a></li>
-                        <li><a href="#">Office</a></li>
-                    </ul>
+                <li>
+                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=71" ?>">Sales Co-ordinator</a>
                 </li>
                 <li>
-                    <a href="#">Sales Manager</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=72" ?>">Delivery Co-ordinator</a>
                 </li>
                 <li>
-                    <a href="#">Stockroom Manager</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=73" ?>">Office Co-ordinator</a>
                 </li>
                 <li>
-                    <a href="#">Office Manager</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=59" ?>">Sales Manager</a>
                 </li>
                 <li>
-                    <a href="#">Deputy Manager</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=64" ?>">Stockroom Manager</a>
                 </li>
                 <li>
-                    <a href="#">Commercial Manager</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=66" ?>">Office Manager</a>
                 </li>
                 <li>
-                    <a href="#">Ops Manager</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=70" ?>">Store Manager</a>
                 </li>
                 <li>
-                    <a href="#">Store Manager</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=69" ?>">Operations Manager</a>
+                </li>
+                <li>
+                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=68" ?>">Commercial Manager</a>
+                </li>
+                <li>
+                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=67" ?>">Deputy Manager</a>
                 </li>
             </ul>
 
@@ -277,7 +283,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 
                     </ul>
                 </li> 
-                <li><a href="#">Admin</a></li>
+                <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=39" ?>">Admin</a></li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Additional Learning</a>
                     <ul class="dropdown-menu right">
@@ -287,6 +293,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 
                     </ul>
                 </li>
+                <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=43" ?>">Health and Safety</a></li>
             </ul>
 
 <?php }
