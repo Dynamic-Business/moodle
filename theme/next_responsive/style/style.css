@@ -747,3 +747,7 @@ li.dropdown li.dropdown {
 #id_category_1 {
   display: none;
 }
+/*fix for when badges - criteria - course selection isn't big enough */
+#id_courses {
+  width: 100% !important;
+}
