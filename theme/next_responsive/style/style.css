@@ -551,11 +551,13 @@ li.dropdown li.dropdown {
 .main-nav li {
   line-height: 16px;
 }
-.ie8 .dropdown-menu {
+.ie8 .dropdown-menu,
+.ie11 .dropdown-menu {
   margin: 0px;
 }
 @media (min-width: 768px) {
-  .ie8 .dropdown:hover .dropdown-menu {
+  .ie8 .dropdown:hover .dropdown-menu,
+  .ie11 .dropdown:hover .dropdown-menu {
     margin: 0px;
   }
 }
@@ -751,3 +753,4 @@ li.dropdown li.dropdown {
 #id_courses {
   width: 100% !important;
 }
+/* Sorry, but there is an inline style in Moodle*/
