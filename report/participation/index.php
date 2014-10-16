@@ -117,9 +117,11 @@ if ($onlyuselegacyreader) {
     if (empty($minlog) || ($minloginternalreader <= $minlog)) {
         $uselegacyreader = false;
         $minlog = $minloginternalreader;
-    } else if (!empty($timefrom) && ($minloginternalreader > $timefrom)) {
-        // If timefrom is less then first record in sql_internal_reader then get record from legacy log only.
-        $onlyuselegacyreader = true;
+    }
+
+    // If timefrom is greater then first record in sql_internal_reader then get record from sql_internal_reader only.
+    if (!empty($timefrom) && ($minloginternalreader < $timefrom)) {
+        $uselegacyreader = false;
     }
 }
 
@@ -206,6 +208,7 @@ if (!empty($instanceid) && !empty($roleid)) {
 
     list($twhere, $tparams) = $table->get_sql_where();
     if ($twhere) {
+        $params = array_merge($params, $tparams);
         $matchcount = $DB->count_records_sql($countsql.' AND '.$twhere, $params);
     } else {
         $matchcount = $totalcount;
@@ -250,7 +253,6 @@ if (!empty($instanceid) && !empty($roleid)) {
                 " GROUP BY userid) l ON (l.userid = ra.userid)";
         if ($twhere) {
             $sql .= ' WHERE '.$twhere; // Initial bar.
-            $params = array_merge($params, $tparams);
         }
 
         if ($table->get_sql_sort()) {
@@ -263,7 +265,7 @@ if (!empty($instanceid) && !empty($roleid)) {
 
     // Get record from sql_internal_reader and merge with records got from legacy log (if needed).
     if (!$onlyuselegacyreader) {
-        $sql = "SELECT ra.userid, $usernamefields, u.idnumber, l.actioncount AS count
+        $sql = "SELECT ra.userid, $usernamefields, u.idnumber, COUNT(l.actioncount) AS count
                   FROM (SELECT DISTINCT userid FROM {role_assignments} WHERE contextid $relatedctxsql AND roleid = :roleid ) ra
                   JOIN {user} u ON u.id = ra.userid
              $groupsql
@@ -276,14 +278,14 @@ if (!empty($instanceid) && !empty($roleid)) {
                        AND anonymous = 0
                        AND contextlevel = :contextlevel
                        AND (origin = 'web' OR origin = 'ws')
-                  GROUP BY userid) l ON (l.userid = ra.userid)";
+                  GROUP BY userid,timecreated) l ON (l.userid = ra.userid)
+             GROUP BY ra.userid, $usernamefields, u.idnumber";
 
         $params['edulevel'] = core\event\base::LEVEL_PARTICIPATING;
         $params['contextlevel'] = CONTEXT_MODULE;
 
         if ($twhere) {
             $sql .= ' WHERE '.$twhere; // Initial bar.
-            $params = array_merge($params, $tparams);
         }
 
         if ($table->get_sql_sort()) {

@@ -1,0 +1,90 @@
+/** Clear-Fixing **
+ *****************/
+
+.block_course_overview_dynamic, .block_course_overview_dynamic .coursebox{
+	*zoom: 1;
+}
+.block_course_overview_dynamic:before, .block_course_overview_dynamic:after, .block_course_overview_dynamic .coursebox:before, .block_course_overview_dynamic .coursebox:after{
+    display: table;
+    content: "";
+    line-height: 0;
+}
+.block_course_overview_dynamic:after, .block_course_overview_dynamic .coursebox:after {
+    clear: both;
+}
+
+/** Clear-Fixing End **
+ *********************/
+
+.block_course_overview_dynamic .coursebox{
+	margin:2px 0px;
+}
+
+.block_course_overview_dynamic .content{
+	width:auto;
+}
+
+.block_course_overview_dynamic h6{
+	padding:2px 5px;
+	margin:0;
+}
+
+.overview-info-icon, .overview-info-course, .overview-info-other {
+    float: left;
+    font-size:12px;
+}
+
+/** COLUMN WIDTHS **
+ ******************/
+
+.overview-info-icon {
+    width: 3%;
+    text-align:center;
+}
+.overview-info-course.heading {
+	font-weight:bold;
+	margin:12px 0.25% 0 0.25%;
+	font-size: 150%;
+}
+.overview-info-course {
+    width: 41.5%;
+}
+.overview-info-other {
+    width: 13.5%;
+    margin-right:0.25%;
+    text-align:center;
+}
+
+/** Column Widths End **
+ **********************/
+
+/** Mobile Widths *********************
+ ** @media so we can remove the icon **
+ ** to give us more space, and tweak **
+ ** column widths.                   **
+ *************************************/
+
+@media (max-width: 515px) {
+	.block_course_overview_dynamic.block .content{
+		padding:0;
+	}
+
+	.block_course_overview_dynamic .coursebox{
+		padding:5px 0px;
+	}
+
+	.overview-info-icon {
+	    width: 0%;
+	}
+	.overview-info-course {
+	    width: 33.5%;
+	}
+	.overview-info-other {
+	    width: 15.5%;
+	    text-align:center;
+	    
+	}
+}
+
+/** Mobile Widths End  **
+ ***********************/
