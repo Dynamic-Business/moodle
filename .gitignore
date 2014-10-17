@@ -11,6 +11,7 @@
 #
 /config.php
 /admin/dynamic_admin/
+/admin/settings/dynamic.php
 /lib/editor/tinymce/extra/tools/temp/
 *~
 *.swp
