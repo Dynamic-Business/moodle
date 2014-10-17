@@ -13,7 +13,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-$THEME->name = 'blank_responsive';
+$THEME->name = 'dynamicdemo_responsive';
 
 /////////////////////////////////
 // The only thing you need to change in this file when copying it to
