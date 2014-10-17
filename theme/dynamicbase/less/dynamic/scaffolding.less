@@ -1,0 +1,103 @@
+#region-main{
+	#grid .fluid .span(10);
+	&.columns1{
+		#grid .fluid .span(12);
+	}
+}
+
+#block-region-side-pre{
+	#grid .fluid .span(2);
+}
+
+.loginpanel{
+	#grid .fluid .span(4);
+}
+.signuppanel{
+	#grid .fluid .span(5);
+}
+
+.loginpanel,.signuppanel{
+	.center-block();
+}
+
+@media(max-width:1450px) and (min-width:979px){
+	#region-main{
+		#grid .fluid .span(9);
+		&.columns1{
+			#grid .fluid .span(12);
+		}
+	}
+
+	#block-region-side-pre{
+		#grid .fluid .span(3);
+	}
+}
+
+@media(max-width:1450px) and (min-width:979px){
+	.loginpanel{
+		#grid .fluid .span(5);
+	}
+	.signuppanel{
+		#grid .fluid .span(6);
+	}
+}
+
+@media(max-width:979px){
+	#region-main{
+		#grid .fluid .span(12);
+		float:none;
+	}
+
+	#block-region-side-pre{
+		#grid .fluid .span(12);
+	}
+	.loginpanel{
+		#grid .fluid .span(7);
+	}
+	.signuppanel{
+		#grid .fluid .span(8);
+	}
+}
+
+@media(max-width:979px) and (min-width:700px){
+	.block{
+		#grid .fluid .span(5);
+		.center-block();
+		//#grid .fluid .offset(3);
+	}
+}
+
+@media(max-width:700px){
+	.loginbox.twocolumns{
+		margin:0;
+	}
+	.loginpanel{
+		#grid .fluid .span(10);
+	}
+	.signuppanel{
+		#grid .fluid .span(12);
+	}
+}
+
+
+@media(max-width:700px) and (min-width:500px){
+	.block{
+		#grid .fluid .span(7);
+		.center-block();
+		//#grid .fluid .offset(3);
+	}
+}
+
+@media(max-width:500px) and (min-width:350px){
+	.block{
+		#grid .fluid .span(10);
+		.center-block();
+	}
+}
+
+@media(max-width:350px){
+	// .block{
+	// 	#grid .fluid .span(8);
+	// 	#grid .fluid .offset(2);
+	// }
+}

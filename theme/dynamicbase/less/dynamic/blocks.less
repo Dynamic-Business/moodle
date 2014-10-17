@@ -1,0 +1,45 @@
+.block{
+	margin-top:5px;
+	margin-bottom:5px;
+	&:first-child{
+		margin-top:0;
+	}
+	&:last-child{
+		margin-bottom:0;
+	}
+	input[type="text"] + input[type="submit"]{
+		margin:0 auto 10px;
+		display:block;
+	}
+	padding:0;
+	.header h2{
+		padding:11px 15px;
+	}
+	.header .block_action {
+	    position: absolute;
+	    right: 0;
+	    height: 100%;
+	    padding: 0;
+	    &:focus, img:focus{
+	    	outline: -webkit-focus-ring-color auto 0;
+	    }
+	}
+	.title {
+	    position: relative;
+	}
+}
+
+.block_action img {
+    height: 100%;
+}
+
+.block_settings #adminsearchquery{
+	margin:0 auto 10px;
+	display:block;
+}
+
+.block-control-actions {
+	position: absolute;
+	top: 7px;
+	right: 25px;
+}
