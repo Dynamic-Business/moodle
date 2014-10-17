@@ -219,34 +219,19 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Management Academy</a>
             <ul class="dropdown-menu">
                 <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=71" ?>">Sales Co-ordinator</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=44" ?>">Salesfloor Roles</a>
                 </li>
                 <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=72" ?>">Delivery Co-ordinator</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=45" ?>">Stockroom Roles</a>
                 </li>
                 <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=73" ?>">Office Co-ordinator</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=46" ?>">Office Roles</a>
                 </li>
                 <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=59" ?>">Sales Manager</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=47" ?>">Security Roles</a>
                 </li>
                 <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=64" ?>">Stockroom Manager</a>
-                </li>
-                <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=66" ?>">Office Manager</a>
-                </li>
-                <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=70" ?>">Store Manager</a>
-                </li>
-                <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=69" ?>">Operations Manager</a>
-                </li>
-                <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=68" ?>">Commercial Manager</a>
-                </li>
-                <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=67" ?>">Deputy Manager</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=48" ?>">Senior Manager Roles</a>
                 </li>
             </ul>
 
