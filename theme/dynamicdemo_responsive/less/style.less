@@ -1,0 +1,29 @@
+/**
+ * This is the file that pulls everything together! :)
+ * Build your less stylesheets on this file otherwise they wont be included.
+ * the first section is bootstrap variables. These are imported from
+ * dynamicbase and allow us to use bottstrap .span()'s and pull so helper
+ * mixins e.g. .rounded();
+ *
+ * Second section is pulling in our global variables mixins and typography.
+ *
+ * Third is scaffolding if you have any layout changes.
+ *
+ * Fourth is the rest of it.
+ *
+ */
+//
+	@import "../../dynamicbase/less/bootstrap/variables";
+	@import "../../dynamicbase/less/bootstrap/mixins";
+	@import "../../dynamicbase/less/bootstrap/utilities";
+//
+	@import "globals/variables";
+	@import "globals/mixins";
+	@import "globals/typography";
+//
+	//@import "scaffolding/global";
+//
+	@import "header";
+	@import "footer";
+	@import "login";
+	@import "course";
