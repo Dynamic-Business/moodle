@@ -102,6 +102,15 @@
  * or just use a google webfonts import.
  */
 
+.navbar-inner-dyn a {
+  min-width: 100px;
+  margin-left: 1px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  background-color: #1186b9;
+}
+
 /**
  * This is probably the most used less sheet
  * Use this for any changes to the header. if you have a complex
@@ -112,17 +121,18 @@
  */
 
 header .header {
-  position: relative;
-  min-height: 100px;
+  height: 100px;
 }
 
 .navbar .brand {
-  position: absolute;
-  color: #056995;
+  margin-top: 10px;
+  color: #1186b9;
+  vertical-align: middle;
 }
 
 .navbar .brand h1 {
-  font-size: 20px;
+  font-size: 30px;
+  vertical-align: middle;
 }
 
 /**
@@ -143,3 +153,7 @@ header .header {
  *
  * Some example classes are provided below.
  */
+
+#page .header {
+  background-color: #91be39;
+}

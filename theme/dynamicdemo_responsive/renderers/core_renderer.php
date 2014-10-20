@@ -18,7 +18,7 @@
  */
 
 class theme_dynamicdemo_responsive_core_renderer extends theme_dynamicbase_core_renderer {
-    protected $debugging = true;
+    protected $debugging = false;
 
     public function dynamic_header($displayNav = true){
         global $CFG, $SITE; ?>
@@ -49,14 +49,14 @@ class theme_dynamicdemo_responsive_core_renderer extends theme_dynamicbase_core_
         </a>
         <div class="nav-wrap">
             <ul class="nav main-nav">
-                <li><a href="<?php echo $CFG->wwwroot; ?>">Home</a></li>
-                <li><a href="<?php echo $CFG->wwwroot; ?>/course/">All Courses</a></li>
-                <li><a href="<?php echo $CFG->wwwroot; ?>/my/">My Courses</a></li>
+                <li><a href="<?php echo $CFG->wwwroot; ?>">HOME</a></li>
+                <li><a href="<?php echo $CFG->wwwroot; ?>/my/">MY COURSES</a></li>
+                <li><a href="<?php echo $CFG->wwwroot; ?>/course/">ALL COURSES</a></li>               
             </ul>
         <?php if($this->is_administrator() || $this->is_groupmanager()){ ?>
             <ul class="nav dynamic-reports">
-                <li><a href="<?php echo $CFG->wwwroot; ?>/admin/dynamic_admin/dynamic_enrolments">Group Administration</a></li>
-                <li><a href="<?php echo $CFG->wwwroot; ?>/admin/dynamic_admin/dynamic_reports">Group Reporting</a></li>
+                <li><a href="<?php echo $CFG->wwwroot; ?>/admin/dynamic_admin/dynamic_enrolments">GROUP ADMIN</a></li>
+                <li><a href="<?php echo $CFG->wwwroot; ?>/admin/dynamic_admin/dynamic_reports">GROUP REPORTING</a></li>
             </ul>
         <?php } ?>
         </div>
