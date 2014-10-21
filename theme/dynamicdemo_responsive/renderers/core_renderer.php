@@ -21,11 +21,22 @@ class theme_dynamicdemo_responsive_core_renderer extends theme_dynamicbase_core_
     protected $debugging = false;
 
     public function dynamic_header($displayNav = true){
-        global $CFG, $SITE; ?>
+        global $CFG, $SITE, $OUTPUT; ?>
 
         <header role="banner" class="navbar moodle-has-zindex"><div class="container-fluid header">
                     <div class="pull-right">
                         <?php echo $this->login_info(); ?>
+                        
+                        <div class="socialMedia">
+                         <img class="brand-logo" src="<?php echo $OUTPUT->pix_url('facebook','theme');?>"/>
+                         <img class="brand-logo" src="<?php echo $OUTPUT->pix_url('twitter','theme');?>"/>
+                         <img class="brand-logo" src="<?php echo $OUTPUT->pix_url('googleplus','theme');?>"/>
+                         <img class="brand-logo" src="<?php echo $OUTPUT->pix_url('linkedin','theme');?>"/>
+                         <img class="brand-logo" src="<?php echo $OUTPUT->pix_url('youtube','theme');?>"/>
+                         <img class="brand-logo" src="<?php echo $OUTPUT->pix_url('pinterest','theme');?>"/>
+
+                        </div>
+
                     </div>
                     <a class="brand" href="<?php echo $CFG->wwwroot;?>"><h1><?php echo $SITE->shortname; ?></h1></a>
                 </div>
@@ -59,8 +70,19 @@ class theme_dynamicdemo_responsive_core_renderer extends theme_dynamicbase_core_
                 <li><a href="<?php echo $CFG->wwwroot; ?>/admin/dynamic_admin/dynamic_reports">GROUP REPORTING</a></li>
             </ul>
         <?php } ?>
-        </div>
+        </div>    
+    </div>
+    
+<?php }
 
+public function dynamic_footer(){ ?>
+            <div class="nav-wrap footerNav">
+                <ul class="nav dynamic-reports">
+                    <li><a href="<?php echo $CFG->wwwroot; ?>/admin/dynamic_admin/dynamic_reports">TROUBLESHOOTING</a></li>
+                    <li><a href="<?php echo $CFG->wwwroot; ?>/admin/dynamic_admin/dynamic_reports">TERMS AND CONDITIONS</a></li>
+                    <li><a href="<?php echo $CFG->wwwroot; ?>/admin/dynamic_admin/dynamic_reports">PRIVACY STATEMENT</a></li>
+                </ul>            
+            </div>
 <?php }
 
 }
