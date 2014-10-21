@@ -242,45 +242,24 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">How To...</a>
             <ul class="dropdown-menu">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salesfloor</a>
-                    <ul class="dropdown-menu right">
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=51" ?>">Tills - Processing a Customer Order</a></li>   
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=50" ?>">Tills - Processing a Sale</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=49" ?>">Till Components</a></li>
-                    </ul>
+                <li>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=36" ?>">Salesfloor</a>
                 </li>    
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Home</a>
-                    <ul class="dropdown-menu right">
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=54" ?>">ID Required</a></li>   
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=53" ?>">Taking Payment for an Order</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=52" ?>">Processing an Order on the Home PC</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=44" ?>">Mattresses</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=43" ?>">Furniture Construction</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=41" ?>">Sofa Construction</a></li>
-                    </ul>
+                <li>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=37" ?>">Home</a>
                 </li>  
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Delivery</a>
-                    <ul class="dropdown-menu right">
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=46" ?>">Processing Shoes and Accessories - Location Product</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=45" ?>">Processing Shoes and Accessories - ROSA Product</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=40" ?>">Processing Tubs - Tagging</a></li>   
-
-                    </ul>
+                <li>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=38" ?>">Delivery</a>
                 </li> 
-                <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=39" ?>">Admin</a></li>
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Additional Learning</a>
-                    <ul class="dropdown-menu right">
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=42" ?>">Lingerie Specialist - Product Knowledge</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=39" ?>">Lingerie Specialist - Lingerie Fitting Guide</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=37" ?>">Tailoring Specialist - How to Measure</a></li>   
-
-                    </ul>
+                <li>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=39" ?>">Admin</a>
                 </li>
-                <li><a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=43" ?>">Health and Safety</a></li>
+                <li>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=40" ?>">Additional Learning</a>
+                </li>
+                <li>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=43" ?>">Health and Safety</a>
+                </li>
             </ul>
 
 <?php }
