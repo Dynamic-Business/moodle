@@ -62,7 +62,9 @@ class theme_dynamicdemo_responsive_core_renderer extends theme_dynamicbase_core_
             <ul class="nav main-nav">
                 <li><a href="<?php echo $CFG->wwwroot; ?>">HOME</a></li>
                 <li><a href="<?php echo $CFG->wwwroot; ?>/my/">MY COURSES</a></li>
-                <li><a href="<?php echo $CFG->wwwroot; ?>/course/">ALL COURSES</a></li>               
+                <li><a href="<?php echo $CFG->wwwroot; ?>/course/">ALL COURSES</a></li> 
+                <li><a href="<?php echo $CFG->wwwroot; ?>/user/profile.php">MY PROFILE</a></li> 
+                <li><a href="<?php echo $CFG->wwwroot; ?>/user/profile.php">RESOURCES</a></li>               
             </ul>
         <?php if($this->is_administrator() || $this->is_groupmanager()){ ?>
             <ul class="nav dynamic-reports">
@@ -72,10 +74,11 @@ class theme_dynamicdemo_responsive_core_renderer extends theme_dynamicbase_core_
         <?php } ?>
         </div>    
     </div>
+   
     
 <?php }
-
 public function dynamic_footer(){ ?>
+        <div class="container-fluid">
             <div class="nav-wrap footerNav">
                 <ul class="nav dynamic-reports">
                     <li><a href="<?php echo $CFG->wwwroot; ?>/admin/dynamic_admin/dynamic_reports">TROUBLESHOOTING</a></li>
@@ -83,6 +86,8 @@ public function dynamic_footer(){ ?>
                     <li><a href="<?php echo $CFG->wwwroot; ?>/admin/dynamic_admin/dynamic_reports">PRIVACY STATEMENT</a></li>
                 </ul>            
             </div>
+        </div>
+        
 <?php }
 
 }
