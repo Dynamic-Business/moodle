@@ -1122,20 +1122,23 @@ class completion_info {
 
         // dynamic - by group --------------
             // echo $enrolledsql;die;
+            //echo "gm" . $gm;
+            //echo "groupslist" . $groupsList;
             if($gm == "admin" && $groupsList == "0"){  
                 $groupsql .= "";
             }else if($gm != "false"){
                 $groupsql .= " 
                 INNER JOIN (
-                    SELECT dug.userid FROM mdl_dynamic_managers_group dmg
-                    INNER JOIN mdl_dynamic_usersgroups dug ON dmg.groupid = dug.groupid ";
+                    SELECT dug.userid 
+                    FROM mdl_dynamic_usersgroups dug 
+                    LEFT JOIN mdl_dynamic_managers_group dmg ON dmg.groupid = dug.groupid ";
                 if ($gm != "admin" && $groupsList != "0"){
-                    $groupsql .= " WHERE dmg.groupid IN (" . $groupsList . ") ";
+                    $groupsql .= " WHERE dug.groupid IN (" . $groupsList . ") ";
                 }else if ($gm == "admin" && $groupsList != "0"){
                     
-                    $groupsql .= " WHERE dmg.groupid IN (" . $groupsList . ") GROUP BY dug.userid ";
+                    $groupsql .= " WHERE dug.groupid IN (" . $groupsList . ") GROUP BY dug.userid ";
                 }else if($gm != "admin" && $groupsList == "0"){
-                    $groupsql .= " WHERE dmg.userid = eu.id ";
+                    $groupsql .= " WHERE dug.userid = eu.id ";
                 }else{
                 
                 }
@@ -1149,11 +1152,13 @@ class completion_info {
         if ($where) {
             $sql .= " WHERE $where";
         }
-        // echo "<pre>" . $sql . "<br>";
 
         $params = array_merge($enrolledparams, $whereparams);
+        // echo "<pre>" . $sql . "<br><br>";
         // var_dump($params);
-        //echo $DB->count_records_sql($sql, $params) . " / ";
+        // echo "<br><br>";
+        // echo $DB->count_records_sql($sql, $params);die();
+
         return $DB->count_records_sql($sql, $params);
     }
 
@@ -1211,15 +1216,16 @@ class completion_info {
             }else if($gm != "false"){
                 $groupsql .= " 
                 INNER JOIN (
-                    SELECT dug.userid FROM mdl_dynamic_managers_group dmg
-                    INNER JOIN mdl_dynamic_usersgroups dug ON dmg.groupid = dug.groupid ";
+                    SELECT dug.userid 
+                    FROM mdl_dynamic_usersgroups dug 
+                    LEFT JOIN mdl_dynamic_managers_group dmg ON dmg.groupid = dug.groupid ";
                 if ($gm != "admin" && $groupsList != "0"){
-                    $groupsql .= " WHERE dmg.groupid IN (" . $groupsList . ") ";
+                    $groupsql .= " WHERE dug.groupid IN (" . $groupsList . ") ";
                 }else if ($gm == "admin" && $groupsList != "0"){
                     
-                    $groupsql .= " WHERE dmg.groupid IN (" . $groupsList . ") GROUP BY dug.userid ";
+                    $groupsql .= " WHERE dug.groupid IN (" . $groupsList . ") GROUP BY dug.userid ";
                 }else if($gm != "admin" && $groupsList == "0"){
-                    $groupsql .= " WHERE dmg.userid = eu.id ";
+                    $groupsql .= " WHERE dug.userid = eu.id ";
                 }else{
                 
                 }
@@ -1264,7 +1270,7 @@ class completion_info {
 	 //dynamic -----
     function generate_tracked_user_sql($groupid = 0,$gm = "false",$groupsList = "0") { 
         global $CFG,$USER,$DB;
-		//echo "gl:" . $groupsList . "<br>";
+		// echo "gl:" . $groupsList . "<br>";
 		//echo "gm:" . $gm . "<br>";
         $return = new stdClass();
         $return->sql = '';
@@ -1330,16 +1336,17 @@ class completion_info {
 		}else if($gm != "false"){
 			$return->sql .= " 
 			INNER JOIN (
-				SELECT dug.userid FROM mdl_dynamic_managers_group dmg
-				INNER JOIN mdl_dynamic_usersgroups dug ON dmg.groupid = dug.groupid ";
+				SELECT dug.userid 
+                FROM mdl_dynamic_usersgroups dug 
+                LEFT JOIN mdl_dynamic_managers_group dmg ON dmg.groupid = dug.groupid ";
 			if ($gm != "admin" && $groupsList != "0"){
-				$return->sql .= " WHERE dmg.userid = :userid ";
-				$return->sql .= " AND dmg.groupid IN (" . $groupsList . ") ";
+				$return->sql .= " WHERE dug.userid = :userid ";
+				$return->sql .= " AND dug.groupid IN (" . $groupsList . ") ";
 			}else if ($gm == "admin" && $groupsList != "0"){
 				
-				$return->sql .= " WHERE dmg.groupid IN (" . $groupsList . ") GROUP BY dug.userid ";
+				$return->sql .= " WHERE dug.groupid IN (" . $groupsList . ") GROUP BY dug.userid ";
 			}else if($gm != "admin" && $groupsList == "0"){
-				$return->sql .= " WHERE dmg.userid = :userid ";
+				$return->sql .= " WHERE dug.userid = :userid ";
 			}else{
 			
 			}
