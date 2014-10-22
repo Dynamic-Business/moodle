@@ -2,6 +2,86 @@
 {
 	.header
 	{
+		min-height: 50px;
 		background-color: @lightGreen;
+
+		h2{
+			color:white;
+			font-family: Montserrat-Regular;
+			font-weight: normal;
+		}
+	}
+
+	.block
+	{
+
+		.content{
+			background-color: white;
+		}
+	}
+}
+
+
+// Calender CSS
+
+.block_calendar_month{
+
+	 .content{
+	 	padding:0;
+	 }
+}
+
+.block_calendar_month
+{
+
+	.header
+	{
+		display: none;
+	}
+
+	.calendar-controls
+	{
+		
+		padding-top: 15px;
+	}
+
+	caption{
+
+			a{
+			color:white;
+			font-size: 1.4em;
+		
+	text-transform: uppercase;
+			}
+		vertical-align: middle;
+		height:50px;
+		background-color: @lightGreen;
+		width:100%;
+		padding-top: 0;
+	}
+
+	tr,td{
+		padding: 0;
+		width:37px;
+		height:37px;
+		color:@darkGrey;
+		font-size: 1em;
+		.today
+		{
+			background-color: @lightBlue;
+			
+		    a{
+		    color:white;
+		}
+		}
+	}
+	.weekdays
+	{
+		background-color: @darkGrey;
+		color: white;
+		
+		abbr{
+			border-bottom: none;
+		}
 	}
 }

@@ -26,12 +26,42 @@
 // .bread-crumb, .bread-crumb li {
 
 // }
-
+.halfBlock{
+	height:400px;
+	position:relative;
+	background: @lightBlue;
+}
+body{
+	background: #1696ce; /* Old browsers */
+background: -moz-linear-gradient(top, #1696ce 40%, #e7e7e7 40%, #e7e7e7 40%); /* FF3.6+ */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(40%,#1696ce), color-stop(40%,#e7e7e7), color-stop(40%,#e7e7e7)); /* Chrome,Safari4+ */
+background: -webkit-linear-gradient(top, #1696ce 40%,#e7e7e7 40%,#e7e7e7 40%); /* Chrome10+,Safari5.1+ */
+background: -o-linear-gradient(top, #1696ce 40%,#e7e7e7 40%,#e7e7e7 40%); /* Opera 11.10+ */
+background: -ms-linear-gradient(top, #1696ce 40%,#e7e7e7 40%,#e7e7e7 40%); /* IE10+ */
+background: linear-gradient(to bottom, #1696ce 40%,#e7e7e7 40%,#e7e7e7 40%); /* W3C */
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1696ce', endColorstr='#e7e7e7',GradientType=0 ); /* IE6-9 */
+}
 header{
+	background-color: white;
+}
+
+.navbar {
+	.container-fluid{
+
+	background-color: white;
+	}
+	
 	.header{
 		height:100px;
 	
 			}
+	.logininfo{
+		color: @darkBlue;
+		text-transform: uppercase;
+		a{
+			font-family: Montserrat-Bold;
+		}
+	}
 }
 
 .navbar{
@@ -46,5 +76,17 @@ header{
 			font-size: 30px;
 			vertical-align: middle;
 		}
+
+
 	}
+
+	.socialMedia
+		{
+			margin-top: 10px;
+
+			img{
+				padding-left: 0px;
+			}
+		}
 }
+
