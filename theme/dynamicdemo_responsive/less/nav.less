@@ -18,5 +18,35 @@
 //footer nav
 .footerNav
 {
-	
+	list-style: none;
+	float:right;
+	display:block;
+	margin-top: 0;
+	padding-top: 0;
+
+		li > a {
+			float: none;
+			padding: 10px 15px 10px;
+			text-decoration: none;
+			display: block;
+		}
+		li{
+			float:left;
+			background-color: @darkGrey;
+		}
+
+		.nav{
+			margin-top: 0;
+		}
+}
+
+///Bread crumb
+#page-navbar{
+	background-color:@lightBlue;
+
+	.breadcrumb-nav{
+		a,span{
+	color:white;
+}
+	}
 }

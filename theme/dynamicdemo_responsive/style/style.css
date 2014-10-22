@@ -102,13 +102,65 @@
  * or just use a google webfonts import.
  */
 
+@font-face {
+  font-family: Montserrat-Regular;
+  src: url('[[font:theme|Montserrat-Regular.ttf]]');
+}
+
+@font-face {
+  font-family: Montserrat-Bold;
+  src: url('[[font:theme|Montserrat-Bold.ttf]]');
+}
+
+body {
+  font-family: Montserrat-Regular;
+}
+
+.navbar-inner-dyn {
+  padding: 0;
+  background-color: #1696ce;
+}
+
 .navbar-inner-dyn a {
   min-width: 100px;
   margin-left: 1px;
-  font-weight: bold;
+  font-family: Montserrat-Bold;
   color: white;
   text-align: center;
   background-color: #1186b9;
+}
+
+.footerNav {
+  display: block;
+  float: right;
+  padding-top: 0;
+  margin-top: 0;
+  list-style: none;
+}
+
+.footerNav li > a {
+  display: block;
+  float: none;
+  padding: 10px 15px 10px;
+  text-decoration: none;
+}
+
+.footerNav li {
+  float: left;
+  background-color: #b2b1b1;
+}
+
+.footerNav .nav {
+  margin-top: 0;
+}
+
+#page-navbar {
+  background-color: #1696ce;
+}
+
+#page-navbar .breadcrumb-nav a,
+#page-navbar .breadcrumb-nav span {
+  color: white;
 }
 
 /**
@@ -120,8 +172,58 @@
  * Some example classes are provided below.
  */
 
-header .header {
+.halfBlock {
+  position: relative;
+  height: 400px;
+  background: #1696ce;
+}
+
+body {
+  background: #e7e7e7;
+  /* Old browsers */
+
+  background: -moz-linear-gradient(top, #1696ce 40%, #e7e7e7 40%, #e7e7e7 40%);
+  /* FF3.6+ */
+
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(40%, #1696ce), color-stop(40%, #e7e7e7), color-stop(40%, #e7e7e7));
+  /* Chrome,Safari4+ */
+
+  background: -webkit-linear-gradient(top, #1696ce 40%, #e7e7e7 40%, #e7e7e7 40%);
+  /* Chrome10+,Safari5.1+ */
+
+  background: -o-linear-gradient(top, #1696ce 40%, #e7e7e7 40%, #e7e7e7 40%);
+  /* Opera 11.10+ */
+
+  background: -ms-linear-gradient(top, #1696ce 40%, #e7e7e7 40%, #e7e7e7 40%);
+  /* IE10+ */
+
+  background: linear-gradient(to bottom, #1696ce 40%, #e7e7e7 40%, #e7e7e7 40%);
+  /* W3C */
+
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#1696ce', endColorstr='#e7e7e7', GradientType=0);
+  /* IE6-9 */
+
+}
+
+header {
+  background-color: white;
+}
+
+.navbar .container-fluid {
+  background-color: white;
+}
+
+.navbar .header {
   height: 100px;
+}
+
+.navbar .logininfo {
+  color: #056995;
+  text-transform: uppercase;
+}
+
+.navbar .logininfo a {
+  font-family: Montserrat-Bold;
 }
 
 .navbar .brand {
@@ -135,11 +237,45 @@ header .header {
   vertical-align: middle;
 }
 
+.navbar .socialMedia {
+  float: right;
+  margin-top: 10px;
+}
+
+.navbar .socialMedia img {
+  padding-left: 0;
+}
+
 /**
  *
  * Use this file for any alterations to the footer
  *
  */
+
+footer {
+  max-height: 500px;
+  min-height: 50px;
+  padding-top: 0;
+  margin-bottom: 0;
+  background-color: #b2b1b1;
+}
+
+footer a {
+  min-width: 150px;
+  margin-left: 1px;
+  font-family: Montserrat-Bold;
+  color: white;
+  text-align: center;
+  background-color: #c7c7c7;
+}
+
+footer .logininfo {
+  display: none;
+}
+
+#page-footer {
+  padding-top: 0;
+}
 
 /**
  *
@@ -155,5 +291,214 @@ header .header {
  */
 
 #page .header {
+  min-height: 50px;
   background-color: #91be39;
+}
+
+#page .header h2 {
+  font-family: Montserrat-Regular;
+  font-weight: normal;
+  color: white;
+}
+
+#page .block .content {
+  background-color: white;
+}
+
+.block_calendar_month .content {
+  padding: 0;
+}
+
+.block_calendar_month .header {
+  display: none;
+}
+
+.block_calendar_month .calendar-controls {
+  padding-top: 15px;
+}
+
+.block_calendar_month caption {
+  width: 100%;
+  height: 50px;
+  padding-top: 0;
+  vertical-align: middle;
+  background-color: #91be39;
+}
+
+.block_calendar_month caption a {
+  font-size: 1.4em;
+  color: white;
+  text-transform: uppercase;
+}
+
+.block_calendar_month tr,
+.block_calendar_month td {
+  width: 37px;
+  height: 37px;
+  padding: 0;
+  font-size: 1em;
+  color: #b2b1b1;
+}
+
+.block_calendar_month tr .today,
+.block_calendar_month td .today {
+  background-color: #1696ce;
+}
+
+.block_calendar_month tr .today a,
+.block_calendar_month td .today a {
+  color: white;
+}
+
+.block_calendar_month .weekdays {
+  color: white;
+  background-color: #b2b1b1;
+}
+
+.block_calendar_month .weekdays abbr {
+  border-bottom: none;
+}
+
+.boxs {
+  position: relative;
+  height: 315px;
+  overflow: hidden;
+}
+
+.boxs .box1,
+.boxs .box2,
+.boxs .box3 {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.box1 {
+  background-image: url('[[pix:theme|managmentcourses]]');
+}
+
+.box1 .bottomBox {
+  background-color: #1696ce;
+}
+
+.box1 .bottomBox h4 {
+  color: #056995;
+}
+
+.box1 .bottomBox img {
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  display: inline-block;
+  float: right;
+  clear: none;
+}
+
+.box2 {
+  background-image: url('[[pix:theme|compliance]]');
+}
+
+.box2 .bottomBox {
+  background-color: #f38312;
+}
+
+.box2 .bottomBox h4 {
+  color: #ae5801;
+}
+
+.box2 .bottomBox img {
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  display: inline-block;
+  float: right;
+  clear: none;
+}
+
+.box3 {
+  background-image: url('[[pix:theme|firstLine]]');
+}
+
+.box3 .bottomBox {
+  background-color: #91be39;
+}
+
+.box3 .bottomBox h4 {
+  color: #557413;
+}
+
+.box3 .bottomBox img {
+  position: absolute;
+  top: 30px;
+  right: 10px;
+  display: inline-block;
+  float: right;
+  clear: none;
+}
+
+.main-page .bottomBox {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 90px;
+  opacity: 0.9;
+  filter: alpha(opacity=90);
+}
+
+.main-page .bottomBox h2,
+.main-page .bottomBox h4 {
+  margin-left: 10px;
+  line-height: 15px;
+}
+
+.main-page .bottomBox h4 {
+  margin-top: 30px;
+  font-size: 1em;
+}
+
+.main-page .bottomBox h2 {
+  font-size: 1.3em;
+  font-weight: normal;
+  color: white;
+}
+
+.course_category_tree .category > .info {
+  position: relative;
+  height: 50px;
+  margin: 0;
+  background-color: #91be39;
+  border: none;
+  border-radius: 0;
+}
+
+.course_category_tree .category > .info h3 {
+  position: absolute;
+  top: 10%;
+}
+
+.course_category_tree .category > .info a {
+  color: white;
+}
+
+.course_category_tree .category > .content {
+  padding: 0;
+  background-color: white;
+}
+
+.coursebox {
+  height: 50px;
+  margin: 0;
+  border: none;
+  border-radius: 0;
+}
+
+.coursebox .info .coursename {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.coursebox .info .coursename a {
+  margin-top: auto;
+  margin-bottom: auto;
+  font-size: 1.5em;
 }

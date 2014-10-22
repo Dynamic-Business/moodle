@@ -1,0 +1,105 @@
+.boxs {
+		height: 315px;
+		position: relative;
+		overflow: hidden;
+	.box1, .box2, .box3
+	{
+		background-position: center;
+		background-repeat: no-repeat;
+		background-size: cover;
+
+		.bottombox{
+			
+		}
+	}
+		
+}
+
+.box1{
+	background-image: url('[[pix:theme|managmentcourses]]');
+	.bottomBox{
+		background-color: @lightBlue;
+
+		h4{
+			color:@darkBlue;
+		}
+
+		img{
+			right:10px;
+			top:30px;
+			position:absolute;
+			float:right;
+			clear:none;
+			display: inline-block;
+			}
+	}
+	
+}
+
+.box2{
+	background-image: url('[[pix:theme|compliance]]');
+	.bottomBox{
+		background-color: @lightOrange;
+		h4{
+			color:@darkOrange;
+		}
+
+		img{
+			right:10px;
+			top:30px;
+			position:absolute;
+			float:right;
+			clear:none;
+			display: inline-block;
+			}
+	}
+}
+
+.box3{
+	background-image: url('[[pix:theme|firstLine]]');
+	
+	.bottomBox{
+		background-color: @lightGreen;
+		h4{
+			color:@darkGreen;
+		}
+
+		img{
+			right:10px;
+			top:30px;
+			position:absolute;
+			float:right;
+			clear:none;
+			display: inline-block;
+			}
+	}
+}
+
+.main-page
+{
+	.bottomBox{
+		bottom:0;
+		height:90px;
+		width:100%;		
+		position: absolute;
+		opacity: 0.9;
+    filter: alpha(opacity=90); /* For IE8 and earlier */
+
+    h2,h4{
+    	margin-left: 10px;
+    	line-height: 15px;
+    }
+
+    h4{
+    	font-size: 1em;
+		margin-top: 30px;
+      }
+
+     h2{
+     	font-size: 1.3em;
+     	color:white;
+     	font-weight: normal;
+     	
+      }
+	}
+}
