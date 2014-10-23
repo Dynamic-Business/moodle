@@ -159,8 +159,16 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Retail Academy</a>
             <ul class="dropdown-menu">
-                <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/view.php?id=81" ?>">Salesfloor</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salesfloor</a>
+                    <ul class="dropdown-menu right">
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=57" ?>">Tills</a></li> 
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=58" ?>">Using Your Initiative</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=7" ?>">Service</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=10" ?>">Replen</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=12" ?>">Product Knowledge</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=13" ?>">VM</a></li> 
+                    </ul>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salesfloor &amp; Home</a>
