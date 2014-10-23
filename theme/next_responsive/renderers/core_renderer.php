@@ -127,7 +127,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                     <li><a href="<?php echo $CFG->wwwroot; ?>/admin/user.php"  class="nav-text">Admin</a></li> <!-- admin tab shows to Managers -->
                     <?php } ?>
 
-                    <?php if($this->showManagementTab()){ ?>
+                    <?php if($this->showManagementTab() || $this->isTeamCoach()){ ?>
                     <li class="dropdown"><?php $this->reportsMenu(); ?></li>
                     <?php } ?>
 
@@ -340,5 +340,24 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
         }
 
     }
+    //Has user completed the team coach module
+   protected function isTeamCoach(){
+        global $CFG,$DB,$USER;
+        $teamcoach_course = 36;
+        $sql = "
+            SELECT id FROM mdl_course_completions
+            WHERE userid = {$USER->id}
+            AND course = {$teamcoach_course}
+            AND timecompleted IS NOT NULL
+        ";
+        $data = $DB->get_record_sql($sql,array($USER->id));
+        //var_dump($data);
+        if ($data){
+            return TRUE;
+        }else{
+            return FALSE;
+        }
+
+   }
 
 }
