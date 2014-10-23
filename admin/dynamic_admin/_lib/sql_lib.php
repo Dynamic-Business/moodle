@@ -309,7 +309,7 @@
 			JOIN mdl_dynamic_usersgroups ug ON ug.userid = cc.userid 
 			WHERE c.idnumber IN ('SHB04','SHB19','SHB20')
 			AND timecompleted IS NULL 
-			AND (UNIX_TIMESTAMP()) - 9676800 < timeenrolled #should be '>'. Used < for testing
+			AND (UNIX_TIMESTAMP()) - 9676800 > timeenrolled #should be '>'. Used < for testing
 			AND u.deleted = 0 AND u.idnumber != ''
 			AND " . $groupSql . "
 			GROUP BY cc.userid,cc.course
@@ -318,6 +318,39 @@
 		// echo "<pre>" . $sql;die;
 		$_SESSION['query'] = $sql; //used for the download page
 		return buildHTMLTable($sql);
+	}
+
+	function reportByPayIncreaseOverdue($groups){
+		global $DB;
+		$groupSql = getWhereGroupSQL($groups,"ug","groupid",true);
+
+		$sql = "
+			SELECT
+				u.id,
+				ud.storedetails AS 'Store Details',
+				c.fullname AS 'Programme Name',
+				u.firstname AS 'First Name',
+				u.lastname AS 'Last Name',
+				ud.dept AS 'Dept',
+				ROUND((UNIX_TIMESTAMP() - cc.timeenrolled)/604800) AS 'Weeks_Enrolled',
+				ud.contractedhours AS 'Hours'
+			FROM mdl_course_completions cc
+			JOIN mdl_course c ON c.id = cc.course
+			JOIN mdl_user u ON u.id = cc.userid
+			JOIN mdl_dynamic_userdata ud ON u.id = ud.userid
+			JOIN mdl_dynamic_usersgroups ug ON ug.userid = cc.userid 
+			WHERE c.idnumber IN ('CB01','CB02')
+			AND timecompleted IS NULL 
+			AND (UNIX_TIMESTAMP()) - 2419200 > timeenrolled #should be '>'. Used < for testing
+			AND u.deleted = 0 AND u.idnumber != ''
+			AND " . $groupSql . "
+			GROUP BY cc.userid,cc.course
+			ORDER By storedetails,dept,Weeks_Enrolled,lastname
+		";
+		// echo "<pre>" . $sql;die;
+		$_SESSION['query'] = $sql; //used for the download page
+		return buildHTMLTable($sql);
+
 	}
 
 	//-------------------------------------------------------------------------------------------------------------------------------------------------------------------

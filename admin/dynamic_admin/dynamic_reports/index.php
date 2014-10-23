@@ -76,8 +76,8 @@ if (isadmin() || ismanager()) { ?>
 		<li><p>The Progress report shows training that's not been started, or has been completed.</p></li>
 		<li class='exspace'><a href="reportcourse-builder.php">Progress Report</a></li><!--(Manual Group Report (Course Completions))-->
 
-		<li><p>The Pay Increases Overdue report shows people who are overdue on their pay increases courses.</p></li>
-		<li class='exspace'><a href="reportcourse-builder.php">Progress Report</a></li>
+		<li><p>The Pay Increase Overdue report shows people who are overdue on their pay increases courses.</p></li>
+		<li class='exspace'><a href="reportpayincrease-builder.php">Pay Increase Overdue Report</a></li>
 
 		<!--<p>The Quiz Results report shows quiz scores and the number of attempts.</p>
 		<li class='exspace'><a href="reportquiz-builder.php">Quiz Results</a></li>--><!-- (Manual Group Report (Quiz Activities))-->

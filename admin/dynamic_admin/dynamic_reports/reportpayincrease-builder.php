@@ -42,7 +42,7 @@
 <?php include "../_inc/header.php"; ?>
 
 
-<h2 class="report-header">Reports: Retail Academy Overdue Report</h2>
+<h2 class="report-header">Reports: Pay Increase Overdue Report</h2>
 <div class="links">
     <p><a href="<?php echo $CFG->wwwroot ?>"><?php echo $SITE->fullname; ?></a> &raquo; <a href="<?php echo $linkBackToReports ?>">Reports</a> &raquo; Pay Increase Overdue Report</p>
 </div>
@@ -55,7 +55,7 @@ if (isadmin() || ismanager()) { ?>
     <!--<h3>Report by Profile Data</h3>-->
 
      
-    <form action="<?php echo $CFG->wwwroot . "/admin/dynamic_admin/dynamic_reports/report.php?type=byAcademyOverdue";  ?>" method="POST" id="styled-form">
+    <form action="<?php echo $CFG->wwwroot . "/admin/dynamic_admin/dynamic_reports/report.php?type=byPayIncreaseOverdue";  ?>" method="POST" id="styled-form">
     <div class="form-section-builder first">
             <label>Groups:</label><div class="checkbox-group-outer"><?php build_groups_formlist() ;?><div class="button-holder"><button type="button" class='check-options'>Select All</button><button type="button" class='uncheck-options'>Clear</button></div></div>
     </div>
