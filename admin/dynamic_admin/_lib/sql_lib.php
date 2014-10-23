@@ -295,16 +295,21 @@
 				u.firstname AS 'First Name',
 				u.lastname AS 'Last Name',
 				ud.dept AS 'Dept',
+				#crit.count AS 'total criteria',
+				#crit_compl.count AS 'completed criteria',
+				IF(crit_compl.count IS NULL,'0',(ROUND((100 / crit.count) * crit_compl.count))) AS 'complete(%)',
 				ROUND((UNIX_TIMESTAMP() - cc.timeenrolled)/604800) AS 'Weeks_Enrolled',
 				ud.contractedhours AS 'Hours'
 			FROM mdl_course_completions cc
+			JOIN (SELECT course,COUNT(id) AS 'count' FROM mdl_course_completion_criteria GROUP By course ORDER BY course) crit ON crit.course = cc.course 
+			LEFT JOIN (SELECT userid,course,COUNT(id) AS 'count' FROM mdl_course_completion_crit_compl GROUP BY userid,course ORDER BY userid,course ) crit_compl ON crit_compl.course = cc.course AND crit_compl.userid=cc.userid
 			JOIN mdl_course c ON c.id = cc.course
 			JOIN mdl_user u ON u.id = cc.userid
 			JOIN mdl_dynamic_userdata ud ON u.id = ud.userid
 			JOIN mdl_dynamic_usersgroups ug ON ug.userid = cc.userid 
 			WHERE c.idnumber IN ('SHB04','SHB19','SHB20')
 			AND timecompleted IS NULL 
-			AND (UNIX_TIMESTAMP()) - 9676800 > timeenrolled #should be '>'. Used < for testing
+			AND (UNIX_TIMESTAMP()) - 9676800 < timeenrolled #should be '>'. Used < for testing
 			AND u.deleted = 0 AND u.idnumber != ''
 			AND " . $groupSql . "
 			GROUP BY cc.userid,cc.course
