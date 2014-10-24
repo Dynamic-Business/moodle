@@ -68,12 +68,16 @@ if (isadmin() || ismanager()) { ?>
 		<li class='exspace'><a href="reportuser-builder.php">Individual Learning Report</a></li><!--(Individual User Report (Course Completions))-->
 		<li>
 			<h3>Other Reports</h3>
-			<p>The Exception report shows people that are behind with their training (Retail Academy and Apprentice Programmes only).</p>
+			<p>The Retail Academy Overdue report shows people that are behind with their training (Retail Academy Programmes only).</p>
 		</li>
-		<li class="exspace"><a href="reportstoreprogress-builder.php" >Exception Report</a></li>
+		<!-- <li class="exspace"><a href="reportstoreprogress-builder.php" >Exception Report</a></li> -->
+		<li class="exspace"><a href="reportacademyoverdue-builder.php">Retail Academy Overdue Report</a></li>
 
 		<li><p>The Progress report shows training that's not been started, or has been completed.</p></li>
 		<li class='exspace'><a href="reportcourse-builder.php">Progress Report</a></li><!--(Manual Group Report (Course Completions))-->
+
+		<li><p>The Pay Increase Overdue report shows people who are overdue on their pay increases courses.</p></li>
+		<li class='exspace'><a href="reportpayincrease-builder.php">Pay Increase Overdue Report</a></li>
 
 		<!--<p>The Quiz Results report shows quiz scores and the number of attempts.</p>
 		<li class='exspace'><a href="reportquiz-builder.php">Quiz Results</a></li>--><!-- (Manual Group Report (Quiz Activities))-->

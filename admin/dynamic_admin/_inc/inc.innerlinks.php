@@ -20,8 +20,8 @@
 	$linkBackToOverviewRepBuilder = $CFG->wwwroot . "/admin/dynamic_admin/dynamic_reports/reportoverview-builder-hr.php";
 	$linkBackToLoginRepBuilder = $CFG->wwwroot . "/admin/dynamic_admin/dynamic_reports/reportlogin-builder.php";
 	$linkBackToStoreProgressBuilder = $CFG->wwwroot . "/admin/dynamic_admin/dynamic_reports/reportstoreprogress-builder.php";
-	
-	
+	$linkBackToAcademyOverdue = $CFG->wwwroot . "/admin/dynamic_admin/dynamic_reports/reportacademyoverdue-builder.php";
+	$linkBackToPayIncrease = $CFG->wwwroot . "/admin/dynamic_admin/dynamic_reports/reportpayincrease-builder.php";
 	
 	$linkBackToMoodle = "<a href=\"" .$CFG->wwwroot . "\" title=\"Back to Enrolments\" class=\"back-link\">Back to Moodle</a>";
 	

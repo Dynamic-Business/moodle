@@ -477,7 +477,7 @@
 			}
 		 break;
 
-		 case "byStoreProgress":
+		 /*case "byStoreProgress":
 			$title = "Report: Exception Report";
 		  	$htmlReportTable = reportByStoreProgress($groups,$course);
 		  	//var_dump($groups);die;
@@ -491,7 +491,34 @@
 			$linkBack = "<p><a href='". $CFG->wwwroot . "'>Moodle</a> &raquo; <a href='" .  $linkBackToReports . "'>Reports</a> &raquo; <a href='" . $linkBackToStoreProgressBuilder . "'>Exception Report</a> &raquo; Report</p>";
 			$reportInfo = "<p class='rep-info'>Report shows exceptions for <b>" .$courseList . "</b>.</p>";
 			$reportInfo2 = "<p class='rep-info' style='color:#f9023c;float;left;clear:none;'>Staff that are behind with their training are shown on this report. There are four 'checkpoints' that must be ticked off at certain times on the individual's training programme, depending on when their training started. Once training is back on track and the checkpoint has been ticked, they will no longer show on the report.</p>";
+		 break;*/
+		 case "byAcademyOverdue":
+			$title = "Report: Retail Academy Overdue Report";
+		  	$htmlReportTable = reportByAcademyOverdue($groups);
+		  	//var_dump($groups);die;
+
+			if (!$htmlReportTable){
+				$htmlReportTable = "<p class='no-results'>Your report returned no results</p>";
+				$noResults = TRUE;
+			}
+			$linkBack = "<p><a href='". $CFG->wwwroot . "'>Moodle</a> &raquo; <a href='" .  $linkBackToReports . "'>Reports</a> &raquo; <a href='" . $linkBackToAcademyOverdue . "'>Retail Academy Overdue Report</a> &raquo; Report</p>";
+			$reportInfo = "<p class='rep-info'>Report shows users who are overdue on their Retail Academy Programmes</b>.</p>";
+			// $reportInfo2 = "<p class='rep-info' style='color:#f9023c;float;left;clear:none;'>Staff that are behind with their training are shown on this report. There are four 'checkpoints' that must be ticked off at certain times on the individual's training programme, depending on when their training started. Once training is back on track and the checkpoint has been ticked, they will no longer show on the report.</p>";
 		 break;
+		 case "byPayIncreaseOverdue":
+			$title = "Report: Pay Increase Overdue Report";
+		  	$htmlReportTable = reportByPayIncreaseOverdue($groups);
+		  	//var_dump($groups);die;
+
+			if (!$htmlReportTable){
+				$htmlReportTable = "<p class='no-results'>Your report returned no results</p>";
+				$noResults = TRUE;
+			}
+			$linkBack = "<p><a href='". $CFG->wwwroot . "'>Moodle</a> &raquo; <a href='" .  $linkBackToReports . "'>Reports</a> &raquo; <a href='" . 	$linkBackToPayIncrease . "'>Pay Increase Overdue Report</a> &raquo; Report</p>";
+			$reportInfo = "<p class='rep-info'>Report shows users who are overdue on their Pay Increase Programmes</b>.</p>";
+			// $reportInfo2 = "<p class='rep-info' style='color:#f9023c;float;left;clear:none;'>Staff that are behind with their training are shown on this report. There are four 'checkpoints' that must be ticked off at certain times on the individual's training programme, depending on when their training started. Once training is back on track and the checkpoint has been ticked, they will no longer show on the report.</p>";
+		 break;
+
 		 
 		 
 		  
