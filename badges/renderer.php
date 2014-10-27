@@ -293,10 +293,10 @@ class core_badges_renderer extends plugin_renderer_base {
         $imagetable->attributes = array('class' => 'clearfix badgeissuedimage');
         $imagetable->data[] = array(html_writer::empty_tag('img', array('src' => $badgeclass['image'])));
         if ($USER->id == $userinfo->id && !empty($CFG->enablebadges)) {
-            $imagetable->data[] = array($this->output->single_button(
+            /*$imagetable->data[] = array($this->output->single_button(
                         new moodle_url('/badges/badge.php', array('hash' => $issued['uid'], 'bake' => true)),
                         get_string('download'),
-                        'POST'));
+                        'POST'));*/
             $expiration = isset($issued['expires']) ? $issued['expires'] : $now + 86400;
             if (!empty($CFG->badges_allowexternalbackpack) && ($expiration > $now) && badges_user_has_backpack($USER->id)) {
                 $assertion = new moodle_url('/badges/assertion.php', array('b' => $issued['uid']));
