@@ -119,7 +119,7 @@ $extrafields = get_extra_user_fields($context);
 $leftcols = 1 + count($extrafields);
 
 // Check permissions
-require_login($course);
+// require_login($course); //Dynamic removed so Group managers can access this report
 
 require_capability('report/completion:view', $context);
 
