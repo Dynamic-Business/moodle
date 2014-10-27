@@ -18,6 +18,48 @@
 	require_once(dirname(__FILE__) . '\..\..\..\config.php'); //main moodle config
 	require_once(dirname(__FILE__) . '\..\config.php'); //plugin config
 
+	//Update the team coach profile field for any user who has completed the team coach module (id:36)
+	function update_team_coach(){
+		global $CFG, $DB;
+        $teamcoach_course = 36;
+        $teamcoach_field  = 11;
+        //get users who have completed the course
+        $sql = "
+            SELECT id,userid FROM mdl_course_completions
+            WHERE course = {$teamcoach_course}
+            AND timecompleted IS NOT NULL
+        ";
+        // echo $sql ."\n\r";
+        $data = $DB->get_records_sql($sql,array($USER->id));
+        foreach($data as $row) {
+			//echo $row->userid;
+			$table = "user_info_data";
+			// $exists = $DB->record_exists($table, array("userid" =>  $row->userid, "fieldid" => $teamcoach_field));
+			$exists = $DB->get_record($table, array("userid" =>  $row->userid, "fieldid" => $teamcoach_field));
+			$user_count = 0;
+			if($exists){
+				$record = new stdClass();
+				$record->id 			= $exists->id;
+		        $record->data			= "1";
+		        $DB->update_record($table, $record);
+		        $user_count ++;
+	        }else{
+	        	$record 		 = new stdClass();
+				$record->fieldid = $teamcoach_field;
+				$record->userid  = $row->userid;
+				$record->data	 = "1";
+				$lastinsertid 	 = $DB->insert_record($table, $record);
+				$user_count ++;
+	        }
+	        $sql = "
+		        UPDATE mdl_dynamic_userdata SET teamcoach = '1' WHERE userid = ?
+		    ";
+	        $DB->execute($sql, array("userid" =>  $row->userid));
+		}
+		echo $user_count . " users updated. <br>";
+        // die();
+	}
+
 	function createGroupManagers(){
 		global $CFG, $DB, $reportAdditionalIds, $reportAdditionalColumns,$mail,$fieldForGroupSetup,$gmRoleId,$gmcRoleId,$contextId ;
 		$mailMessage = "";
@@ -177,6 +219,7 @@
 
 	}
 	
+	update_team_coach();
 	createGroupManagers();
 
 ?>
