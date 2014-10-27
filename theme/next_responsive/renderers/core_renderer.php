@@ -352,21 +352,20 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
     //Has user completed the team coach module
    protected function isTeamCoach(){
         global $CFG,$DB,$USER;
-        $teamcoach_course = 36;
+        $GroupManagerRoleID = array(99,100); //The id of the new group manager role
+        $gids = implode(",", $GroupManagerRoleID);
         $sql = "
-            SELECT id FROM mdl_course_completions
-            WHERE userid = {$USER->id}
-            AND course = {$teamcoach_course}
-            AND timecompleted IS NOT NULL
+            SELECT roleid,userid FROM mdl_role_assignments 
+            WHERE roleid IN ( " . $gids . ") AND userid = ? 
+
         ";
         $data = $DB->get_record_sql($sql,array($USER->id));
-        //var_dump($data);
+        
         if ($data){
             return TRUE;
         }else{
             return FALSE;
         }
-
    }
 
 }
