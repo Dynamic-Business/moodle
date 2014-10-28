@@ -1195,6 +1195,7 @@ class completion_info {
                 u.lastname,
                 u.idnumber,
 				ud.datestarted,
+                ud.storedetails,
 				ud.dept,
 				ROUND((UNIX_TIMESTAMP() - ud.datestarted)/604800) AS 'weeksrole'
         ";

@@ -500,6 +500,7 @@ if (!$csv) {
 		print '<th>&nbsp;</th>'; //dynamic
         print '<th>&nbsp;</th>'; //dynamic
 		print '<th>&nbsp;</th>'; //dynamic
+        print '<th>&nbsp;</th>'; //dynamic
 		
 		print '<th><span class="completion-criterianame" style="line-height:12px !important">&nbsp;</span></th>'; //dynamic	
 
@@ -535,12 +536,14 @@ if (!$csv) {
 
 	//FIX 17-10-12
 	if (isset($gm)){
+        print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=storedetails&gm='.$gm. '&groups=' . $groupsList.'">Store Details</a></th>'; //dynamic
         print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=dept&gm='.$gm. '&groups=' . $groupsList.'">Department</a></th>'; //dynamic
 		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=datestarted&gm='.$gm. '&groups=' . $groupsList.'">Start Date</a></th>'; //dynamic
 		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=weeksrole&gm='.$gm. '&groups=' . $groupsList.'">Weeks in Role</a></th>'; //dynamic
 		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=acomp&gm='.$gm. '&groups=' . $groupsList.'">Completed</a></th>'; //dynamic
 		
 	}else{
+        print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=storedetails">Store Details</a></th>'; //dynamic
         print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=dept">Department</a></th>'; //dynamic
 		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=datestarted">Start Date</a></th>'; //dynamic
 		print '<th class="completion-sortchoice"><a href="./?course='.$course->id.'&amp;sort=weeksrole">Weeks in Role</a></th>'; //dynamic
@@ -709,6 +712,7 @@ foreach ($progress as $user) {
 
         //ROW DATA
         //print PHP_EOL.'<tr id="user-'.$user->id.'">'; //Start of individual user rows.
+        print '<th scope="row" style="font-weight:normal"> ' . $user->storedetails .'</th>'; 
         print '<th scope="row" style="font-weight:normal"> ' . $user->dept .'</th>'; 
         print '<th scope="row" style="font-weight:normal"> ' . date("d/m/y",$user->datestarted) .'</th>';
         print '<th scope="row" style="font-weight:normal"> ' . $user->weeksrole .'</th>';
