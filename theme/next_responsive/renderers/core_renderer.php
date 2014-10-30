@@ -123,11 +123,11 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                     <li><a href="<?php echo $CFG->wwwroot; ?>/course/" class="nav-text">All Courses</a></li>
                     <?php } ?>
 
-                    <?php if($this->showManagementTab()){ ?>
+                    <?php if($this->showManagementTab() || $this->isHeadTeamCoach()){ ?>
                     <li><a href="<?php echo $CFG->wwwroot; ?>/admin/user.php"  class="nav-text">Admin</a></li> <!-- admin tab shows to Managers -->
                     <?php } ?>
 
-                    <?php if($this->showManagementTab() || $this->isTeamCoach()){ ?>
+                    <?php if($this->showManagementTab() || $this->isTeamCoach() || $this->isHeadTeamCoach() ){ ?>
                     <li class="dropdown"><?php $this->reportsMenu(); ?></li>
                     <?php } ?>
 
@@ -350,7 +350,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 
     }
     //Has user completed the team coach module
-   protected function isTeamCoach(){
+    protected function isTeamCoach(){
         global $CFG,$DB,$USER;
         $GroupManagerRoleID = array(99,100); //The id of the new group manager role
         $gids = implode(",", $GroupManagerRoleID);
@@ -366,6 +366,25 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
         }else{
             return FALSE;
         }
-   }
+    }
+    //Is the user a head teacm coach
+    protected function isHeadTeamCoach(){
+        global $CFG,$DB,$USER;
+        $GroupManagerRoleID = array(101); //The id of the new group manager role
+        $gids = implode(",", $GroupManagerRoleID);
+        $sql = "
+            SELECT roleid,userid FROM mdl_role_assignments 
+            WHERE roleid IN ( " . $gids . ") AND userid = ? 
+
+        ";
+        $data = $DB->get_record_sql($sql,array($USER->id));
+        
+        if ($data){
+            return TRUE;
+        }else{
+            return FALSE;
+        }
+    }
+
 
 }

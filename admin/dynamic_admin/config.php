@@ -12,7 +12,7 @@
 	$selfPageRef = $_SERVER['PHP_SELF'];
 	$startDateForPicker = "01/05/2014";
 	$f2fTimeAdjust = 0; //weird date thing happening with Face to Face. Date it shows in interface is 2 hours in front, even though set to server time. This fixes it.
-	$GroupManagerRoleID = array(99,100); //The id of the new group manager role
+	$GroupManagerRoleID = array(99,100,101); //The id of the new group manager role
 	$SiteManagerRoleID = 1; //The id of the new site manager role ('Manager' out of the box)
 	$CFG->ErrorMessage = "Sorry but an unexpected error has occured. Please contact the Site Administrator.";
 
