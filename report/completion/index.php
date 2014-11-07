@@ -496,7 +496,7 @@ if (!$csv) {
     if (COMPLETION_REPORT_COL_TITLES) {
 
         print PHP_EOL.'<tr>';
-        print '<th scope="row" colspan="'.($idnumbers ? 2 : 1).'" class="rowheader">'.get_string('criteria', 'completion').'</th>';
+        print '<th scope="row" colspan="'.($idnumbers ? 2 : 1).'" class="rowheader"></th>';
 		print '<th>&nbsp;</th>'; //dynamic
         print '<th>&nbsp;</th>'; //dynamic
 		print '<th>&nbsp;</th>'; //dynamic
