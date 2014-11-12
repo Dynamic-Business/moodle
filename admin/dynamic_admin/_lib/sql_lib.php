@@ -311,8 +311,8 @@
 			JOIN mdl_enrol e ON e.id = ue.enrolid AND e.courseid = c.id
 			WHERE c.idnumber IN ('SHB04','SHB19','SHB20')
 			AND timecompleted IS NULL 
-			#AND (UNIX_TIMESTAMP()) - 9676800 > timeenrolled #should be '>'. Used < for testing
-			AND (UNIX_TIMESTAMP()) - 1209600 > timeenrolled #TESTING 2 weeks. Change back after deployment
+			AND (UNIX_TIMESTAMP()) - 9676800 > timeenrolled #should be '>'. Used < for testing
+			#AND (UNIX_TIMESTAMP()) - 1209600 > timeenrolled #TESTING 2 weeks. Change back after deployment
 			AND u.deleted = 0 AND u.idnumber != ''
 			AND " . $groupSql . "
 			AND ue.status = 0
