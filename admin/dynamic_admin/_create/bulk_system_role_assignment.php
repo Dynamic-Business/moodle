@@ -1,14 +1,28 @@
 <?php
 
 /*
-	- This script reads a csv of 'username','role shortname' and assigns them the role at system level.
+	- Collate list on an existing Moodle by going to Bulk User Actions > Download
+    - This script reads a csv of 'username','role shortname' and assigns them the role at system level.
 	- The username and role must exist within the system for this to work.
 	- csv file must be named 'users.csv.' and stored on same level as this script (although this can be changed in the config below)
 	- Built for Moodle 2.7
 	- Can delete all role assignments that were done through thsi script with DELETE FROM mdl_role_assignments WHERE component = 'bulk-assign-script'
+    - Run through the browser
 
-*/
-	
+    /*
+
+    Script to pull return all headteamcoaches
+
+    SELECT u.username,r.shortname 
+    FROM next20.mdl_role_assignments ra
+    JOIN mdl_user u ON u.id = ra.userid
+    JOIN mdl_role r ON r.id = ra.roleid
+    WHERE roleid = 102 AND u.deleted = 0
+
+
+    */
+
+    define('CLI_SCRIPT', true);	
 	$system_contextid = 1;
 	$system_contextlevel = 10;
 	$csv_file = 'users.csv';
