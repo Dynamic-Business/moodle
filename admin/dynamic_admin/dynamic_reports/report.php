@@ -515,7 +515,7 @@
 				$noResults = TRUE;
 			}
 			$linkBack = "<p><a href='". $CFG->wwwroot . "'>Moodle</a> &raquo; <a href='" .  $linkBackToReports . "'>Reports</a> &raquo; <a href='" . 	$linkBackToPayIncrease . "'>Pay Increase Overdue Report</a> &raquo; Report</p>";
-			$reportInfo = "<p class='rep-info'>Report shows users who are overdue on their Pay Increase Programmes</b>.</p>";
+			$reportInfo = "<p class='rep-info'>This report shows staff who are overdue a pay increase and need to complete their pay step quiz.</b>.</p>";
 			// $reportInfo2 = "<p class='rep-info' style='color:#f9023c;float;left;clear:none;'>Staff that are behind with their training are shown on this report. There are four 'checkpoints' that must be ticked off at certain times on the individual's training programme, depending on when their training started. Once training is back on track and the checkpoint has been ticked, they will no longer show on the report.</p>";
 		 break;
 
