@@ -119,11 +119,11 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 
                     <li class="dropdown"><?php $this->howToMenu(); ?></li>
 
-                    <?php if($this->is_administrator()){ ?>
+                    <?php if($this->is_administrator() || $this->isHeadOffice()){ ?>
                     <li><a href="<?php echo $CFG->wwwroot; ?>/course/" class="nav-text">All Courses</a></li>
                     <?php } ?>
 
-                    <?php if($this->showManagementTab() || $this->isHeadTeamCoach()){ ?>
+                    <?php if($this->showManagementTab() || $this->isHeadTeamCoach() || $this->isHeadOffice()){ ?>
                     <li><a href="<?php echo $CFG->wwwroot; ?>/admin/user.php"  class="nav-text">Admin</a></li> <!-- admin tab shows to Managers -->
                     <?php } ?>
 
@@ -313,6 +313,9 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
         if($this->is_administrator()){
             return TRUE;
         }
+        if($this->isHeadOffice()){
+            return TRUE;
+        }
         $sql = "
             SELECT u.id 
             FROM mdl_user u
@@ -333,6 +336,9 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
         if($this->is_administrator()){
             return TRUE;
         } 
+        if($this->isHeadOffice()){
+            return TRUE;
+        }
         $sql = "
             SELECT u.id 
             FROM mdl_user u
@@ -371,6 +377,25 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
     protected function isHeadTeamCoach(){
         global $CFG,$DB,$USER;
         $GroupManagerRoleID = array(101); //The id of the new group manager role
+        $gids = implode(",", $GroupManagerRoleID);
+        $sql = "
+            SELECT roleid,userid FROM mdl_role_assignments 
+            WHERE roleid IN ( " . $gids . ") AND userid = ? 
+
+        ";
+        $data = $DB->get_record_sql($sql,array($USER->id));
+        
+        if ($data){
+            return TRUE;
+        }else{
+            return FALSE;
+        }
+    }
+
+    //Is the user a head office user
+    protected function isHeadOffice(){
+        global $CFG,$DB,$USER;
+        $GroupManagerRoleID = array(103); //The id of the new group manager role
         $gids = implode(",", $GroupManagerRoleID);
         $sql = "
             SELECT roleid,userid FROM mdl_role_assignments 
