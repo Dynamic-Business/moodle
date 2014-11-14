@@ -140,6 +140,7 @@ echo $OUTPUT->doctype() ?>
         <?php
         echo $OUTPUT->login_info();
         echo $OUTPUT->standard_footer_html();
+        echo '<span style="font-size: xx-small;"> Server: ' . gethostname() . '</span>';
         ?>
     </div>
 </footer>

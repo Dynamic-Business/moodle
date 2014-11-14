@@ -78,6 +78,7 @@ echo $OUTPUT->doctype() ?>
     <div class="container-fluid">
         <?php
         echo $OUTPUT->login_info();
+        echo '<span style="font-size: xx-small;"> Server: ' . gethostname() . '</span>';
         ?>
     </div>
 </footer>
