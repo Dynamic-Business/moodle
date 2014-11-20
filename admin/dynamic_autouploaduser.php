@@ -1,6 +1,6 @@
 <?php  
 
-define('CLI_SCRIPT', true);
+// define('CLI_SCRIPT', true);
 
 /*
 	FOR MOODLE 2.0
@@ -354,7 +354,7 @@ if ($formdata = $formdata3) { // no magic quotes here!!!
                         }
                     }
                 } else {
-                    $user->$key = $value;
+                    $user->$key = trim($value);
                     if (in_array($key, $upt->columns)) {
                         $upt->track($key, $value);
                     }
@@ -452,6 +452,8 @@ if ($formdata = $formdata3) { // no magic quotes here!!!
         }
 
         // delete user
+        
+
         if (!empty($user->deleted)) {
             if (!$allowdeletes) {
                 $usersskipped++;
@@ -459,7 +461,8 @@ if ($formdata = $formdata3) { // no magic quotes here!!!
                 continue;
             }
             if ($existinguser) {
-                if (has_capability('moodle/site:doanything', $systemcontext, $existinguser->id)) {
+                //if (has_capability('moodle/site:doanything', $systemcontext, $existinguser->id)) {
+                if (is_siteadmin($existinguser->id)) {
                     $upt->track('status', $strusernotdeletedadmin, 'error');
                     $deleteerrors++;
                     continue;
@@ -498,7 +501,7 @@ if ($formdata = $formdata3) { // no magic quotes here!!!
             if ($olduser = get_record('user', 'username', addslashes($oldusername), 'mnethostid', addslashes($user->mnethostid))) {
                 $upt->track('id', $olduser->id, 'normal', false);
                 //if (has_capability('moodle/site:doanything', $systemcontext, $olduser->id)) {
-				 if (is_siteadmin($user->id)) {
+				 if (is_siteadmin($olduser->id)) {
                     $upt->track('status', $strusernotrenamedadmin, 'error');
                     $renameerrors++;
                     continue;
@@ -841,7 +844,7 @@ function validate_user_upload_columns(&$columns) {
     // test columns
     $processed = array();
     foreach ($columns as $key=>$unused) {
-        $columns[$key] = strtolower($columns[$key]); // no unicode expected here, ignore case
+        $columns[$key] = trim(strtolower($columns[$key])); // no unicode expected here, ignore case
         $field = $columns[$key];
         if (!in_array($field, $STD_FIELDS) && !in_array($field, $PRF_FIELDS) &&// if not a standard field and not an enrolment field, then we have an error
             !preg_match('/^course\d+$/', $field) && !preg_match('/^group\d+$/', $field) &&
