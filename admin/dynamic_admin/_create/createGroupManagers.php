@@ -12,7 +12,7 @@
 	$gmcRoleId = 100; //Group Manager
 	$contextId = 1; //top level
 	$fieldForGroupSetup = "storedetails";
-	$dbscript = TRUE;
+	//$dbscript = TRUE;
 
 	require_once(dirname(__FILE__) . '\..\..\..\lib\phpmailer\class.phpmailer.php');
 	require_once(dirname(__FILE__) . '\..\..\..\config.php'); //main moodle config
