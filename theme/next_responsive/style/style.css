@@ -607,7 +607,7 @@ li.dropdown li.dropdown {
   clear: both;
 }
 .block {
-  width: 100%;
+  width: 100% !important;
   border: 1px solid #c9c9c9;
 }
 #login-main {
