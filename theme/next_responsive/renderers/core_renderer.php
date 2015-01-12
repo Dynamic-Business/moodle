@@ -236,9 +236,6 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                     <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=46" ?>">Office Roles</a>
                 </li>
                 <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=47" ?>">Security Roles</a>
-                </li>
-                <li>
                     <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=48" ?>">Senior Manager Roles</a>
                 </li>
             </ul>
