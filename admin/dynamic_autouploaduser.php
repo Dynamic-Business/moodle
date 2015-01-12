@@ -1,6 +1,6 @@
 <?php  
 
-// define('CLI_SCRIPT', true);
+ define('CLI_SCRIPT', true);
 
 /*
 	FOR MOODLE 2.0

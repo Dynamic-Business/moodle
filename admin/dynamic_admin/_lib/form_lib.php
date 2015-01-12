@@ -211,8 +211,11 @@
 	}
 
 	function build_category_dropdown($completiontracking=false,$storeprogress = FALSE){
-		global $courseid,$status;
+		global $courseid,$status,$courses_config,$categories_config;
 		$catsArray = getAllCatsArray(); //returns multi-dim array of courses with id and course name
+		$catsArray = $categories_config;
+		// echo "<pre>";
+		// var_dump($courses); 
 
 		echo "<select name=\"cats\"  class='cat-select'>";
 		if(!$storeprogress){
@@ -220,13 +223,13 @@
 		}
 		for($i=0; $i<count($catsArray); $i++){
 			//echo "<input type='checkbox' name='courses[]' value=" . $coursesArray[$i][0]  .  " /><p>" . $coursesArray[$i][1] . "</p><br />" ;
-			if(!$storeprogress){
+			//if(!$storeprogress){
 				echo "<option value='" . $catsArray[$i][0] . "'>" . $catsArray[$i][1] . "</option>";
-			}else{
+			/*}else{
 				if($catsArray[$i][1] == "Retail Academy" || $catsArray[$i][1] == "Management Academy" || $catsArray[$i][1] == "Apprentices" || $catsArray[$i][1] == "Team Talks" || $catsArray[$i][1] == "E-learning"){
 					echo "<option value='" . $catsArray[$i][0] . "'>" . $catsArray[$i][1] . "</option>";
 				}
-			}
+			}*/
 		}
 		echo "</select>";
 	}

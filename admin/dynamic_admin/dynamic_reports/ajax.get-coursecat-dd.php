@@ -31,7 +31,7 @@ if(isadmin() || ismanager()){
 
 		// $sql = "SELECT d.data AS 'data',d.id AS 'id',f.shortname AS 'shortname' FROM mdl_user_info_data d INNER JOIN mdl_user_info_field f ON f.id = d.fieldid  WHERE d.data != '' AND f.shortname = ? GROUP BY d.data";
 
-		$sql = "
+		/*$sql = "
 			SELECT c.id,fullname,c.idnumber
 			FROM mdl_course c " . 
 			"INNER JOIN mdl_course_categories cat ON c.category = cat.id " .
@@ -43,13 +43,14 @@ if(isadmin() || ismanager()){
 		$sql .= "  ORDER BY CAST(c.sortorder AS SIGNED),fullname" ;
 		// echo $sql;
 		// die;
-		$rs = $DB->get_records_sql($sql);
+		$rs = $DB->get_records_sql($sql);*/
 
+		$rs = $courses_config[$id];
 
 		if(!empty($rs)){
 			echo "<select name=\"course\"  class='course-status-select'>";
 			foreach($rs as $row) {
-				echo "<option value='" . $row->id . "'>" . $row->fullname . "</option>";
+				echo "<option value='" . $row['id'] . "'>" . $row['fullname'] . "</option>";
 			}
 			echo "</select>";
 		}else{

@@ -7,6 +7,7 @@
 		//require_once('/../../lib/phpmailer/class.phpmailer.php'); //check this - may need another forward slash at start (local/Rackspace)
 	}
 	require_once('_inc/inc.innerlinks.php'); //Addded 7.7
+	require_once('config_categories.php'); // Hardcoded Category/course dynamic dropdown menu in report builders
 	
 	$CFG->dbpassword = $CFG->dbpass; //DB password variable name seems to have changed through Moodle 2 iterations.
 	$selfPageRef = $_SERVER['PHP_SELF'];
