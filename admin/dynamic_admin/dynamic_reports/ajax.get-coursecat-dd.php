@@ -38,8 +38,6 @@ if(isadmin() || ismanager()){
 			$sql .= "  AND (cat.path LIKE '/" . $id . "'  OR cat.path LIKE '%/" . $id . "%') ";
 		}
 		$sql .= "  ORDER BY CAST(c.sortorder AS SIGNED),fullname" ;
-		echo $sql;
-		die;
 		$rs = $DB->get_records_sql($sql);
 
 		//$rs = $courses_config[$id];
@@ -47,7 +45,8 @@ if(isadmin() || ismanager()){
 		if(!empty($rs)){
 			echo "<select name=\"course\"  class='course-status-select'>";
 			foreach($rs as $row) {
-				echo "<option value='" . $row['id'] . "'>" . $row['fullname'] . "</option>";
+				//echo "<option value='" . $row['id'] . "'>" . $row['fullname'] . "</option>";
+				echo "<option value='" . $row->id . "'>" . $row->fullname . "</option>";
 			}
 			echo "</select>";
 		}else{
