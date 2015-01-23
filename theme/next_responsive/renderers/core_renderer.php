@@ -159,7 +159,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Retail Academy</a>
             <ul class="dropdown-menu">
-                <li class="dropdown">
+                <!--<li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Programmes</a>
                     <ul class="dropdown-menu right">
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=81" ?>">Salesfloor</a></li> 
@@ -167,16 +167,22 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=26" ?>">Delivery</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=27" ?>">Administration</a></li>
                     </ul>
-                </li>
+                </li>-->
                 <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salesfloor &amp; Home</a>
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Salesfloor</a>
                     <ul class="dropdown-menu right">
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=57" ?>">Tills</a></li> 
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=58" ?>">Using Your Initiative</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=7" ?>">Service</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=10" ?>">Replenishment</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=12" ?>">Product Knowledge</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=13" ?>">VM</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=13" ?>">Visual Merchandising</a></li>
+                        
+                    </ul>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Home</a>
+                    <ul class="dropdown-menu right">
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=14" ?>">Home PC</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=15" ?>">Room Sets</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=16" ?>">Shelved Stock</a></li>
@@ -210,8 +216,9 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=31" ?>">Style Advisor</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=32" ?>">Dressing Room Sets</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=33" ?>">Furniture Deliveries</a></li>
-                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=34" ?>">Table Leader</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=34" ?>">Delivery Table Leader</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=36" ?>">Team Coach</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=77" ?>">Merit Sales</a></li>
                     </ul>
                 </li>
             </ul>

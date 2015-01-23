@@ -37,6 +37,7 @@
 
 	//3. Retail Academy - Home Activities
 	$courses_config[3] = array(
+		array("id"=>"8" , "fullname"=>"Home PC"),
 		array("id"=>"15" , "fullname"=>"Room Sets"),
 		array("id"=>"16" , "fullname"=>"Shelved Stock")
 	);
