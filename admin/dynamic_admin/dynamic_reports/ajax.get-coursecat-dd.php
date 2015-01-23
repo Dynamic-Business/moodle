@@ -29,25 +29,25 @@ if(isadmin() || ismanager()){
 
 	if($id != ""){
 
-		/*$sql = "
+		$sql = "
 			SELECT c.id,fullname,c.idnumber
 			FROM mdl_course c " . 
 			"INNER JOIN mdl_course_categories cat ON c.category = cat.id " .
 			"WHERE c.idnumber != '' AND enablecompletion = 1 ";
 		if ($id > 0){
-			$sql .= "  AND (cat.path LIKE '/" . $id . "'  OR cat.path LIKE '%/" . $id . "%') ";
+			$sql .= "  AND (cat.path LIKE '/" . $id . "'  OR cat.path LIKE '%/" . $id . "' OR cat.path LIKE '%/". $id ."/%') ";
 		}
 		$sql .= "  ORDER BY CAST(c.sortorder AS SIGNED),fullname" ;
-		$rs = $DB->get_records_sql($sql);*/
+		$rs = $DB->get_records_sql($sql);
 
 		// echo $sql;die;
-		$rs = $courses_config[$id];
+		//$rs = $courses_config[$id];
 
 		if(!empty($rs)){
 			echo "<select name=\"course\"  class='course-status-select'>";
 			foreach($rs as $row) {
-				echo "<option value='" . $row['id'] . "'>" . $row['fullname'] . "</option>";
-				// echo "<option value='" . $row->id . "'>" . $row->fullname . "</option>";
+				//echo "<option value='" . $row['id'] . "'>" . $row['fullname'] . "</option>";
+				echo "<option value='" . $row->id . "'>" . $row->fullname . "</option>";
 			}
 			echo "</select>";
 		}else{

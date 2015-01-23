@@ -37,7 +37,7 @@ if(isadmin() || ismanager()){
 			"WHERE c.idnumber != '' AND enablecompletion = 1 ";
 		if ($id > 0){
 			//$sql .= "  AND category = " . $id . " ";
-			$sql .= "  AND (cat.path LIKE '/" . $id . "'  OR cat.path LIKE '%/" . $id . "%') ";
+			$sql .= "  AND (cat.path LIKE '/" . $id . "'  OR cat.path LIKE '%/" . $id . "' OR cat.path LIKE '%/". $id ."/%') ";
 			//$sql .= "  AND cat.path LIKE '%/" . $id . "%' ";
 		}
 		$sql .= " ORDER BY fullname" ;

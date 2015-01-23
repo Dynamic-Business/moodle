@@ -9,6 +9,6 @@ $(document).ready(function(){
 	 });
 
 	 //initla loading of Retail Academy
-	 $('.ajax-cbg2').load("ajax.get-coursecat.php" , {selected: 2});
+	 $('.ajax-cbg2').load("ajax.get-coursecat.php" , {selected: 60});
 
 });
