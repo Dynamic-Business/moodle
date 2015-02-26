@@ -223,6 +223,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=32" ?>">Dressing Room Sets</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=33" ?>">Furniture Deliveries</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=34" ?>">Delivery Table Leader</a></li>
+                        <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=158" ?>">Delivery Vehicles</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=36" ?>">Team Coach</a></li>
                         <li><a href="<?php echo $CFG->wwwroot."/course/view.php?id=77" ?>">Merit Sales</a></li>
                     </ul>
