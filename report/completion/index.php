@@ -840,7 +840,7 @@ foreach ($progress as $user) {
                 // print '<a href="'.$toggleurl->out().'"><img src="'.$OUTPUT->pix_url('i/completion-manual-'.($is_complete ? 'y' : 'n')).
                 //     '" alt="'.$describe.'" class="icon" title="'.get_string('markcomplete', 'completion').'" /></a></td>';
 
-                print '<a href="'.$toggleurl->out().'" onclick="return confirm(\' Are you sure? Once you have ticked this box, there is no going back! The trainee must have completed the Competent, Experienced and Final quizzes to receive a payrise after the relevant length of service\')">'.
+                print '<a href="'.$toggleurl->out().'" onclick="return confirm(\' Are you sure? Once you have ticked this box there is no going back.\')">'.
                     '<img src="'.$OUTPUT->pix_url('i/completion-manual-'.($is_complete ? 'y' : 'n')).
                     '" alt="'.$describe.'" class="icon" title="'.get_string('markcomplete', 'completion').'" /></a>';
             } else {
