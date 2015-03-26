@@ -47,8 +47,12 @@ $groupsList = "0";
 if(isset($_POST['groups'])){
 	$groups = $_POST['groups'];
 	$groupsList = implode("," , $groups);
+    $_SESSION["groupsList"] = $groupsList;
 }else if (isset($_GET['groups']	)){
 	$groupsList = $_GET['groups'];
+    $_SESSION["groupsList"] = $groupsList;
+}else{
+    $groupsList = $_SESSION["groupsList"];
 }
 //echo "groups:" . $groupsList;
 

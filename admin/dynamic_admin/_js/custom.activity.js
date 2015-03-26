@@ -7,6 +7,11 @@ $(document).ready(function(){
 			alert('At least one group must be selected');
 			return false; // The form will *not* submit
 		}
+
+        var currenturl = $(this).attr('action');
+        var course = $( ".course-status-select" ).val();
+        var newurl = currenturl +  "&course=" + course
+        $(this).attr('action', newurl); 
 		
 	});
 });

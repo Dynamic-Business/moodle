@@ -1135,7 +1135,6 @@ class completion_info {
                 if ($gm != "admin" && $groupsList != "0"){
                     $groupsql .= " WHERE dug.groupid IN (" . $groupsList . ") ";
                 }else if ($gm == "admin" && $groupsList != "0"){
-                    
                     $groupsql .= " WHERE dug.groupid IN (" . $groupsList . ") GROUP BY dug.userid ";
                 }else if($gm != "admin" && $groupsList == "0"){
                     $groupsql .= " WHERE dug.userid = eu.id ";
