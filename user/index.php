@@ -363,7 +363,12 @@ if ($mode === MODE_BRIEF && !isset($hiddenfields['country'])) {
 }
 if (!isset($hiddenfields['lastaccess'])) {
     $tablecolumns[] = 'lastaccess';
-    $tableheaders[] = get_string('lastaccess');
+    if ($course->id == SITEID) {
+        // Exception case for viewing participants on site home.
+        $tableheaders[] = get_string('lastsiteaccess');
+    } else {
+        $tableheaders[] = get_string('lastcourseaccess');
+    }
 }
 
 if ($bulkoperations && $mode === MODE_USERDETAILS) {
@@ -691,7 +696,7 @@ if ($mode === MODE_USERDETAILS) {    // Print simple listing.
 
                 $links = array();
 
-                if ($CFG->bloglevel > 0) {
+                if ($CFG->enableblogs && ($CFG->bloglevel != BLOG_USER_LEVEL || $USER->id == $user->id)) {
                     $links[] = html_writer::link(new moodle_url('/blog/index.php?userid='.$user->id), get_string('blogs', 'blog'));
                 }
 

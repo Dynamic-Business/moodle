@@ -19,6 +19,9 @@
  * Toggles the manual completion flag for a particular activity or course completion
  * and the current user.
  *
+ * If by student params: course=2
+ * If by manager params: course=2&user=4&rolec=3&sesskey=ghfgsdf
+ *
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  * @package course
  */
@@ -30,6 +33,10 @@ require_once($CFG->libdir.'/completionlib.php');
 $cmid = optional_param('id', 0, PARAM_INT);
 $courseid = optional_param('course', 0, PARAM_INT);
 $confirm = optional_param('confirm', 0, PARAM_BOOL);
+
+// Check if we are marking a user complete via the completion report.
+$user = optional_param('user', 0, PARAM_INT);
+$rolec = optional_param('rolec', 0, PARAM_INT);
 
 if (!$cmid && !$courseid) {
     print_error('invalidarguments');
@@ -45,6 +52,8 @@ if ($courseid) {
     require_login($course);
 
     $completion = new completion_info($course);
+    $trackeduser = ($user ? $user : $USER->id);
+
     if (!$completion->is_enabled()) {
         throw new moodle_exception('completionnotenabled', 'completion');  
     } 
@@ -52,10 +61,6 @@ if ($courseid) {
     /*elseif (!$completion->is_tracked_user($USER->id)) {
         throw new moodle_exception('nottracked', 'completion');
     }*/
-
-    // Check if we are marking a user complete via the completion report
-    $user = optional_param('user', 0, PARAM_INT);
-    $rolec = optional_param('rolec', 0, PARAM_INT);
 
     if ($user && $rolec) {
         require_sesskey();
@@ -75,8 +80,9 @@ if ($courseid) {
         }
 
         // Return to previous page
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-            redirect($_SERVER['HTTP_REFERER']);
+        $referer = clean_param($_SERVER['HTTP_REFERER'], PARAM_LOCALURL);
+        if (!empty($referer)) {
+            redirect($referer);
         } else {
             redirect('view.php?id='.$course->id);
         }

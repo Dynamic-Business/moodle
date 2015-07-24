@@ -87,9 +87,10 @@ if (!isloggedin() or isguestuser()) {
     $PAGE->set_context($modcontext);
     $PAGE->set_title($course->shortname);
     $PAGE->set_heading($course->fullname);
+    $referer = clean_param(get_referer(false), PARAM_LOCALURL);
 
     echo $OUTPUT->header();
-    echo $OUTPUT->confirm(get_string('noguestpost', 'forum').'<br /><br />'.get_string('liketologin'), get_login_url(), get_referer(false));
+    echo $OUTPUT->confirm(get_string('noguestpost', 'forum').'<br /><br />'.get_string('liketologin'), get_login_url(), $referer);
     echo $OUTPUT->footer();
     exit;
 }
@@ -107,6 +108,8 @@ if (!empty($forum)) {      // User is starting a new discussion in a forum
         print_error("invalidcoursemodule");
     }
 
+    // Retrieve the contexts.
+    $modcontext    = context_module::instance($cm->id);
     $coursecontext = context_course::instance($course->id);
 
     if (! forum_user_can_post_discussion($forum, $groupid, -1, $cm)) {
@@ -114,7 +117,7 @@ if (!empty($forum)) {      // User is starting a new discussion in a forum
             if (!is_enrolled($coursecontext)) {
                 if (enrol_selfenrol_available($course->id)) {
                     $SESSION->wantsurl = qualified_me();
-                    $SESSION->enrolcancel = $_SERVER['HTTP_REFERER'];
+                    $SESSION->enrolcancel = clean_param($_SERVER['HTTP_REFERER'], PARAM_LOCALURL);
                     redirect($CFG->wwwroot.'/enrol/index.php?id='.$course->id, get_string('youneedtoenrol'));
                 }
             }
@@ -122,7 +125,7 @@ if (!empty($forum)) {      // User is starting a new discussion in a forum
         print_error('nopostforum', 'forum');
     }
 
-    if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
+    if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', $modcontext)) {
         print_error("activityiscurrentlyhidden");
     }
 
@@ -131,7 +134,6 @@ if (!empty($forum)) {      // User is starting a new discussion in a forum
     } else {
         $SESSION->fromurl = '';
     }
-
 
     // Load up the $post variable.
 
@@ -176,14 +178,15 @@ if (!empty($forum)) {      // User is starting a new discussion in a forum
     // Ensure lang, theme, etc. is set up properly. MDL-6926
     $PAGE->set_cm($cm, $course, $forum);
 
-    $coursecontext = context_course::instance($course->id);
+    // Retrieve the contexts.
     $modcontext    = context_module::instance($cm->id);
+    $coursecontext = context_course::instance($course->id);
 
     if (! forum_user_can_post($forum, $discussion, $USER, $cm, $course, $modcontext)) {
         if (!isguestuser()) {
             if (!is_enrolled($coursecontext)) {  // User is a guest here!
                 $SESSION->wantsurl = qualified_me();
-                $SESSION->enrolcancel = $_SERVER['HTTP_REFERER'];
+                $SESSION->enrolcancel = clean_param($_SERVER['HTTP_REFERER'], PARAM_LOCALURL);
                 redirect($CFG->wwwroot.'/enrol/index.php?id='.$course->id, get_string('youneedtoenrol'));
             }
         }
@@ -206,7 +209,7 @@ if (!empty($forum)) {      // User is starting a new discussion in a forum
         }
     }
 
-    if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', $coursecontext)) {
+    if (!$cm->visible and !has_capability('moodle/course:viewhiddenactivities', $modcontext)) {
         print_error("activityiscurrentlyhidden");
     }
 

@@ -557,10 +557,16 @@ function get_exception_info($ex) {
         }
     }
 
-    // when printing an error the continue button should never link offsite
-    if (stripos($link, $CFG->wwwroot) === false &&
-        stripos($link, $CFG->httpswwwroot) === false) {
-        $link = $CFG->wwwroot.'/';
+    // When printing an error the continue button should never link offsite.
+    // We cannot use clean_param() here as it is not guaranteed that it has been loaded yet.
+    $httpswwwroot = str_replace('http:', 'https:', $CFG->wwwroot);
+    if (stripos($link, $CFG->wwwroot) === 0) {
+        // Internal HTTP, all good.
+    } else if (!empty($CFG->loginhttps) && stripos($link, $httpswwwroot) === 0) {
+        // Internal HTTPS, all good.
+    } else {
+        // External link spotted!
+        $link = $CFG->wwwroot . '/';
     }
 
     $info = new stdClass();
@@ -883,11 +889,19 @@ function setup_get_remote_url() {
         //IIS - needs a lot of tweaking to make it work
         $rurl['fullpath'] = $_SERVER['SCRIPT_NAME'];
 
-        // NOTE: ignore PATH_INFO because it is incorrectly encoded using 8bit filesystem legacy encoding in IIS
-        //       since 2.0 we rely on iis rewrite extenssion like Helicon ISAPI_rewrite
-        //       example rule: RewriteRule ^([^\?]+?\.php)(\/.+)$ $1\?file=$2 [QSA]
+        // NOTE: we should ignore PATH_INFO because it is incorrectly encoded using 8bit filesystem legacy encoding in IIS.
+        //       Since 2.0, we rely on IIS rewrite extensions like Helicon ISAPI_rewrite
+        //         example rule: RewriteRule ^([^\?]+?\.php)(\/.+)$ $1\?file=$2 [QSA]
+        //       OR
+        //       we rely on a proper IIS 6.0+ configuration: the 'FastCGIUtf8ServerVariables' registry key.
+        if (isset($_SERVER['PATH_INFO']) and $_SERVER['PATH_INFO'] !== '') {
+            // Check that PATH_INFO works == must not contain the script name.
+            if (strpos($_SERVER['PATH_INFO'], $_SERVER['SCRIPT_NAME']) === false) {
+                $rurl['fullpath'] .= clean_param(urldecode($_SERVER['PATH_INFO']), PARAM_PATH);
+            }
+        }
 
-        if ($_SERVER['QUERY_STRING'] != '') {
+        if (isset($_SERVER['QUERY_STRING']) and $_SERVER['QUERY_STRING'] !== '') {
             $rurl['fullpath'] .= '?'.$_SERVER['QUERY_STRING'];
         }
         $_SERVER['REQUEST_URI'] = $rurl['fullpath']; // extra IIS compatibility

@@ -63,6 +63,20 @@ M.mod_scormform.init = function(Y) {
                 scormintro.setHTML(M.str.scorm.popupsblocked);
             }}, 800);
     }
+    // Set mode and newattempt correctly.
+    var setlaunchoptions = function() {
+        var mode = Y.one('#scormviewform input[name=mode]:checked');
+        if (mode) {
+            var modevalue = mode.get('value');
+            launch_url += '&mode=' + (modevalue ? modevalue : 'normal');
+        } else {
+            launch_url += '&mode=normal';
+        }
+
+        var newattempt = Y.one('#scormviewform #a');
+        launch_url += (newattempt && newattempt.get('checked') ? '&newattempt=on' : '');
+    }
+
     if (launch == true) {
         //setlaunchoptions(); //dynamic: popups not working so reverted back to previous commit on github
         winobj = window.open(launch_url,'Popup', poptions);

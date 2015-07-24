@@ -1167,7 +1167,7 @@ class global_navigation extends navigation_node {
                 // course node and not populate it.
 
                 // Not enrolled, can't view, and hasn't switched roles
-                if (!can_access_course($course)) {
+                if (!can_access_course($course, null, '', true)) {
                     if ($coursenode->isexpandable === true) {
                         // Obviously the situation has changed, update the cache and adjust the node.
                         // This occurs if the user access to a course has been revoked (one way or another) after
@@ -1183,9 +1183,7 @@ class global_navigation extends navigation_node {
                         $canviewcourseprofile = false;
                         break;
                     }
-                }
-
-                if ($coursenode->isexpandable === false) {
+                } else if ($coursenode->isexpandable === false) {
                     // Obviously the situation has changed, update the cache and adjust the node.
                     // This occurs if the user has been granted access to a course (one way or another) after initially
                     // logging in for this session.
@@ -1230,7 +1228,7 @@ class global_navigation extends navigation_node {
 
                 // If the user is not enrolled then we only want to show the
                 // course node and not populate it.
-                if (!can_access_course($course)) {
+                if (!can_access_course($course, null, '', true)) {
                     $coursenode->make_active();
                     $canviewcourseprofile = false;
                     break;
@@ -1269,7 +1267,7 @@ class global_navigation extends navigation_node {
 
                 // If the user is not enrolled then we only want to show the
                 // course node and not populate it.
-                if (!can_access_course($course)) {
+                if (!can_access_course($course, null, '', true)) {
                     $coursenode->make_active();
                     $canviewcourseprofile = false;
                     break;
@@ -1634,13 +1632,17 @@ class global_navigation extends navigation_node {
         } else if (array_key_exists($categoryid, $this->addedcategories)) {
             // The category itself has been loaded already so we just need to ensure its subcategories
             // have been loaded
-            list($sql, $params) = $DB->get_in_or_equal(array_keys($this->addedcategories), SQL_PARAMS_NAMED, 'parent', false);
-            if ($showbasecategories) {
-                // We need to include categories with parent = 0 as well
-                $sqlwhere .= " AND (cc.parent = :categoryid OR cc.parent = 0) AND cc.parent {$sql}";
-            } else {
-                // All we need is categories that match the parent
-                $sqlwhere .= " AND cc.parent = :categoryid AND cc.parent {$sql}";
+            $addedcategories = $this->addedcategories;
+            unset($addedcategories[$categoryid]);
+            if (count($addedcategories) > 0) {
+                list($sql, $params) = $DB->get_in_or_equal(array_keys($addedcategories), SQL_PARAMS_NAMED, 'parent', false);
+                if ($showbasecategories) {
+                    // We need to include categories with parent = 0 as well
+                    $sqlwhere .= " AND (cc.parent = :categoryid OR cc.parent = 0) AND cc.parent {$sql}";
+                } else {
+                    // All we need is categories that match the parent
+                    $sqlwhere .= " AND cc.parent = :categoryid AND cc.parent {$sql}";
+                }
             }
             $params['categoryid'] = $categoryid;
         } else {
@@ -2087,7 +2089,7 @@ class global_navigation extends navigation_node {
         $featuresfunc = $cm->modname.'_supports';
         if (function_exists($featuresfunc) && $featuresfunc(FEATURE_ADVANCED_GRADING)) {
             require_once($CFG->dirroot.'/grade/grading/lib.php');
-            $gradingman = get_grading_manager($cm->context, $cm->modname);
+            $gradingman = get_grading_manager($cm->context,  'mod_'.$cm->modname);
             $gradingman->extend_navigation($this, $activity);
         }
 
@@ -2221,6 +2223,8 @@ class global_navigation extends navigation_node {
             }
         }
 
+        // Add the messages link.
+        // It is context based so can appear in "My profile" and in course participants information.
         if (!empty($CFG->messaging)) {
             $messageargs = array('user1' => $USER->id);
             if ($USER->id != $user->id) {
@@ -2233,13 +2237,15 @@ class global_navigation extends navigation_node {
             $usernode->add(get_string('messages', 'message'), $url, self::TYPE_SETTING, null, 'messages');
         }
 
-        if ($iscurrentuser && has_capability('moodle/user:manageownfiles', context_user::instance($USER->id))) {
+        // Add the "My private files" link.
+        // This link doesn't have a unique display for course context so only display it under "My profile".
+        if ($issitecourse && $iscurrentuser && has_capability('moodle/user:manageownfiles', $usercontext)) {
             $url = new moodle_url('/user/files.php');
             $usernode->add(get_string('myfiles'), $url, self::TYPE_SETTING);
         }
 
         if (!empty($CFG->enablebadges) && $iscurrentuser &&
-                has_capability('moodle/badges:manageownbadges', context_user::instance($USER->id))) {
+                has_capability('moodle/badges:manageownbadges', $usercontext)) {
             $url = new moodle_url('/badges/mybadges.php');
             $usernode->add(get_string('mybadges', 'badges'), $url, self::TYPE_SETTING);
         }
@@ -2277,7 +2283,14 @@ class global_navigation extends navigation_node {
             $userscourses = enrol_get_users_courses($user->id);
             $userscoursesnode = $usernode->add(get_string('courses'));
 
+            $count = 0;
             foreach ($userscourses as $usercourse) {
+                if ($count === (int)$CFG->navcourselimit) {
+                    $url = new moodle_url('/user/profile.php', array('id' => $user->id, 'showallcourses' => 1));
+                    $userscoursesnode->add(get_string('showallcourses'), $url);
+                    break;
+                }
+                $count++;
                 $usercoursecontext = context_course::instance($usercourse->id);
                 $usercourseshortname = format_string($usercourse->shortname, true, array('context' => $usercoursecontext));
                 $usercoursenode = $userscoursesnode->add($usercourseshortname, new moodle_url('/user/view.php', array('id'=>$user->id, 'course'=>$usercourse->id)), self::TYPE_CONTAINER);
@@ -2304,7 +2317,7 @@ class global_navigation extends navigation_node {
                     $usercoursenode->add(get_string('notes', 'notes'), $url, self::TYPE_SETTING);
                 }
 
-                if (can_access_course($usercourse, $user->id)) {
+                if (can_access_course($usercourse, $user->id, '', true)) {
                     $usercoursenode->add(get_string('entercourse'), new moodle_url('/course/view.php', array('id'=>$usercourse->id)), self::TYPE_SETTING, null, null, new pix_icon('i/course', ''));
                 }
 
@@ -2403,6 +2416,7 @@ class global_navigation extends navigation_node {
         } else if ($coursetype == self::COURSE_CURRENT) {
             $parent = $this->rootnodes['currentcourse'];
             $url = new moodle_url('/course/view.php', array('id'=>$course->id));
+            $canexpandcourse = $this->can_expand_course($course);
         } else if ($coursetype == self::COURSE_MY && !$forcegeneric) {
             if (!empty($CFG->navshowmycoursecategories) && ($parent = $this->rootnodes['mycourses']->find($course->category, self::TYPE_MY_CATEGORY))) {
                 // Nothing to do here the above statement set $parent to the category within mycourses.
@@ -2482,7 +2496,7 @@ class global_navigation extends navigation_node {
         $cache = $this->get_expand_course_cache();
         $canexpand = $cache->get($course->id);
         if ($canexpand === false) {
-            $canexpand = isloggedin() && can_access_course($course);
+            $canexpand = isloggedin() && can_access_course($course, null, '', true);
             $canexpand = (int)$canexpand;
             $cache->set($course->id, $canexpand);
         }
@@ -2838,7 +2852,7 @@ class global_navigation_for_ajax extends global_navigation {
                 break;
             case self::TYPE_COURSE :
                 $course = $DB->get_record('course', array('id' => $this->instanceid), '*', MUST_EXIST);
-                if (!can_access_course($course)) {
+                if (!can_access_course($course, null, '', true)) {
                     // Thats OK all courses are expandable by default. We don't need to actually expand it we can just
                     // add the course node and break. This leads to an empty node.
                     $this->add_course($course);
@@ -2874,10 +2888,11 @@ class global_navigation_for_ajax extends global_navigation {
                 require_course_login($course, true, $cm, false, true);
                 $this->page->set_context(context_module::instance($cm->id));
                 $coursenode = $this->load_course($course);
-                if ($course->id != $SITE->id) {
-                    $this->load_course_sections($course, $coursenode, null, $cm);
+                $this->load_course_sections($course, $coursenode, null, $cm);
+                $activitynode = $coursenode->find($cm->id, self::TYPE_ACTIVITY);
+                if ($activitynode) {
+                    $modulenode = $this->load_activity($cm, $course, $activitynode);
                 }
-                $modulenode = $this->load_activity($cm, $course, $coursenode->find($cm->id, self::TYPE_ACTIVITY));
                 break;
             default:
                 throw new Exception('Unknown type');
@@ -3231,7 +3246,7 @@ class navbar extends navigation_node {
             }
             $categories[] = $categorynode;
         }
-        if (is_enrolled(context_course::instance($this->page->course->id))) {
+        if (is_enrolled(context_course::instance($this->page->course->id), null, '', true)) {
             $courses = $this->page->navigation->get('mycourses');
         } else {
             $courses = $this->page->navigation->get('courses');
@@ -3965,7 +3980,7 @@ class settings_navigation extends navigation_node {
         $featuresfunc = $this->page->activityname.'_supports';
         if (function_exists($featuresfunc) && $featuresfunc(FEATURE_ADVANCED_GRADING) && has_capability('moodle/grade:managegradingforms', $this->page->cm->context)) {
             require_once($CFG->dirroot.'/grade/grading/lib.php');
-            $gradingman = get_grading_manager($this->page->cm->context, $this->page->activityname);
+            $gradingman = get_grading_manager($this->page->cm->context, 'mod_'.$this->page->activityname);
             $gradingman->extend_settings_navigation($this, $modulenode);
         }
 
@@ -4121,14 +4136,22 @@ class settings_navigation extends navigation_node {
                 }
             } else {
                 $canviewusercourse = has_capability('moodle/user:viewdetails', $coursecontext);
-                $userisenrolled = is_enrolled($coursecontext, $user->id);
+                $userisenrolled = is_enrolled($coursecontext, $user->id, '', true);
                 if ((!$canviewusercourse && !$canviewuser) || !$userisenrolled) {
                     return false;
                 }
                 $canaccessallgroups = has_capability('moodle/site:accessallgroups', $coursecontext);
-                if (!$canaccessallgroups && groups_get_course_groupmode($course) == SEPARATEGROUPS) {
-                    // If groups are in use, make sure we can see that group
-                    return false;
+                if (!$canaccessallgroups && groups_get_course_groupmode($course) == SEPARATEGROUPS && !$canviewuser) {
+                    // If groups are in use, make sure we can see that group (MDL-45874). That does not apply to parents.
+                    if ($courseid == $this->page->course->id) {
+                        $mygroups = get_fast_modinfo($this->page->course)->groups;
+                    } else {
+                        $mygroups = groups_get_user_groups($courseid);
+                    }
+                    $usergroups = groups_get_user_groups($courseid, $userid);
+                    if (!array_intersect_key($mygroups[0], $usergroups[0])) {
+                        return false;
+                    }
                 }
             }
         }
@@ -4350,54 +4373,70 @@ class settings_navigation extends navigation_node {
     protected function load_category_settings() {
         global $CFG;
 
-        $categorynode = $this->add($this->context->get_context_name(), null, null, null, 'categorysettings');
+        // We can land here while being in the context of a block, in which case we
+        // should get the parent context which should be the category one. See self::initialise().
+        if ($this->context->contextlevel == CONTEXT_BLOCK) {
+            $catcontext = $this->context->get_parent_context();
+        } else {
+            $catcontext = $this->context;
+        }
+
+        // Let's make sure that we always have the right context when getting here.
+        if ($catcontext->contextlevel != CONTEXT_COURSECAT) {
+            throw new coding_exception('Unexpected context while loading category settings.');
+        }
+
+        $categorynode = $this->add($catcontext->get_context_name(), null, null, null, 'categorysettings');
         $categorynode->force_open();
 
-        if (can_edit_in_category($this->context->instanceid)) {
-            $url = new moodle_url('/course/management.php', array('categoryid' => $this->context->instanceid));
+        if (can_edit_in_category($catcontext->instanceid)) {
+            $url = new moodle_url('/course/management.php', array('categoryid' => $catcontext->instanceid));
             $editstring = get_string('managecategorythis');
             $categorynode->add($editstring, $url, self::TYPE_SETTING, null, null, new pix_icon('i/edit', ''));
         }
 
-        if (has_capability('moodle/category:manage', $this->context)) {
-            $editurl = new moodle_url('/course/editcategory.php', array('id' => $this->context->instanceid));
+        if (has_capability('moodle/category:manage', $catcontext)) {
+            $editurl = new moodle_url('/course/editcategory.php', array('id' => $catcontext->instanceid));
             $categorynode->add(get_string('editcategorythis'), $editurl, self::TYPE_SETTING, null, 'edit', new pix_icon('i/edit', ''));
 
-            $addsubcaturl = new moodle_url('/course/editcategory.php', array('parent' => $this->context->instanceid));
+            $addsubcaturl = new moodle_url('/course/editcategory.php', array('parent' => $catcontext->instanceid));
             $categorynode->add(get_string('addsubcategory'), $addsubcaturl, self::TYPE_SETTING, null, 'addsubcat', new pix_icon('i/withsubcat', ''));
         }
 
         // Assign local roles
-        if (has_capability('moodle/role:assign', $this->context)) {
-            $assignurl = new moodle_url('/'.$CFG->admin.'/roles/assign.php', array('contextid'=>$this->context->id));
+        $assignableroles = get_assignable_roles($catcontext);
+        if (!empty($assignableroles)) {
+            $assignurl = new moodle_url('/'.$CFG->admin.'/roles/assign.php', array('contextid' => $catcontext->id));
             $categorynode->add(get_string('assignroles', 'role'), $assignurl, self::TYPE_SETTING, null, 'roles', new pix_icon('i/assignroles', ''));
         }
 
         // Override roles
-        if (has_capability('moodle/role:review', $this->context) or count(get_overridable_roles($this->context))>0) {
-            $url = new moodle_url('/'.$CFG->admin.'/roles/permissions.php', array('contextid'=>$this->context->id));
+        if (has_capability('moodle/role:review', $catcontext) or count(get_overridable_roles($catcontext)) > 0) {
+            $url = new moodle_url('/'.$CFG->admin.'/roles/permissions.php', array('contextid' => $catcontext->id));
             $categorynode->add(get_string('permissions', 'role'), $url, self::TYPE_SETTING, null, 'permissions', new pix_icon('i/permissions', ''));
         }
         // Check role permissions
-        if (has_any_capability(array('moodle/role:assign', 'moodle/role:safeoverride','moodle/role:override', 'moodle/role:assign'), $this->context)) {
-            $url = new moodle_url('/'.$CFG->admin.'/roles/check.php', array('contextid'=>$this->context->id));
+        if (has_any_capability(array('moodle/role:assign', 'moodle/role:safeoverride',
+                'moodle/role:override', 'moodle/role:assign'), $catcontext)) {
+            $url = new moodle_url('/'.$CFG->admin.'/roles/check.php', array('contextid' => $catcontext->id));
             $categorynode->add(get_string('checkpermissions', 'role'), $url, self::TYPE_SETTING, null, 'checkpermissions', new pix_icon('i/checkpermissions', ''));
         }
 
         // Cohorts
-        if (has_any_capability(array('moodle/cohort:view', 'moodle/cohort:manage'), $this->context)) {
-            $categorynode->add(get_string('cohorts', 'cohort'), new moodle_url('/cohort/index.php', array('contextid' => $this->context->id)), self::TYPE_SETTING, null, 'cohort', new pix_icon('i/cohort', ''));
+        if (has_any_capability(array('moodle/cohort:view', 'moodle/cohort:manage'), $catcontext)) {
+            $categorynode->add(get_string('cohorts', 'cohort'), new moodle_url('/cohort/index.php',
+                array('contextid' => $catcontext->id)), self::TYPE_SETTING, null, 'cohort', new pix_icon('i/cohort', ''));
         }
 
         // Manage filters
-        if (has_capability('moodle/filter:manage', $this->context) && count(filter_get_available_in_context($this->context))>0) {
-            $url = new moodle_url('/filter/manage.php', array('contextid'=>$this->context->id));
+        if (has_capability('moodle/filter:manage', $catcontext) && count(filter_get_available_in_context($catcontext)) > 0) {
+            $url = new moodle_url('/filter/manage.php', array('contextid' => $catcontext->id));
             $categorynode->add(get_string('filters', 'admin'), $url, self::TYPE_SETTING, null, 'filters', new pix_icon('i/filter', ''));
         }
 
         // Restore.
-        if (has_capability('moodle/course:create', $this->context)) {
-            $url = new moodle_url('/backup/restorefile.php', array('contextid' => $this->context->id));
+        if (has_capability('moodle/course:create', $catcontext)) {
+            $url = new moodle_url('/backup/restorefile.php', array('contextid' => $catcontext->id));
             $categorynode->add(get_string('restorecourse', 'admin'), $url, self::TYPE_SETTING, null, 'restorecourse', new pix_icon('i/restore', ''));
         }
 

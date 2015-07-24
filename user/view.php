@@ -52,27 +52,36 @@ $systemcontext = context_system::instance();
 $coursecontext = context_course::instance($course->id);
 $usercontext   = context_user::instance($user->id, IGNORE_MISSING);
 
-// Require login first.
+// Check we are not trying to view guest's profile.
 if (isguestuser($user)) {
     // Can not view profile of guest - thre is nothing to see there.
     print_error('invaliduserid');
 }
+
+$PAGE->set_context($coursecontext);
 
 if (!empty($CFG->forceloginforprofiles)) {
     require_login(); // We can not log in to course due to the parent hack below.
 
     // Guests do not have permissions to view anyone's profile if forceloginforprofiles is set.
     if (isguestuser()) {
-        $SESSION->wantsurl = $PAGE->url->out(false);
-        redirect(get_login_url());
+        echo $OUTPUT->header();
+        echo $OUTPUT->confirm(get_string('guestcantaccessprofiles', 'error'),
+                              get_login_url(),
+                              $CFG->wwwroot);
+        echo $OUTPUT->footer();
+        die;
     }
 }
 
-$PAGE->set_context($coursecontext);
 $PAGE->set_course($course);
 $PAGE->set_pagetype('course-view-' . $course->format);  // To get the blocks exactly like the course.
 $PAGE->add_body_class('path-user');                     // So we can style it independently.
 $PAGE->set_other_editing_capability('moodle/course:manageactivities');
+
+// Set the Moodle docs path explicitly because the default behaviour
+// of inhereting the pagetype will lead to an incorrect docs location.
+$PAGE->set_docs_path('user/profile');
 
 $isparent = false;
 
@@ -103,8 +112,9 @@ if ($currentuser) {
         // Need to have full access to a course to see the rest of own info.
         echo $OUTPUT->header();
         echo $OUTPUT->heading(get_string('notenrolled', '', $fullname));
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-            echo $OUTPUT->continue_button($_SERVER['HTTP_REFERER']);
+        $referer = clean_param($_SERVER['HTTP_REFERER'], PARAM_LOCALURL);
+        if (!empty($referer)) {
+            echo $OUTPUT->continue_button($referer);
         }
         echo $OUTPUT->footer();
         die;
@@ -134,16 +144,21 @@ if ($currentuser) {
             $PAGE->navbar->add($struser);
             echo $OUTPUT->heading(get_string('notenrolledprofile'));
         }
-        if (!empty($_SERVER['HTTP_REFERER'])) {
-            echo $OUTPUT->continue_button($_SERVER['HTTP_REFERER']);
+        $referer = clean_param($_SERVER['HTTP_REFERER'], PARAM_LOCALURL);
+        if (!empty($referer)) {
+            echo $OUTPUT->continue_button($referer);
         }
         echo $OUTPUT->footer();
         exit;
     }
 
     // If groups are in use and enforced throughout the course, then make sure we can meet in at least one course level group.
-    if (groups_get_course_groupmode($course) == SEPARATEGROUPS and $course->groupmodeforce
-      and !has_capability('moodle/site:accessallgroups', $coursecontext) and !has_capability('moodle/site:accessallgroups', $coursecontext, $user->id)) {
+    // Except when we are a parent, in which case we would not be in any group.
+    if (groups_get_course_groupmode($course) == SEPARATEGROUPS
+            and $course->groupmodeforce
+            and !has_capability('moodle/site:accessallgroups', $coursecontext)
+            and !has_capability('moodle/site:accessallgroups', $coursecontext, $user->id)
+            and !$isparent) {
         if (!isloggedin() or isguestuser()) {
             // Do not use require_login() here because we might have already used require_login($course).
             redirect(get_login_url());
@@ -273,7 +288,7 @@ if (!isset($hiddenfields['lastaccess'])) {
     } else {
         $datestring = get_string("never");
     }
-    echo html_writer::tag('dt', get_string('lastaccess'));
+    echo html_writer::tag('dt', get_string('lastcourseaccess'));
     echo html_writer::tag('dd', $datestring);
 }
 
@@ -385,7 +400,8 @@ if (isloggedin() && has_capability('moodle/site:sendmessage', $usercontext)
     echo '</div>';
 }
 
-if ($currentuser || has_capability('moodle/user:viewdetails', $usercontext) || has_coursecontact_role($id)) {
+if (empty($CFG->forceloginforprofiles) || $currentuser || has_capability('moodle/user:viewdetails', $usercontext)
+        || has_coursecontact_role($id)) {
     echo '<div class="fullprofilelink">';
     echo html_writer::link($CFG->wwwroot.'/user/profile.php?id='.$id, get_string('fullprofile'));
     echo '</div>';

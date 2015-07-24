@@ -278,7 +278,7 @@ class assign_grading_table extends table_sql implements renderable {
             $columns[] = 'status';
             $headers[] = get_string('status', 'assign');
         } else if ($this->assignment->get_instance()->markingworkflow) {
-            $columns[] = 'workflowstatus';
+            $columns[] = 'workflowstate';
             $headers[] = get_string('status', 'assign');
         }
 
@@ -536,7 +536,8 @@ class assign_grading_table extends table_sql implements renderable {
         static $markers = null;
         static $markerlist = array();
         if ($markers === null) {
-            $markers = get_users_by_capability($this->assignment->get_context(), 'mod/assign:grade');
+            list($sort, $params) = users_order_by_sql();
+            $markers = get_users_by_capability($this->assignment->get_context(), 'mod/assign:grade', '', $sort);
             $markerlist[0] = get_string('choosemarker', 'assign');
             foreach ($markers as $marker) {
                 $markerlist[$marker->id] = fullname($marker);
@@ -883,7 +884,7 @@ class assign_grading_table extends table_sql implements renderable {
         $group = false;
         $submission = false;
         $this->get_group_and_submission($row->id, $group, $submission, -1);
-        if ($group && $submission && $submission->timemodified) {
+        if ($submission && $submission->timemodified) {
             $o = userdate($submission->timemodified);
         } else if ($row->timesubmitted) {
             $o = userdate($row->timesubmitted);
@@ -911,7 +912,7 @@ class assign_grading_table extends table_sql implements renderable {
         $group = false;
         $submission = false;
         $this->get_group_and_submission($row->id, $group, $submission, -1);
-        if ($group && $submission) {
+        if ($submission) {
             $timesubmitted = $submission->timemodified;
             $status = $submission->status;
         } else {

@@ -583,12 +583,40 @@ class core_moodlelib_testcase extends advanced_testcase {
 
     public function test_clean_param_localurl() {
         global $CFG;
-        $this->assertSame('', clean_param('http://google.com/', PARAM_LOCALURL));
-        $this->assertSame('', clean_param('http://some.very.long.and.silly.domain/with/a/path/', PARAM_LOCALURL));
-        $this->assertSame(clean_param($CFG->wwwroot, PARAM_LOCALURL), $CFG->wwwroot);
-        $this->assertSame('/just/a/path', clean_param('/just/a/path', PARAM_LOCALURL));
+
+        $this->resetAfterTest();
+
+        // External, invalid.
         $this->assertSame('', clean_param('funny:thing', PARAM_LOCALURL));
+        $this->assertSame('', clean_param('http://google.com/', PARAM_LOCALURL));
+        $this->assertSame('', clean_param('https://google.com/?test=true', PARAM_LOCALURL));
+        $this->assertSame('', clean_param('http://some.very.long.and.silly.domain/with/a/path/', PARAM_LOCALURL));
+
+        // Local absolute.
+        $this->assertSame(clean_param($CFG->wwwroot, PARAM_LOCALURL), $CFG->wwwroot);
+        $this->assertSame($CFG->wwwroot . '/with/something?else=true',
+            clean_param($CFG->wwwroot . '/with/something?else=true', PARAM_LOCALURL));
+
+        // Local relative.
+        $this->assertSame('/just/a/path', clean_param('/just/a/path', PARAM_LOCALURL));
         $this->assertSame('course/view.php?id=3', clean_param('course/view.php?id=3', PARAM_LOCALURL));
+
+        // Local absolute HTTPS.
+        $httpsroot = str_replace('http:', 'https:', $CFG->wwwroot);
+        $CFG->loginhttps = false;
+        $this->assertSame('', clean_param($httpsroot, PARAM_LOCALURL));
+        $this->assertSame('', clean_param($httpsroot . '/with/something?else=true', PARAM_LOCALURL));
+        $CFG->loginhttps = true;
+        $this->assertSame($httpsroot, clean_param($httpsroot, PARAM_LOCALURL));
+        $this->assertSame($httpsroot . '/with/something?else=true',
+            clean_param($httpsroot . '/with/something?else=true', PARAM_LOCALURL));
+
+        // Test open redirects are not possible.
+        $CFG->loginhttps = false;
+        $CFG->wwwroot = 'http://www.example.com';
+        $this->assertSame('', clean_param('http://www.example.com.evil.net/hack.php', PARAM_LOCALURL));
+        $CFG->loginhttps = true;
+        $this->assertSame('', clean_param('https://www.example.com.evil.net/hack.php', PARAM_LOCALURL));
     }
 
     public function test_clean_param_file() {
@@ -656,6 +684,8 @@ class core_moodlelib_testcase extends advanced_testcase {
         $this->assertSame('john@doe', clean_param('john@doe', PARAM_USERNAME));
         $this->assertSame('johndoe', clean_param('john~doe', PARAM_USERNAME));
         $this->assertSame('johndoe', clean_param('john´doe', PARAM_USERNAME));
+        $this->assertSame(clean_param('john# $%&()+_^', PARAM_USERNAME), 'john_');
+        $this->assertSame(clean_param(' john# $%&()+_^ ', PARAM_USERNAME), 'john_');
         $this->assertSame(clean_param('john#$%&() ', PARAM_USERNAME), 'john');
         $this->assertSame('johnd', clean_param('JOHNdóé ', PARAM_USERNAME));
         $this->assertSame(clean_param('john.,:;-_/|\ñÑ[]A_X-,D {} ~!@#$%^&*()_+ ?><[] ščřžžý ?ýá?ý??doe ', PARAM_USERNAME), 'john.-_a_x-d@_doe');
@@ -664,7 +694,8 @@ class core_moodlelib_testcase extends advanced_testcase {
         $CFG->extendedusernamechars = true;
         $this->assertSame('john_doe', clean_param('john_doe', PARAM_USERNAME));
         $this->assertSame('john@doe', clean_param('john@doe', PARAM_USERNAME));
-        $this->assertSame(clean_param('john# $%&()+_^', PARAM_USERNAME), 'john#$%&()+_^');
+        $this->assertSame(clean_param('john# $%&()+_^', PARAM_USERNAME), 'john# $%&()+_^');
+        $this->assertSame(clean_param(' john# $%&()+_^ ', PARAM_USERNAME), 'john# $%&()+_^');
         $this->assertSame('john~doe', clean_param('john~doe', PARAM_USERNAME));
         $this->assertSame('john´doe', clean_param('joHN´doe', PARAM_USERNAME));
         $this->assertSame('johndoe', clean_param('johnDOE', PARAM_USERNAME));
@@ -2262,6 +2293,45 @@ class core_moodlelib_testcase extends advanced_testcase {
         $this->assertSame($user->id, $event->relateduserid);
         $this->assertEquals(context_user::instance($user->id), $event->get_context());
         $this->assertEventContextNotUsed($event);
+
+        // Verify recovery of property 'auth'.
+        unset($user->auth);
+        update_internal_user_password($user, 'newpassword');
+        $this->assertDebuggingNotCalled();
+        $this->assertEquals('manual', $user->auth);
+    }
+
+    /**
+     * Testing that if the password is not cached, that it does not update
+     * the user table and fire event.
+     */
+    public function test_update_internal_user_password_no_cache() {
+        $this->resetAfterTest();
+
+        $user = $this->getDataGenerator()->create_user(array('auth' => 'cas'));
+        $this->assertEquals(AUTH_PASSWORD_NOT_CACHED, $user->password);
+
+        $sink = $this->redirectEvents();
+        update_internal_user_password($user, 'wonkawonka');
+        $this->assertEquals(0, $sink->count(), 'User updated event should not fire');
+    }
+
+    /**
+     * Test if the user has a password hash, but now their auth method
+     * says not to cache it.  Then it should update.
+     */
+    public function test_update_internal_user_password_update_no_cache() {
+        $this->resetAfterTest();
+
+        $user = $this->getDataGenerator()->create_user(array('password' => 'test'));
+        $this->assertNotEquals(AUTH_PASSWORD_NOT_CACHED, $user->password);
+        $user->auth = 'cas'; // Change to a auth that does not store passwords.
+
+        $sink = $this->redirectEvents();
+        update_internal_user_password($user, 'wonkawonka');
+        $this->assertGreaterThanOrEqual(1, $sink->count(), 'User updated event should fire');
+
+        $this->assertEquals(AUTH_PASSWORD_NOT_CACHED, $user->password);
     }
 
     public function test_fullname() {
@@ -2682,7 +2752,7 @@ class core_moodlelib_testcase extends advanced_testcase {
         $userinfo->authormiddlename = '';
         $userinfo->authorpicture = 23;
         $userinfo->authorimagealt = 'Michael Jordan draining another basket.';
-        $userinfo->authoremail = 'test@testing.net';
+        $userinfo->authoremail = 'test@example.com';
 
 
         // Return an object with user picture information.
@@ -2698,7 +2768,7 @@ class core_moodlelib_testcase extends advanced_testcase {
         $expectedarray->lastnamephonetic = 'カンベッル';
         $expectedarray->middlename = '';
         $expectedarray->alternatename = '';
-        $expectedarray->email = 'test@testing.net';
+        $expectedarray->email = 'test@example.com';
         $expectedarray->picture = 23;
         $expectedarray->imagealt = 'Michael Jordan draining another basket.';
         $this->assertEquals($user, $expectedarray);
@@ -2737,5 +2807,50 @@ class core_moodlelib_testcase extends advanced_testcase {
 
         $count = count_words('one…two ブルース … カンベッル');
         $this->assertEquals(4, $count);
+    }
+    /**
+     * Tests the getremoteaddr() function.
+     */
+    public function test_getremoteaddr() {
+        $xforwardedfor = isset($_SERVER['HTTP_X_FORWARDED_FOR']) ? $_SERVER['HTTP_X_FORWARDED_FOR'] : null;
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '';
+        $noip = getremoteaddr('1.1.1.1');
+        $this->assertEquals('1.1.1.1', $noip);
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '';
+        $noip = getremoteaddr();
+        $this->assertEquals('0.0.0.0', $noip);
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.1';
+        $singleip = getremoteaddr();
+        $this->assertEquals('127.0.0.1', $singleip);
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.1,127.0.0.2';
+        $twoip = getremoteaddr();
+        $this->assertEquals('127.0.0.1', $twoip);
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.1,127.0.0.2, 127.0.0.3';
+        $threeip = getremoteaddr();
+        $this->assertEquals('127.0.0.1', $threeip);
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '127.0.0.1:65535,127.0.0.2';
+        $portip = getremoteaddr();
+        $this->assertEquals('127.0.0.1', $portip);
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '0:0:0:0:0:0:0:1,127.0.0.2';
+        $portip = getremoteaddr();
+        $this->assertEquals('0:0:0:0:0:0:0:1', $portip);
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '0::1,127.0.0.2';
+        $portip = getremoteaddr();
+        $this->assertEquals('0:0:0:0:0:0:0:1', $portip);
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '[0:0:0:0:0:0:0:1]:65535,127.0.0.2';
+        $portip = getremoteaddr();
+        $this->assertEquals('0:0:0:0:0:0:0:1', $portip);
+
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = $xforwardedfor;
+
     }
 }

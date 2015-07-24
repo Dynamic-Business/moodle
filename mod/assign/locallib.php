@@ -48,6 +48,10 @@ define('ASSIGN_ATTEMPT_REOPEN_METHOD_UNTILPASS', 'untilpass');
 // Special value means allow unlimited attempts.
 define('ASSIGN_UNLIMITED_ATTEMPTS', -1);
 
+// Grading states.
+define('ASSIGN_GRADING_STATUS_GRADED', 'graded');
+define('ASSIGN_GRADING_STATUS_NOT_GRADED', 'notgraded');
+
 // Marking workflow states.
 define('ASSIGN_MARKING_WORKFLOW_STATE_NOTMARKED', 'notmarked');
 define('ASSIGN_MARKING_WORKFLOW_STATE_INMARKING', 'inmarking');
@@ -134,6 +138,9 @@ class assign {
 
     /** @var array cached list of participants for this assignment. The cache key will be group, showactive and the context id */
     private $participants = array();
+
+    /** @var array cached list of user groups when team submissions are enabled. The cache key will be the user. */
+    private $usersubmissiongroups = array();
 
     /**
      * Constructor for the base assign class.
@@ -682,9 +689,11 @@ class assign {
         }
 
         // Delete_records will throw an exception if it fails - so no need for error checking here.
-        $DB->delete_records('assign_submission', array('assignment'=>$this->get_instance()->id));
-        $DB->delete_records('assign_grades', array('assignment'=>$this->get_instance()->id));
-        $DB->delete_records('assign_plugin_config', array('assignment'=>$this->get_instance()->id));
+        $DB->delete_records('assign_submission', array('assignment' => $this->get_instance()->id));
+        $DB->delete_records('assign_grades', array('assignment' => $this->get_instance()->id));
+        $DB->delete_records('assign_plugin_config', array('assignment' => $this->get_instance()->id));
+        $DB->delete_records('assign_user_flags', array('assignment' => $this->get_instance()->id));
+        $DB->delete_records('assign_user_mapping', array('assignment' => $this->get_instance()->id));
 
         // Delete items from the gradebook.
         if (! $this->delete_grades()) {
@@ -717,7 +726,7 @@ class assign {
                 $fileareas = array();
                 $plugincomponent = $plugin->get_subtype() . '_' . $plugin->get_type();
                 $fileareas = $plugin->get_file_areas();
-                foreach ($fileareas as $filearea) {
+                foreach ($fileareas as $filearea => $notused) {
                     $fs->delete_area_files($this->context->id, $plugincomponent, $filearea);
                 }
 
@@ -732,7 +741,7 @@ class assign {
                 $fileareas = array();
                 $plugincomponent = $plugin->get_subtype() . '_' . $plugin->get_type();
                 $fileareas = $plugin->get_file_areas();
-                foreach ($fileareas as $filearea) {
+                foreach ($fileareas as $filearea => $notused) {
                     $fs->delete_area_files($this->context->id, $plugincomponent, $filearea);
                 }
 
@@ -743,22 +752,26 @@ class assign {
                 }
             }
 
-            $assignssql = 'SELECT a.id
-                             FROM {assign} a
-                           WHERE a.course=:course';
-            $params = array('course'=>$data->courseid);
+            $assignids = $DB->get_records('assign', array('course' => $data->courseid), '', 'id');
+            list($sql, $params) = $DB->get_in_or_equal(array_keys($assignids));
 
-            $DB->delete_records_select('assign_submission', "assignment IN ($assignssql)", $params);
+            $DB->delete_records_select('assign_submission', "assignment $sql", $params);
+            $DB->delete_records_select('assign_user_flags', "assignment $sql", $params);
 
             $status[] = array('component'=>$componentstr,
                               'item'=>get_string('deleteallsubmissions', 'assign'),
                               'error'=>false);
 
             if (!empty($data->reset_gradebook_grades)) {
-                $DB->delete_records_select('assign_grades', "assignment IN ($assignssql)", $params);
+                $DB->delete_records_select('assign_grades', "assignment $sql", $params);
                 // Remove all grades from gradebook.
                 require_once($CFG->dirroot.'/mod/assign/lib.php');
                 assign_reset_gradebook($data->courseid);
+
+                // Reset revealidentities if both submissions and grades have been reset.
+                if ($this->get_instance()->blindmarking && $this->get_instance()->revealidentities) {
+                    $DB->set_field('assign', 'revealidentities', 0, array('id' => $this->get_instance()->id));
+                }
             }
         }
         // Updating dates - shift may be negative too.
@@ -1330,6 +1343,11 @@ class assign {
      * @return array List of user records
      */
     public function list_participants($currentgroup, $idsonly) {
+
+        if (empty($currentgroup)) {
+            $currentgroup = 0;
+        }
+
         $key = $this->context->id . '-' . $currentgroup . '-' . $this->show_only_active_users();
         if (!isset($this->participants[$key])) {
             $users = get_enrolled_users($this->context, 'mod/assign:submit', $currentgroup, 'u.*', null, null, null,
@@ -1355,21 +1373,51 @@ class assign {
     /**
      * Load a count of valid teams for this assignment.
      *
+     * @param int $activitygroup Activity active group
      * @return int number of valid teams
      */
-    public function count_teams() {
+    public function count_teams($activitygroup = 0) {
 
-        $groups = groups_get_all_groups($this->get_course()->id,
-                                        0,
-                                        $this->get_instance()->teamsubmissiongroupingid,
-                                        'g.id');
-        $count = count($groups);
+        $count = 0;
 
-        // See if there are any users in the default group.
-        $defaultusers = $this->get_submission_group_members(0, true);
-        if (count($defaultusers) > 0) {
-            $count += 1;
+        $participants = $this->list_participants($activitygroup, true);
+
+        // If a team submission grouping id is provided all good as all returned groups
+        // are the submission teams, but if no team submission grouping was specified
+        // $groups will contain all participants groups.
+        if ($this->get_instance()->teamsubmissiongroupingid) {
+
+            // We restrict the users to the selected group ones.
+            $groups = groups_get_all_groups($this->get_course()->id,
+                                            array_keys($participants),
+                                            $this->get_instance()->teamsubmissiongroupingid,
+                                            'DISTINCT g.id, g.name');
+
+            $count = count($groups);
+
+            // When a specific group is selected we don't count the default group users.
+            if ($activitygroup == 0) {
+
+                // See if there are any users in the default group.
+                $defaultusers = $this->get_submission_group_members(0, true);
+                if (count($defaultusers) > 0) {
+                    $count += 1;
+                }
+            }
+        } else {
+            // It is faster to loop around participants if no grouping was specified.
+            $groups = array();
+            foreach ($participants as $participant) {
+                if ($group = $this->get_submission_group($participant->id)) {
+                    $groups[$group->id] = true;
+                } else {
+                    $groups[0] = true;
+                }
+            }
+
+            $count = count($groups);
         }
+
         return $count;
     }
 
@@ -1428,7 +1476,7 @@ class assign {
                         s.assignment = :assignid AND
                         s.timemodified IS NOT NULL AND
                         s.status = :submitted AND
-                        (s.timemodified > g.timemodified OR g.timemodified IS NULL)';
+                        (s.timemodified > g.timemodified OR g.timemodified IS NULL OR g.grade IS NULL)';
 
         return $DB->count_records_sql($sql, $params);
     }
@@ -1518,6 +1566,20 @@ class assign {
         $params['submissionstatus'] = $status;
 
         if ($this->get_instance()->teamsubmission) {
+
+            $groupsstr = '';
+            if ($currentgroup != 0) {
+                // If there is an active group we should only display the current group users groups.
+                $participants = $this->list_participants($currentgroup, true);
+                $groups = groups_get_all_groups($this->get_course()->id,
+                                                array_keys($participants),
+                                                $this->get_instance()->teamsubmissiongroupingid,
+                                                'DISTINCT g.id, g.name');
+                list($groupssql, $groupsparams) = $DB->get_in_or_equal(array_keys($groups), SQL_PARAMS_NAMED);
+                $groupsstr = 's.groupid ' . $groupssql . ' AND';
+                $params = $params + $groupsparams;
+            }
+
             $maxattemptsql = 'SELECT mxs.groupid, MAX(mxs.attemptnumber) AS maxattempt
                               FROM {assign_submission} mxs
                               WHERE mxs.assignment = :assignid2 GROUP BY mxs.groupid';
@@ -1529,7 +1591,8 @@ class assign {
                             s.attemptnumber = smx.maxattempt AND
                             s.assignment = :assignid AND
                             s.timemodified IS NOT NULL AND
-                            s.userid = :groupuserid AND
+                            s.userid = :groupuserid AND '
+                            . $groupsstr . '
                             s.status = :submissionstatus';
             $params['groupuserid'] = 0;
         } else {
@@ -1601,10 +1664,14 @@ class assign {
         // Only ever send a max of one days worth of updates.
         $yesterday = time() - (24 * 3600);
         $timenow   = time();
-        $lastcron = $DB->get_field('modules', 'lastcron', array('name'=>'mod_assign'));
+        $lastcron = $DB->get_field('modules', 'lastcron', array('name' => 'assign'));
 
-        // Collect all submissions from the past 24 hours that require mailing.
-        // Submissions are excluded if the assignment is hidden in the gradebook.
+        // Collect all submissions that require mailing.
+        // Submissions are included if all are true:
+        //   - The assignment is visible in the gradebook.
+        //   - No previous notification has been sent.
+        //   - If marking workflow is not enabled, the grade was updated in the past 24 hours, or
+        //     if marking workflow is enabled, the workflow state is at 'released'.
         $sql = "SELECT g.id as gradeid, a.course, a.name, a.blindmarking, a.revealidentities,
                        g.*, g.timemodified as lastmodified, cm.id as cmid
                  FROM {assign} a
@@ -1613,12 +1680,16 @@ class assign {
                  JOIN {course_modules} cm ON cm.course = a.course AND cm.instance = a.id
                  JOIN {modules} md ON md.id = cm.module AND md.name = 'assign'
                  JOIN {grade_items} gri ON gri.iteminstance = a.id AND gri.courseid = a.course AND gri.itemmodule = md.name
-                 WHERE g.timemodified >= :yesterday AND
-                       g.timemodified <= :today AND
+                 WHERE ((a.markingworkflow = 0 AND g.timemodified >= :yesterday AND g.timemodified <= :today) OR
+                        (a.markingworkflow = 1 AND uf.workflowstate = :wfreleased)) AND
                        uf.mailed = 0 AND gri.hidden = 0
               ORDER BY a.course, cm.id";
 
-        $params = array('yesterday' => $yesterday, 'today' => $timenow);
+        $params = array(
+            'yesterday' => $yesterday,
+            'today' => $timenow,
+            'wfreleased' => ASSIGN_MARKING_WORKFLOW_STATE_RELEASED,
+        );
         $submissions = $DB->get_records_sql($sql, $params);
 
         if (!empty($submissions)) {
@@ -1770,13 +1841,14 @@ class assign {
      * Mark in the database that this grade record should have an update notification sent by cron.
      *
      * @param stdClass $grade a grade record keyed on id
+     * @param bool $mailedoverride when true, flag notification to be sent again.
      * @return bool true for success
      */
-    public function notify_grade_modified($grade) {
+    public function notify_grade_modified($grade, $mailedoverride = false) {
         global $DB;
 
         $flags = $this->get_user_flags($grade->userid, true);
-        if ($flags->mailed != 1) {
+        if ($flags->mailed != 1 || $mailedoverride) {
             $flags->mailed = 0;
         }
 
@@ -1803,9 +1875,10 @@ class assign {
      * Update a grade in the grade table for the assignment and in the gradebook.
      *
      * @param stdClass $grade a grade record keyed on id
+     * @param bool $reopenattempt If the attempt reopen method is manual, allow another attempt at this assignment.
      * @return bool true for success
      */
-    public function update_grade($grade) {
+    public function update_grade($grade, $reopenattempt = false) {
         global $DB;
 
         $grade->timemodified = time();
@@ -1841,25 +1914,33 @@ class assign {
             // Set it to the default.
             $grade->attemptnumber = 0;
         }
-        $result = $DB->update_record('assign_grades', $grade);
+        $DB->update_record('assign_grades', $grade);
 
-        // Only push to gradebook if the update is for the latest attempt.
         $submission = null;
         if ($this->get_instance()->teamsubmission) {
             $submission = $this->get_group_submission($grade->userid, 0, false);
         } else {
             $submission = $this->get_user_submission($grade->userid, false);
         }
+
+        // Only push to gradebook if the update is for the latest attempt.
         // Not the latest attempt.
         if ($submission && $submission->attemptnumber != $grade->attemptnumber) {
             return true;
         }
 
-        if ($result) {
-            $this->gradebook_item_update(null, $grade);
+        if ($this->gradebook_item_update(null, $grade)) {
             \mod_assign\event\submission_graded::create_from_grade($this, $grade)->trigger();
         }
-        return $result;
+
+        // If the conditions are met, allow another attempt.
+        if ($submission) {
+            $this->reopen_submission_if_required($grade->userid,
+                    $submission,
+                    $reopenattempt);
+        }
+
+        return true;
     }
 
     /**
@@ -1919,9 +2000,10 @@ class assign {
      *
      * @param int $groupid The id of the group whose members we want or 0 for the default group
      * @param bool $onlyids Whether to retrieve only the user id's
+     * @param bool $excludesuspended Whether to exclude suspended users
      * @return array The users (possibly id's only)
      */
-    public function get_submission_group_members($groupid, $onlyids) {
+    public function get_submission_group_members($groupid, $onlyids, $excludesuspended = false) {
         $members = array();
         if ($groupid != 0) {
             if ($onlyids) {
@@ -1943,13 +2025,14 @@ class assign {
             }
         }
         // Exclude suspended users, if user can't see them.
-        if (!has_capability('moodle/course:viewsuspendedusers', $this->context)) {
+        if ($excludesuspended || !has_capability('moodle/course:viewsuspendedusers', $this->context)) {
             foreach ($members as $key => $member) {
                 if (!$this->is_active_user($member->id)) {
                     unset($members[$key]);
                 }
             }
         }
+
         return $members;
     }
 
@@ -2152,12 +2235,23 @@ class assign {
      * @return mixed The group or false
      */
     public function get_submission_group($userid) {
+
+        if (isset($this->usersubmissiongroups[$userid])) {
+            return $this->usersubmissiongroups[$userid];
+        }
+
         $grouping = $this->get_instance()->teamsubmissiongroupingid;
         $groups = groups_get_all_groups($this->get_course()->id, $userid, $grouping);
         if (count($groups) != 1) {
-            return false;
+            $return = false;
+        } else {
+            $return = array_pop($groups);
         }
-        return array_pop($groups);
+
+        // Cache the user submission group.
+        $this->usersubmissiongroups[$userid] = $return;
+
+        return $return;
     }
 
 
@@ -2294,7 +2388,7 @@ class assign {
         $params = array('overflowdiv' => true, 'context' => $this->get_context());
         $result .= format_text($finaltext, $format, $params);
 
-        if ($CFG->enableportfolios) {
+        if ($CFG->enableportfolios && has_capability('mod/assign:exportownsubmission', $this->context)) {
             require_once($CFG->libdir . '/portfoliolib.php');
 
             $button = new portfolio_add_button();
@@ -2354,9 +2448,12 @@ class assign {
                                                       $this->show_intro(),
                                                       $this->get_course_module()->id,
                                                       get_string('quickgradingresult', 'assign')));
+        $lastpage = optional_param('lastpage', null, PARAM_INT);
         $gradingresult = new assign_gradingmessage(get_string('quickgradingresult', 'assign'),
                                                    $message,
-                                                   $this->get_course_module()->id);
+                                                   $this->get_course_module()->id,
+                                                   false,
+                                                   $lastpage);
         $o .= $this->get_renderer()->render($gradingresult);
         $o .= $this->view_footer();
         return $o;
@@ -2881,7 +2978,8 @@ class assign {
                                                              $this->is_blind_marking(),
                                                              '',
                                                              $instance->attemptreopenmethod,
-                                                             $instance->maxattempts);
+                                                             $instance->maxattempts,
+                                                             $this->get_grading_status($userid));
             $o .= $this->get_renderer()->render($submissionstatus);
         }
 
@@ -2890,16 +2988,18 @@ class assign {
             if ($grade->grade !== null && $grade->grade >= 0) {
                 $data->grade = format_float($grade->grade, 2);
             }
-            if (!empty($flags->workflowstate)) {
-                $data->workflowstate = $flags->workflowstate;
-            }
-            if (!empty($flags->allocatedmarker)) {
-                $data->allocatedmarker = $flags->allocatedmarker;
-            }
         } else {
             $data = new stdClass();
             $data->grade = '';
         }
+
+        if (!empty($flags->workflowstate)) {
+            $data->workflowstate = $flags->workflowstate;
+        }
+        if (!empty($flags->allocatedmarker)) {
+            $data->allocatedmarker = $flags->allocatedmarker;
+        }
+
         // Warning if required.
         $allsubmissions = $this->get_all_submissions($userid);
 
@@ -3053,7 +3153,7 @@ class assign {
 
         $gradingmanager = get_grading_manager($this->get_context(), 'mod_assign', 'submissions');
 
-        $perpage = get_user_preferences('assign_perpage', 10);
+        $perpage = (int) get_user_preferences('assign_perpage', 10);
         $filter = get_user_preferences('assign_filter', '');
         $markerfilter = get_user_preferences('assign_markerfilter', '');
         $workflowfilter = get_user_preferences('assign_workflowfilter', '');
@@ -3068,7 +3168,8 @@ class assign {
         // Get markers to use in drop lists.
         $markingallocationoptions = array();
         if ($markingallocation) {
-            $markers = get_users_by_capability($this->context, 'mod/assign:grade');
+            list($sort, $params) = users_order_by_sql();
+            $markers = get_users_by_capability($this->context, 'mod/assign:grade', '', $sort);
             $markingallocationoptions[''] = get_string('filternone', 'assign');
             $markingallocationoptions[ASSIGN_MARKER_FILTER_NO_MARKER] = get_string('markerfilternomarker', 'assign');
             foreach ($markers as $marker) {
@@ -3154,9 +3255,11 @@ class assign {
         if ($showquickgrading && $quickgrading) {
             $gradingtable = new assign_grading_table($this, $perpage, $filter, 0, true);
             $table = $this->get_renderer()->render($gradingtable);
+            $page = optional_param('page', null, PARAM_INT);
             $quickformparams = array('cm'=>$this->get_course_module()->id,
                                      'gradingtable'=>$table,
-                                     'sendstudentnotifications'=>$this->get_instance()->sendstudentnotifications);
+                                     'sendstudentnotifications' => $this->get_instance()->sendstudentnotifications,
+                                     'page' => $page);
             $quickgradingform = new mod_assign_quick_grading_form(null, $quickformparams);
 
             $o .= $this->get_renderer()->render(new assign_form('quickgradingform', $quickgradingform));
@@ -3193,7 +3296,6 @@ class assign {
         require_once($CFG->dirroot . '/mod/assign/gradeform.php');
 
         // Only load this if it is.
-
         $o .= $this->view_grading_table();
 
         $o .= $this->view_footer();
@@ -3544,7 +3646,12 @@ class assign {
 
         $mform = new mod_assign_batch_set_marking_workflow_state_form(null, $formparams);
         $mform->set_data($formdata);    // Initialises the hidden elements.
-        $o .= $this->get_renderer()->header();
+        $header = new assign_header($this->get_instance(),
+            $this->get_context(),
+            $this->show_intro(),
+            $this->get_course_module()->id,
+            get_string('setmarkingworkflowstate', 'assign'));
+        $o .= $this->get_renderer()->render($header);
         $o .= $this->get_renderer()->render(new assign_form('setworkflowstate', $mform));
         $o .= $this->view_footer();
 
@@ -3600,7 +3707,8 @@ class assign {
             'usershtml' => $usershtml,
         );
 
-        $markers = get_users_by_capability($this->get_context(), 'mod/assign:grade');
+        list($sort, $params) = users_order_by_sql();
+        $markers = get_users_by_capability($this->get_context(), 'mod/assign:grade', '', $sort);
         $markerlist = array();
         foreach ($markers as $marker) {
             $markerlist[$marker->id] = fullname($marker);
@@ -3610,7 +3718,12 @@ class assign {
 
         $mform = new mod_assign_batch_set_allocatedmarker_form(null, $formparams);
         $mform->set_data($formdata);    // Initialises the hidden elements.
-        $o .= $this->get_renderer()->header();
+        $header = new assign_header($this->get_instance(),
+            $this->get_context(),
+            $this->show_intro(),
+            $this->get_course_module()->id,
+            get_string('setmarkingallocation', 'assign'));
+        $o .= $this->get_renderer()->render($header);
         $o .= $this->get_renderer()->render(new assign_form('setworkflowstate', $mform));
         $o .= $this->view_footer();
 
@@ -3650,7 +3763,13 @@ class assign {
 
         $submissionstatement = '';
         if (!empty($adminconfig->submissionstatement)) {
-            $submissionstatement = $adminconfig->submissionstatement;
+            // Format the submissino statement before its sent. We turn off para because this is going within
+            // a form element.
+            $options = array(
+                'context' => $this->get_context(),
+                'para' => false
+            );
+            $submissionstatement = format_text($adminconfig->submissionstatement, FORMAT_MOODLE, $options);
         }
 
         if ($mform == null) {
@@ -3728,6 +3847,7 @@ class assign {
             }
             $viewfullnames = has_capability('moodle/site:viewfullnames', $this->get_course_context());
 
+            $gradingstatus = $this->get_grading_status($user->id);
             $submissionstatus = new assign_submission_status($instance->allowsubmissionsfromdate,
                                                               $instance->alwaysshowdescription,
                                                               $submission,
@@ -3754,7 +3874,8 @@ class assign {
                                                               $this->is_blind_marking(),
                                                               $gradingcontrollerpreview,
                                                               $instance->attemptreopenmethod,
-                                                              $instance->maxattempts);
+                                                              $instance->maxattempts,
+                                                              $gradingstatus);
             $o .= $this->get_renderer()->render($submissionstatus);
 
             require_once($CFG->libdir.'/gradelib.php');
@@ -3785,16 +3906,13 @@ class assign {
                 }
             }
 
-            $gradereleased = true;
-            if ($this->get_instance()->markingworkflow &&
-                (empty($grade) || $flags->workflowstate != ASSIGN_MARKING_WORKFLOW_STATE_RELEASED)) {
-                $gradereleased = false;
+            if ($this->get_instance()->markingworkflow && $gradingstatus != ASSIGN_MARKING_WORKFLOW_STATE_RELEASED) {
                 $emptyplugins = true; // Don't show feedback plugins until released either.
             }
 
             $cangrade = has_capability('mod/assign:grade', $this->get_context());
             // If there is a visible grade, show the summary.
-            if ((!empty($gradebookgrade->grade) || !$emptyplugins)
+            if ((!is_null($gradebookgrade->grade) || !$emptyplugins)
                     && ($cangrade || !$gradebookgrade->hidden)) {
 
                 $gradefordisplay = null;
@@ -3803,7 +3921,7 @@ class assign {
                 $gradingmanager = get_grading_manager($this->get_context(), 'mod_assign', 'submissions');
 
                 // Only show the grade if it is not hidden in gradebook.
-                if (!empty($gradebookgrade->grade) && ($cangrade || !$gradebookgrade->hidden)) {
+                if (!is_null($gradebookgrade->grade) && ($cangrade || !$gradebookgrade->hidden)) {
                     if ($controller = $gradingmanager->get_active_controller()) {
                         $menu = make_grades_menu($this->get_instance()->grade);
                         $controller->set_grade_range($menu, $this->get_instance()->grade > 0);
@@ -4018,8 +4136,15 @@ class assign {
         if ($this->can_view_grades()) {
             $draft = ASSIGN_SUBMISSION_STATUS_DRAFT;
             $submitted = ASSIGN_SUBMISSION_STATUS_SUBMITTED;
+
+            // Group selector will only be displayed if necessary.
+            $currenturl = new moodle_url('/mod/assign/view.php', array('id' => $this->get_course_module()->id));
+            $o .= groups_print_activity_menu($this->get_course_module(), $currenturl->out(), true);
+
+            $activitygroup = groups_get_activity_group($this->get_course_module());
+
             if ($instance->teamsubmission) {
-                $summary = new assign_grading_summary($this->count_teams(),
+                $summary = new assign_grading_summary($this->count_teams($activitygroup),
                                                       $instance->submissiondrafts,
                                                       $this->count_submissions_with_status($draft),
                                                       $this->is_any_submission_plugin_enabled(),
@@ -4031,7 +4156,9 @@ class assign {
                                                       $instance->teamsubmission);
                 $o .= $this->get_renderer()->render($summary);
             } else {
-                $summary = new assign_grading_summary($this->count_participants(0),
+                // The active group has already been updated in groups_print_activity_menu().
+                $countparticipants = $this->count_participants($activitygroup);
+                $summary = new assign_grading_summary($countparticipants,
                                                       $instance->submissiondrafts,
                                                       $this->count_submissions_with_status($draft),
                                                       $this->is_any_submission_plugin_enabled(),
@@ -4119,12 +4246,13 @@ class assign {
         if ($this->is_blind_marking()) {
             return false;
         }
-        // If marking workflow is enabled and grade is not released then don't send to gradebook yet.
-        if ($this->get_instance()->markingworkflow && !empty($grade)) {
-            $flags = $this->get_user_flags($grade->userid, false);
-            if (empty($flags->workflowstate) || $flags->workflowstate != ASSIGN_MARKING_WORKFLOW_STATE_RELEASED) {
-                return false;
-            }
+
+        // If marking workflow is enabled and grade is not released then remove any grade that may exist in the gradebook.
+        if ($this->get_instance()->markingworkflow && !empty($grade) &&
+                $this->get_grading_status($grade->userid) != ASSIGN_MARKING_WORKFLOW_STATE_RELEASED) {
+            // Remove the grade (if it exists) from the gradebook as it is not 'final'.
+            $grade->grade = -1;
+            $grade->feedbacktext = '';
         }
 
         if ($submission != null) {
@@ -4154,7 +4282,7 @@ class assign {
         $assign->cmidnumber = $this->get_course_module()->idnumber;
         // Set assign gradebook feedback plugin status (enabled and visible).
         $assign->gradefeedbackenabled = $this->is_gradebook_feedback_enabled();
-        return assign_grade_item_update($assign, $gradebookgrade);
+        return assign_grade_item_update($assign, $gradebookgrade) == GRADE_UPDATE_OK;
     }
 
     /**
@@ -4846,7 +4974,13 @@ class assign {
 
         $submissionstatement = '';
         if (!empty($adminconfig->submissionstatement)) {
-            $submissionstatement = $adminconfig->submissionstatement;
+            // Format the submissino statement before its sent. We turn off para because this is going within
+            // a form element.
+            $options = array(
+                'context' => $this->get_context(),
+                'para' => false
+            );
+            $submissionstatement = format_text($adminconfig->submissionstatement, FORMAT_MOODLE, $options);
         }
 
         if ($mform == null) {
@@ -5134,24 +5268,16 @@ class assign {
                 $flags->allocatedmarker = $modified->allocatedmarker;
             }
             if ($workflowstatemodified || $allocatedmarkermodified) {
-                $this->update_user_flags($flags);
+                if ($this->update_user_flags($flags) && $workflowstatemodified) {
+                    $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
+                    \mod_assign\event\workflow_state_updated::create_from_user($this, $user, $flags->workflowstate)->trigger();
+                }
             }
             $this->update_grade($grade);
 
-            // If the conditions are met, allow another attempt.
-            $submission = null;
-            if ($this->get_instance()->teamsubmission) {
-                $submission = $this->get_group_submission($userid, 0, false, -1);
-            } else {
-                $submission = $this->get_user_submission($userid, false, -1);
-            }
-            $this->reopen_submission_if_required($userid,
-                                                 $submission,
-                                                 false);
-
             // Allow teachers to skip sending notifications.
             if (optional_param('sendstudentnotifications', true, PARAM_BOOL)) {
-                $this->notify_grade_modified($grade);
+                $this->notify_grade_modified($grade, true);
             }
 
             // Save outcomes.
@@ -5213,6 +5339,7 @@ class assign {
 
         $adminconfig = $this->get_admin_config();
         $gradebookplugin = $adminconfig->feedback_plugin_for_gradebook;
+        $gradebookplugin = str_replace('assignfeedback_', '', $gradebookplugin);
         $grades = $DB->get_records('assign_grades', array('assignment'=>$this->get_instance()->id));
 
         $plugin = $this->get_feedback_plugin_by_type($gradebookplugin);
@@ -5277,7 +5404,8 @@ class assign {
         if ($markingallocation) {
             $markingallocationoptions[''] = get_string('filternone', 'assign');
             $markingallocationoptions[ASSIGN_MARKER_FILTER_NO_MARKER] = get_string('markerfilternomarker', 'assign');
-            $markers = get_users_by_capability($this->context, 'mod/assign:grade');
+            list($sort, $params) = users_order_by_sql();
+            $markers = get_users_by_capability($this->context, 'mod/assign:grade', '', $sort);
             foreach ($markers as $marker) {
                 $markingallocationoptions[$marker->id] = fullname($marker);
             }
@@ -5854,7 +5982,8 @@ class assign {
             $this->get_instance()->markingallocation &&
             has_capability('mod/assign:manageallocations', $this->context)) {
 
-            $markers = get_users_by_capability($this->context, 'mod/assign:grade');
+            list($sort, $params) = users_order_by_sql();
+            $markers = get_users_by_capability($this->context, 'mod/assign:grade', '', $sort);
             $markerlist = array('' =>  get_string('choosemarker', 'assign'));
             foreach ($markers as $marker) {
                 $markerlist[$marker->id] = fullname($marker);
@@ -5928,10 +6057,15 @@ class assign {
         // Get assignment visibility information for student.
         $modinfo = get_fast_modinfo($settings->course, $userid);
         $cm = $modinfo->get_cm($this->get_course_module()->id);
-        // Don't allow notification to be sent if student can't access assignment.
+
+        // Don't allow notification to be sent if the student can't access the assignment,
+        // or until in "Released" state if using marking workflow.
         if (!$cm->uservisible) {
             $mform->setDefault('sendstudentnotifications', 0);
             $mform->freeze('sendstudentnotifications');
+        } else if ($this->get_instance()->markingworkflow) {
+            $mform->setDefault('sendstudentnotifications', 0);
+            $mform->disabledIf('sendstudentnotifications', 'workflowstate', 'neq', ASSIGN_MARKING_WORKFLOW_STATE_RELEASED);
         } else {
             $mform->setDefault('sendstudentnotifications', $this->get_instance()->sendstudentnotifications);
         }
@@ -6057,9 +6191,15 @@ class assign {
 
             $submissionstatement = '';
             if (!empty($adminconfig->submissionstatement)) {
-                $submissionstatement = $adminconfig->submissionstatement;
+                // Format the submissino statement before its sent. We turn off para because this is going within
+                // a form element.
+                $options = array(
+                    'context' => $this->get_context(),
+                    'para' => false
+                );
+                $submissionstatement = format_text($adminconfig->submissionstatement, FORMAT_MOODLE, $options);
             }
-            $mform->addElement('checkbox', 'submissionstatement', '', '&nbsp;' . $submissionstatement);
+            $mform->addElement('checkbox', 'submissionstatement', '', $submissionstatement);
             $mform->addRule('submissionstatement', get_string('required'), 'required', null, 'client');
         }
 
@@ -6201,6 +6341,16 @@ class assign {
 
                 $flags->workflowstate = $state;
 
+                // Clear the mailed flag if notification is requested, the student hasn't been
+                // notified previously, the student can access the assignment, and the state
+                // is "Released".
+                $modinfo = get_fast_modinfo($this->course, $userid);
+                $cm = $modinfo->get_cm($this->get_course_module()->id);
+                if ($formdata->sendstudentnotifications && $cm->uservisible &&
+                        $state == ASSIGN_MARKING_WORKFLOW_STATE_RELEASED) {
+                    $flags->mailed = 0;
+                }
+
                 $gradingdisabled = $this->grading_disabled($userid);
 
                 // Will not apply update if user does not have permission to assign this workflow state.
@@ -6237,7 +6387,8 @@ class assign {
             'usershtml' => ''   // initialise these parameters with real information.
         );
 
-        $markers = get_users_by_capability($this->get_context(), 'mod/assign:grade');
+        list($sort, $params) = users_order_by_sql();
+        $markers = get_users_by_capability($this->get_context(), 'mod/assign:grade', '', $sort);
         $markerlist = array();
         foreach ($markers as $marker) {
             $markerlist[$marker->id] = fullname($marker);
@@ -6369,9 +6520,15 @@ class assign {
             }
             if (isset($formdata->workflowstate) || isset($formdata->allocatedmarker)) {
                 $flags = $this->get_user_flags($userid, true);
+                $oldworkflowstate = $flags->workflowstate;
                 $flags->workflowstate = isset($formdata->workflowstate) ? $formdata->workflowstate : $flags->workflowstate;
                 $flags->allocatedmarker = isset($formdata->allocatedmarker) ? $formdata->allocatedmarker : $flags->allocatedmarker;
-                $this->update_user_flags($flags);
+                if ($this->update_user_flags($flags) &&
+                        isset($formdata->workflowstate) &&
+                        $formdata->workflowstate !== $oldworkflowstate) {
+                    $user = $DB->get_record('user', array('id' => $userid), '*', MUST_EXIST);
+                    \mod_assign\event\workflow_state_updated::create_from_user($this, $user, $formdata->workflowstate)->trigger();
+                }
             }
         }
         $grade->grader= $USER->id;
@@ -6393,10 +6550,13 @@ class assign {
                 }
             }
         }
-        $this->update_grade($grade);
+        $this->update_grade($grade, !empty($formdata->addattempt));
         // Note the default if not provided for this option is true (e.g. webservices).
         // This is for backwards compatibility.
         if (!isset($formdata->sendstudentnotifications) || $formdata->sendstudentnotifications) {
+            if (isset($formdata->sendstudentnotifications)) {
+                $this->notify_grade_modified($grade, $formdata->sendstudentnotifications);
+            }
             $this->notify_grade_modified($grade);
         }
     }
@@ -6533,7 +6693,7 @@ class assign {
                     $groupid = $group->id;
                 }
             }
-            $members = $this->get_submission_group_members($groupid, true);
+            $members = $this->get_submission_group_members($groupid, true, $this->show_only_active_users());
             foreach ($members as $member) {
                 // User may exist in multple groups (which should put them in the default group).
                 $this->apply_grade_to_user($data, $member->id, $data->attemptnumber);
@@ -6544,12 +6704,7 @@ class assign {
 
             $this->process_outcomes($userid, $data);
         }
-        if ($data->attemptnumber == -1) {
-            // We only allow another attempt when grading the latest submission.
-            $this->reopen_submission_if_required($userid,
-                                                 $submission,
-                                                 !empty($data->addattempt));
-        }
+
         return true;
     }
 
@@ -6847,16 +7002,19 @@ class assign {
                                                 $where, $params);
 
         foreach ($graderesults as $result) {
-            $gradebookgrade = clone $result;
-            // Now get the feedback.
-            if ($gradebookplugin) {
-                $grade = $this->get_user_grade($result->userid, false);
-                if ($grade) {
-                    $gradebookgrade->feedbacktext = $gradebookplugin->text_for_gradebook($grade);
-                    $gradebookgrade->feedbackformat = $gradebookplugin->format_for_gradebook($grade);
+            $gradingstatus = $this->get_grading_status($result->userid);
+            if (!$this->get_instance()->markingworkflow || $gradingstatus == ASSIGN_MARKING_WORKFLOW_STATE_RELEASED) {
+                $gradebookgrade = clone $result;
+                // Now get the feedback.
+                if ($gradebookplugin) {
+                    $grade = $this->get_user_grade($result->userid, false);
+                    if ($grade) {
+                        $gradebookgrade->feedback = $gradebookplugin->text_for_gradebook($grade);
+                        $gradebookgrade->feedbackformat = $gradebookplugin->format_for_gradebook($grade);
+                    }
                 }
+                $grades[$gradebookgrade->userid] = $gradebookgrade;
             }
-            $grades[$gradebookgrade->userid] = $gradebookgrade;
         }
 
         $graderesults->close();
@@ -7045,6 +7203,31 @@ class assign {
 
         // Gradebook feedback plugin is either not visible/enabled.
         return false;
+    }
+
+    /**
+     * Returns the grading status.
+     *
+     * @param int $userid the user id
+     * @return string returns the grading status
+     */
+    public function get_grading_status($userid) {
+        if ($this->get_instance()->markingworkflow) {
+            $flags = $this->get_user_flags($userid, false);
+            if (!empty($flags->workflowstate)) {
+                return $flags->workflowstate;
+            }
+            return ASSIGN_MARKING_WORKFLOW_STATE_NOTMARKED;
+        } else {
+            $attemptnumber = optional_param('attemptnumber', -1, PARAM_INT);
+            $grade = $this->get_user_grade($userid, false, $attemptnumber);
+
+            if (!empty($grade) && $grade->grade !== null && $grade->grade >= 0) {
+                return ASSIGN_GRADING_STATUS_GRADED;
+            } else {
+                return ASSIGN_GRADING_STATUS_NOT_GRADED;
+            }
+        }
     }
 }
 

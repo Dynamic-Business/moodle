@@ -57,6 +57,17 @@ function lesson_save_question_options($question, $lesson) {
 
     $timenow = time();
     $result = new stdClass();
+
+    // Default answer to avoid code duplication.
+    $defaultanswer = new stdClass();
+    $defaultanswer->lessonid   = $question->lessonid;
+    $defaultanswer->pageid = $question->id;
+    $defaultanswer->timecreated   = $timenow;
+    $defaultanswer->answerformat = FORMAT_HTML;
+    $defaultanswer->jumpto = LESSON_THISPAGE;
+    $defaultanswer->grade = 0;
+    $defaultanswer->score = 0;
+
     switch ($question->qtype) {
         case LESSON_PAGE_SHORTANSWER:
 
@@ -66,14 +77,12 @@ function lesson_save_question_options($question, $lesson) {
             // Insert all the new answers
             foreach ($question->answer as $key => $dataanswer) {
                 if ($dataanswer != "") {
-                    $answer = new stdClass;
-                    $answer->lessonid   = $question->lessonid;
-                    $answer->pageid   = $question->id;
+                    $answer = clone($defaultanswer);
                     if ($question->fraction[$key] >=0.5) {
                         $answer->jumpto = LESSON_NEXTPAGE;
+                        $answer->score = 1;
                     }
-                    $answer->timecreated   = $timenow;
-                    $answer->grade = $question->fraction[$key] * 100;
+                    $answer->grade = round($question->fraction[$key] * 100);
                     $answer->answer   = $dataanswer;
                     $answer->response = $question->feedback[$key]['text'];
                     $answer->responseformat = $question->feedback[$key]['format'];
@@ -103,16 +112,15 @@ function lesson_save_question_options($question, $lesson) {
             // for each answer store the pair of min and max values even if they are the same
             foreach ($question->answer as $key => $dataanswer) {
                 if ($dataanswer != "") {
-                    $answer = new stdClass;
-                    $answer->lessonid   = $question->lessonid;
-                    $answer->pageid   = $question->id;
-                    $answer->jumpto = LESSON_NEXTPAGE;
-                    $answer->timecreated   = $timenow;
-                    $answer->grade = $question->fraction[$key] * 100;
+                    $answer = clone($defaultanswer);
+                    if ($question->fraction[$key] >= 0.5) {
+                        $answer->jumpto = LESSON_NEXTPAGE;
+                        $answer->score = 1;
+                    }
+                    $answer->grade = round($question->fraction[$key] * 100);
                     $min = $question->answer[$key] - $question->tolerance[$key];
                     $max = $question->answer[$key] + $question->tolerance[$key];
                     $answer->answer   = $min.":".$max;
-                    // $answer->answer   = $question->min[$key].":".$question->max[$key]; original line for min/max
                     $answer->response = $question->feedback[$key]['text'];
                     $answer->responseformat = $question->feedback[$key]['format'];
                     $answer->id = $DB->insert_record("lesson_answers", $answer);
@@ -136,14 +144,12 @@ function lesson_save_question_options($question, $lesson) {
         case LESSON_PAGE_TRUEFALSE:
 
             // the truth
-            $answer = new stdClass();
-            $answer->lessonid   = $question->lessonid;
-            $answer->pageid = $question->id;
-            $answer->timecreated   = $timenow;
+            $answer = clone($defaultanswer);
             $answer->answer = get_string("true", "quiz");
             $answer->grade = $question->correctanswer * 100;
             if ($answer->grade > 50 ) {
                 $answer->jumpto = LESSON_NEXTPAGE;
+                $answer->score = 1;
             }
             if (isset($question->feedbacktrue)) {
                 $answer->response = $question->feedbacktrue['text'];
@@ -152,14 +158,12 @@ function lesson_save_question_options($question, $lesson) {
             $DB->insert_record("lesson_answers", $answer);
 
             // the lie
-            $answer = new stdClass;
-            $answer->lessonid   = $question->lessonid;
-            $answer->pageid = $question->id;
-            $answer->timecreated   = $timenow;
+            $answer = clone($defaultanswer);
             $answer->answer = get_string("false", "quiz");
             $answer->grade = (1 - (int)$question->correctanswer) * 100;
             if ($answer->grade > 50 ) {
                 $answer->jumpto = LESSON_NEXTPAGE;
+                $answer->score = 1;
             }
             if (isset($question->feedbackfalse)) {
                 $answer->response = $question->feedbackfalse['text'];
@@ -179,22 +183,21 @@ function lesson_save_question_options($question, $lesson) {
             // Insert all the new answers
             foreach ($question->answer as $key => $dataanswer) {
                 if ($dataanswer != "") {
-                    $answer = new stdClass;
-                    $answer->lessonid   = $question->lessonid;
-                    $answer->pageid   = $question->id;
-                    $answer->timecreated   = $timenow;
-                    $answer->grade = $question->fraction[$key] * 100;
-                    // changed some defaults
-                    /* Original Code
-                    if ($answer->grade > 50 ) {
-                        $answer->jumpto = LESSON_NEXTPAGE;
+                    $answer = clone($defaultanswer);
+                    $answer->grade = round($question->fraction[$key] * 100);
+
+                    if ($question->single) {
+                        if ($answer->grade > 50) {
+                            $answer->jumpto = LESSON_NEXTPAGE;
+                            $answer->score = 1;
+                        }
+                    } else {
+                        // If multi answer allowed, any answer with fraction > 0 is considered correct.
+                        if ($question->fraction[$key] > 0) {
+                            $answer->jumpto = LESSON_NEXTPAGE;
+                            $answer->score = 1;
+                        }
                     }
-                    Replaced with:                    */
-                    if ($answer->grade > 50 ) {
-                        $answer->jumpto = LESSON_NEXTPAGE;
-                        $answer->score = 1;
-                    }
-                    // end Replace
                     $answer->answer   = $dataanswer['text'];
                     $answer->answerformat   = $dataanswer['format'];
                     $answer->response = $question->feedback[$key]['text'];
@@ -221,7 +224,7 @@ function lesson_save_question_options($question, $lesson) {
                 $totalfraction = round($totalfraction,2);
                 if ($totalfraction != 1) {
                     $totalfraction = $totalfraction * 100;
-                    $result->notice = get_string("fractionsaddwrong", "quiz", $totalfraction);
+                    $result->notice = get_string("fractionsaddwrong", "qtype_multichoice", $totalfraction);
                     return $result;
                 }
             }
@@ -231,16 +234,11 @@ function lesson_save_question_options($question, $lesson) {
 
             $subquestions = array();
 
-            $defaultanswer = new stdClass;
-            $defaultanswer->lessonid   = $question->lessonid;
-            $defaultanswer->pageid   = $question->id;
-            $defaultanswer->timecreated   = $timenow;
-            $defaultanswer->grade = 0;
-
             // The first answer should always be the correct answer
             $correctanswer = clone($defaultanswer);
             $correctanswer->answer = get_string('thatsthecorrectanswer', 'lesson');
             $correctanswer->jumpto = LESSON_NEXTPAGE;
+            $correctanswer->score = 1;
             $DB->insert_record("lesson_answers", $correctanswer);
 
             // The second answer should always be the wrong answer
@@ -319,6 +317,20 @@ class qformat_default {
         }
         echo "<strong>$message</strong>\n";
         echo "</div>";
+    }
+
+    /**
+     * Import for questiontype plugins
+     * @param mixed $data The segment of data containing the question
+     * @param object $question processed (so far) by standard import code if appropriate
+     * @param object $extra mixed any additional format specific data that may be passed by the format
+     * @param string $qtypehint hint about a question type from format
+     * @return object question object suitable for save_options() or false if cannot handle
+     */
+    public function try_importing_using_qtypes($data, $question = null, $extra = null,
+            $qtypehint = '') {
+
+        return false;
     }
 
     function importpreprocess() {
@@ -555,7 +567,8 @@ class qformat_default {
     /// this format, this function converts it into a question
     /// object suitable for processing and insertion into Moodle.
 
-        echo "<p>This flash question format has not yet been completed!</p>";
+        // We should never get there unless the qformat plugin is broken.
+        throw new coding_exception('Question format plugin is missing important code: readquestion.');
 
         return null;
     }
@@ -591,25 +604,34 @@ class qformat_default {
         return $name;
     }
 
-    function defaultquestion() {
-    // returns an "empty" question
-    // Somewhere to specify question parameters that are not handled
-    // by import but are required db fields.
-    // This should not be overridden.
+    /**
+     * return an "empty" question
+     * Somewhere to specify question parameters that are not handled
+     * by import but are required db fields.
+     * This should not be overridden.
+     * @return object default question
+     */
+    protected function defaultquestion() {
         global $CFG;
+        static $defaultshuffleanswers = null;
+        if (is_null($defaultshuffleanswers)) {
+            $defaultshuffleanswers = get_config('quiz', 'shuffleanswers');
+        }
 
         $question = new stdClass();
-        $question->shuffleanswers = get_config('quiz', 'shuffleanswers');
+        $question->shuffleanswers = $defaultshuffleanswers;
         $question->defaultmark = 1;
         $question->image = "";
         $question->usecase = 0;
         $question->multiplier = array();
+        $question->questiontextformat = FORMAT_MOODLE;
         $question->generalfeedback = '';
+        $question->generalfeedbackformat = FORMAT_MOODLE;
         $question->correctfeedback = '';
         $question->partiallycorrectfeedback = '';
         $question->incorrectfeedback = '';
         $question->answernumbering = 'abc';
-        $question->penalty = 0.1;
+        $question->penalty = 0.3333333;
         $question->length = 1;
         $question->qoption = 0;
         $question->layout = 1;

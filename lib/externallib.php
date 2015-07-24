@@ -377,9 +377,9 @@ class external_api {
      */
     protected static function get_context_from_params($param) {
         $levels = context_helper::get_all_levels();
-        if (isset($param['contextid'])) {
+        if (!empty($param['contextid'])) {
             return context::instance_by_id($param['contextid'], IGNORE_MISSING);
-        } else if (isset($param['contextlevel']) && isset($param['instanceid'])) {
+        } else if (!empty($param['contextlevel']) && isset($param['instanceid'])) {
             $contextlevel = "context_".$param['contextlevel'];
             if (!array_search($contextlevel, $levels)) {
                 throw new invalid_parameter_exception('Invalid context level = '.$param['contextlevel']);
@@ -712,7 +712,7 @@ function external_validate_format($format) {
  * All web service servers must set this singleton when parsing the $_GET and $_POST.
  *
  * @param string $text The content that may contain ULRs in need of rewriting.
- * @param int $textformat The text format, by default FORMAT_HTML.
+ * @param int $textformat The text format.
  * @param int $contextid This parameter and the next two identify the file area to use.
  * @param string $component
  * @param string $filearea helps identify the file area.
@@ -732,9 +732,8 @@ function external_format_text($text, $textformat, $contextid, $component, $filea
     }
 
     if (!$settings->get_raw()) {
-        $textformat = FORMAT_HTML; // Force format to HTML when not raw.
-        $text = format_text($text, $textformat,
-                array('noclean' => true, 'para' => false, 'filter' => $settings->get_filter()));
+        $text = format_text($text, $textformat, array('para' => false, 'filter' => $settings->get_filter()));
+        $textformat = FORMAT_HTML; // Once converted to html (from markdown, plain... lets inform consumer this is already HTML).
     }
 
     return array($text, $textformat);

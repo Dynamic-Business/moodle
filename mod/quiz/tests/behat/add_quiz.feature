@@ -6,9 +6,9 @@ Feature: Add a quiz
 
   Background:
     Given the following "users" exist:
-      | username | firstname | lastname | email               |
-      | teacher1 | Terry1    | Teacher1 | teacher1@moodle.com |
-      | student1 | Sam1      | Student1 | student1@moodle.com |
+      | username | firstname | lastname | email                |
+      | teacher1 | Terry1    | Teacher1 | teacher1@example.com |
+      | student1 | Sam1      | Student1 | student1@example.com |
     And the following "courses" exist:
       | fullname | shortname | category |
       | Course 1 | C1 | 0 |
@@ -43,7 +43,7 @@ Feature: Add a quiz
 
   @javascript
   Scenario: Add and configure small quiz and perform an attempt as a student with Javascript enabled
-    Then I click on "Yes" "button" in the "Confirmation" "dialogue"
+    Then I click on "Submit all and finish" "button" in the "Confirmation" "dialogue"
     And I should see "So you think it is true"
     And I should see "Thank you, this is the general feedback"
     And I should see "The correct answer is 'False'."

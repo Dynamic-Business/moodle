@@ -69,8 +69,8 @@ Feature: Set up contextual data for tests
   Scenario: Role overrides
     Given the following "users" exist:
       | username | firstname | lastname | email |
-      | teacher1 | Teacher | 1 | teacher1@asd.com |
-      | student1 | Student | 1 | student1@asd.com |
+      | teacher1 | Teacher | 1 | teacher1@example.com |
+      | student1 | Student | 1 | student1@example.com |
     And the following "categories" exist:
       | name | category | idnumber |
       | Cat 1 | 0 | CAT1 |
@@ -99,7 +99,7 @@ Feature: Set up contextual data for tests
   Scenario: Add course enrolments
     Given the following "users" exist:
       | username | firstname | lastname | email |
-      | student1 | Student | 1 | student1@asd.com |
+      | student1 | Student | 1 | student1@example.com |
     And the following "courses" exist:
       | fullname | shortname | format |
       | Course 1 | C1 | topics |
@@ -117,11 +117,11 @@ Feature: Set up contextual data for tests
       | Custom student         | custom2   |                  |                |
     And the following "users" exist:
       | username | firstname | lastname | email |
-      | user1 | User | 1 | user1@moodlemoodle.com |
-      | user2 | User | 2 | user2@moodlemoodle.com |
-      | user3 | User | 3 | user3@moodlemoodle.com |
-      | user4 | User | 4 | user4@moodlemoodle.com |
-      | user5 | User | 5 | user5@moodlemoodle.com |
+      | user1 | User | 1 | user1@example.com |
+      | user2 | User | 2 | user2@example.com |
+      | user3 | User | 3 | user3@example.com |
+      | user4 | User | 4 | user4@example.com |
+      | user5 | User | 5 | user5@example.com |
     And the following "categories" exist:
       | name | category | idnumber |
       | Cat 1 | 0 | CAT1 |
@@ -219,8 +219,8 @@ Feature: Set up contextual data for tests
   Scenario: Add relations between users and groups
     Given the following "users" exist:
       | username | firstname | lastname | email |
-      | student1 | Student | 1 | student1@asd.com |
-      | student2 | Student | 2 | student2@asd.com |
+      | student1 | Student | 1 | student1@example.com |
+      | student2 | Student | 2 | student2@example.com |
     And the following "courses" exist:
       | fullname | shortname |
       | Course 1 | C1 |
@@ -253,24 +253,57 @@ Feature: Set up contextual data for tests
     And I set the field "groups" to "Group 2 (1)"
     And the "members" select box should contain "Student 2"
 
-  Scenario: Add cohorts with data generator
+  Scenario: Add cohorts and cohort members with data generator
     Given the following "categories" exist:
       | name  | category | idnumber |
       | Cat 1 | 0        | CAT1     |
+    And the following "users" exist:
+      | username | firstname | lastname | email |
+      | student1 | Student | 1 | student1@example.com |
+      | student2 | Student | 2 | student2@example.com |
     And the following "cohorts" exist:
       | name            | idnumber |
-      | System cohort 1 | CH01     |
+      | System cohort A | CHSA     |
     And the following "cohorts" exist:
       | name                 | idnumber | contextlevel | reference |
-      | System cohort 2      | CH02     | System       |           |
-      | Cohort in category 1 | CH1      | Category     | CAT1      |
+      | System cohort B      | CHSB     | System       |           |
+      | Cohort in category   | CHC      | Category     | CAT1      |
+      | Empty cohort         | CHE      | Category     | CAT1      |
+    And the following "cohort members" exist:
+      | user     | cohort |
+      | student1 | CHSA   |
+      | student2 | CHSB   |
+      | student1 | CHSB   |
+      | student1 | CHC    |
     When I log in as "admin"
     And I navigate to "Cohorts" node in "Site administration > Users > Accounts"
-    Then I should see "System cohort 1"
-    And I should see "System cohort 2"
+    Then the following should exist in the "cohorts" table:
+      | Name            | Cohort size |
+      | System cohort A | 1           |
+      | System cohort B | 2           |
     And I should not see "Cohort in category"
     And I follow "Courses"
     And I follow "Cat 1"
     And I follow "Cohorts"
-    And I should see "Cohort in category 1"
     And I should not see "System cohort"
+    And the following should exist in the "cohorts" table:
+      | Name               | Cohort size |
+      | Cohort in category | 1           |
+      | Empty cohort       | 0           |
+
+  Scenario: Add grade categories with data generator
+    Given the following "courses" exist:
+      | fullname | shortname |
+      | Course 1 | C1 |
+    And the following "grade categories" exist:
+      | fullname | course |
+      | Grade category 1 | C1|
+    And the following "grade categories" exist:
+      | fullname | course | gradecategory |
+      | Grade sub category 2 | C1 | Grade category 1|
+    When I log in as "admin"
+    And I follow "Courses"
+    And I follow "Course 1"
+    And I navigate to "Grades" node in "Course administration"
+    Then I should see "Grade category 1"
+    And I should see "Grade sub category 2"
