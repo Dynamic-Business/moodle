@@ -18,13 +18,13 @@
 		//$noOfFields = count($reportAdditionalIds);
 		
 		//Using normal php/mysql methods here because standard moodle ones don't return errors and no support for drop table
-		$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-		mysql_select_db($CFG->dbname, $con);
+		$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+		mysqli_select_db($con, $CFG->dbname);
 		//
 		
 		//Create Table for Data
 		$sql = "DROP TABLE IF EXISTS mdl_dynamic_spdata";
-		$success  = mysql_query($sql) or die(mysql_error());
+		$success  = mysqli_query($con, $sql) or die(mysqli_error($con));
 		$sql = "
 				CREATE  TABLE mdl_dynamic_spdata (
 				  `id` INT NOT NULL AUTO_INCREMENT ,
@@ -46,7 +46,7 @@
 				  INDEX `chk` (`checkpoint` ASC) ,
 				  UNIQUE INDEX `u_c_m` (`userid` ASC, `courseid` ASC, `coursemoduleid` ASC) ,
 				  INDEX `m` (`coursemoduleid` ASC) )";
-		$success  = mysql_query($sql) or die(mysql_error());
+		$success  = mysqli_query($con, $sql) or die(mysqli_error($con));
 		/*echo "<pre>";
 					echo $sql;
 					die;
@@ -61,7 +61,7 @@
 
 		*/
 		$sqlrules = "SELECT categoryid,contractedhours,chk1,chk2,chk3,chk4,active FROM mdl_dynamic_storeprogress_rules WHERE active = 1";
-		$result = mysql_query($sqlrules);
+		$result = mysqli_query($con, $sqlrules);
 
 		if ($result){
 			//Loop through each rule table
@@ -70,7 +70,7 @@
 
 			$message = "";
 			//Loop through each of the Rules
-			while($row = mysql_fetch_assoc($result)) {
+			while($row = mysqli_fetch_assoc($result)) {
 				if($row['active'] == 1){
 
 					//Loop through each checkpoint for each Rule
@@ -155,12 +155,11 @@
 								AND ud.contractedhours = '" . $row['contractedhours']  . "' 
 							";
 							// echo "<pre>";echo $sqlchk;die;
-							$success  = mysql_query($sqlchk) or die(mysql_error());
+							$success  = mysqli_query($con,$sqlchk) or die(mysqli_error($con));
 							if($success){
 								$message .= " mdl_dynamic_spdata updated (catid:" . $row['categoryid'] . " | hours:" . $row['contractedhours'] . '\n';
 							}
 
-							//$success  = mysql_query($sql) or die(mysql_error());
 						}
 						/*echo "<pre>";
 						echo $sqlchk ;
@@ -188,7 +187,7 @@
 			}
 		}
 		
-		mysql_close($con);
+		mysqli_close($con);
 	}
 	
 	//Call function above

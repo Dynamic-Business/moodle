@@ -105,7 +105,7 @@
 					";
 
 					//echo $sql1 . "<br>";
-					$result1 = $DB->execute($sqlInsert) or die(mysql_error());
+					$result1 = $DB->execute($sqlInsert);
 					if($result1){
 						$success++;
 						echo "Success: " . $user->username . " has been assigned the role of " . $user->role . "<br>";

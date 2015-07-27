@@ -66,8 +66,8 @@ Quiz module is now 16 not 13. Code changed
 	//$csvPath   = 'C:\xampp\htdocs\next2\admin\dynamic_admin\_payincrease';
 	$academyCatId = 2;
 	//
-	$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-	mysql_select_db($CFG->dbname, $con);
+	$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+	mysqli_select_db($con,$CFG->dbname);
 
 //
 
@@ -75,7 +75,7 @@ Quiz module is now 16 not 13. Code changed
 for($i=1;$i<=6;$i++){
 	if($i == 1){
 		$sql = "DROP TABLE IF EXISTS pay_increase_data";
-		$success  = mysql_query($sql) or die(mysql_error());
+		$success  = mysqli_query($con,$sql) or die(mysqli_error($con));
 		//$sql = "CREATE TEMPORARY TABLE pay_increase_data (";
 		$sql = "CREATE TABLE pay_increase_data (";
 		$sql .= getSQL($i);
@@ -83,14 +83,14 @@ for($i=1;$i<=6;$i++){
 		//debug
 		/*echo "<pre>" . $sql . "</pre>";
 		die;*/
-		$success  = mysql_query($sql) or die(mysql_error());
+		$success  = mysqli_query($con,$sql) or die(mysqli_error($con));
 		//$sql = "ALTER TABLE pay_increase_data ADD UNIQUE INDEX idnumber (idnumber ASC);";
 		$sql = "
 			ALTER TABLE `pay_increase_data` ADD COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT  FIRST , 
 			ADD PRIMARY KEY (`id`) , 
 			ADD UNIQUE INDEX `id_stage` (`userid` ASC, `stage` ASC) ;";
 
-		$success  = mysql_query($sql) or die(mysql_error());
+		$success  = mysqli_query($con,$sql) or die(mysqli_error($con));
 	}else{
 		$sql = "
 			INSERT IGNORE INTO pay_increase_data (
@@ -113,7 +113,7 @@ for($i=1;$i<=6;$i++){
 		//debug
 		/*echo $sql;
 		die;*/
-		$success  = mysql_query($sql) or die(mysql_error());
+		$success  = mysqli_query($con,$sql) or die(mysqli_error($con));
 	}
 }
 
@@ -127,7 +127,7 @@ $sql_select = "
 ";
 
 $sql = "INSERT IGNORE INTO pay_increase_audit (idnumber,date_of_inclusion,stage) (" . $sql_select . ")";
-$success  = mysql_query($sql) or die(mysql_error());
+$success  = mysqli_query($con,$sql) or die(mysqli_error($con));
 
 //Query for final CSV output 
 $sql = "
@@ -292,7 +292,7 @@ function createData($sql){
 	echo "</pre>";
 	die;*/
 	$csvContent = "";
-	$data = mysql_query($sql) or die(mysql_error()); 
+	$data = mysqli_query($con,$sql) or die(mysqli_error($con)); 
 	$numFields = mysql_num_fields($data);
 	
 	for($i=0;$i<$numFields;$i++){

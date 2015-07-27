@@ -18,15 +18,15 @@
 		//$noOfFields = count($reportAdditionalIds);
 		
 		//Using normal php/mysql methods here because standard moodle ones don't return errors and no support for drop table
-		$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-		mysql_select_db($CFG->dbname, $con);
+		$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+		mysqli_select_db($con,$CFG->dbname);
 		//
 		
 		$sql1 = "DROP TABLE IF EXISTS mdl_dynamic_exdbenrol";
-		if (mysql_query($sql1)){
+		if (mysqli_query($con,$sql1)){
 		 	$mailMessage .=  "Table mdl_dynamic_exdbenrol deleted successfully (if existed) \n";
 		}else{
-		  	$mailMessage .= "Error deleting table mdl_dynamic_exdbenrol: " . mysql_error() . "\n";
+		  	$mailMessage .= "Error deleting table mdl_dynamic_exdbenrol: " . mysqli_error($con) . "\n";
 			$error = TRUE;
 		}
 		
@@ -53,10 +53,10 @@
 
 				//--------------------------------------
 		//echo $sql2;
-		if (mysql_query($sql2)){
+		if (mysqli_query($con,$sql2)){
 		 	$mailMessage .=  "Table mdl_dynamic_exdbenrol created successfully \n";
 		}else{
-		  	$mailMessage .= "Error creating table mdl_dynamic_exdbenrol: " . mysql_error() . "\n";
+		  	$mailMessage .= "Error creating table mdl_dynamic_exdbenrol: " . mysqli_error($con) . "\n";
 			$error = TRUE;
 		}
 		//echo $sql2;
@@ -76,7 +76,7 @@
 			}
 		}
 		
-		mysql_close($con);
+		mysqli_close($con);
 	}
 	
 	//Call function above

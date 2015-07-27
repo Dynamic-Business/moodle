@@ -64,23 +64,23 @@
 		global $CFG, $DB, $reportAdditionalIds, $reportAdditionalColumns,$mail,$fieldForGroupSetup,$gmRoleId,$gmcRoleId,$contextId ;
 		$mailMessage = "";
 		$error = FALSE;
-		$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-		mysql_select_db($CFG->dbname, $con);
+		$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+		mysqli_select_db($con, $CFG->dbname);
 
 		// 1. Delete all group manager assignments from roles table and dynamic_managers_group
 		//$sqldelete = "DELETE FROM mdl_role_assignments WHERE roleid = " . $gmRoleId . " AND component = 'dynamic-auto' ";
 		$sqldelete = "DELETE FROM mdl_role_assignments WHERE roleid IN (" . $gmRoleId . "," . $gmcRoleId . ") AND component = 'dynamic-auto' ";
 
-		$result = mysql_query($sqldelete);
+		$result = mysqli_query($con, $sqldelete);
 		if($result){
-			echo "- " . mysql_affected_rows() . " users removed as Group Manager/coaches role.<br>";
+			echo "- " . mysqli_affected_rows() . " users removed as Group Manager/coaches role.<br>";
 		}
 
 		$sqldelete2 = "DELETE FROM mdl_dynamic_managers_group WHERE autocreated = 1 ";
 		// $sqldelete = "DELETE FROM mdl_role_assignments WHERE roleid = " . $gmRoleId;
-		$result = mysql_query($sqldelete2);
+		$result = mysqli_query($con, $sqldelete2);
 		if($result){
-			echo "- " . mysql_affected_rows() . " users unassigned from dynamic_managers_group<br><br>";
+			echo "- " . mysqli_affected_rows() . " users unassigned from dynamic_managers_group<br><br>";
 		}
 
 		//=======================================================================================================
@@ -134,30 +134,30 @@
 
 		//=========================================================================================================
 
-		$result = mysql_query($sql);
+		$result = mysqli_query($con, $sql);
 		if ($result){
 			$userCount = 0;
 			$userCount2 = 0;
-			while($row = mysql_fetch_array($result)) {
+			while($row = mysqli_fetch_array($result)) {
 
 				//Add the user as a Group Manager within mdl_role_assignments
 				$sqlInsert = "
 					INSERT IGNORE INTO mdl_role_assignments (roleid,contextid,userid,timemodified,modifierid,component) VALUES  (" . $gmRoleId . "," . $contextId . "," . $row['userid'] . ",UNIX_TIMESTAMP(NOW()),2,'dynamic-auto')
 				";
 				//echo $sql1 . "<br>";
-				$result1 = mysql_query($sqlInsert);
+				$result1 = mysqli_query($con, $sqlInsert);
 				if($result1){
 					$sql2 = "
 						INSERT IGNORE INTO mdl_dynamic_managers_group (userid,groupid,autocreated) VALUES (" . $row['userid'] . "," . $row['groupid'] . ",1)
 					";
-					if(!mysql_query($sql2)){
-						$mailMessage .= "Error Running Query: " . mysql_error() . "\n";
+					if(!mysqli_query($con, $sql2)){
+						$mailMessage .= "Error Running Query: " . mysqli_error($con) . "\n";
 						$error = TRUE;
 					}else{
 						$userCount2 ++;
 					}
 				}else{
-					$mailMessage .= "Error Running Query: " . mysql_error() . "\n";
+					$mailMessage .= "Error Running Query: " . mysqli_error($con) . "\n";
 					$error = TRUE;
 				}
 				$userCount ++;
@@ -165,7 +165,7 @@
 			echo "- " . $userCount . " users assigned as Group Manager role.<br>";
 			echo "- " . $userCount2 . " users assigned as Group Managers to group.<br>";
 		}else{
-			$mailMessage .= "Error Running Query: " . mysql_error() . "\n";
+			$mailMessage .= "Error Running Query: " . mysqli_error($con) . "\n";
 			$error = TRUE;
 		}
 
@@ -177,30 +177,30 @@
 
 		// echo $sqlcoaches;
 		// echo "<br><br>";
-		$result = mysql_query($sqlcoaches);
+		$result = mysqli_query($con, $sqlcoaches);
 		if ($result){
 			$userCount = 0;
 			$userCount2 = 0;
-			while($row = mysql_fetch_array($result)) {
+			while($row = mysqli_fetch_array($result)) {
 
 				//Add the user as a Group Manager within mdl_role_assignments
 				$sqlInsert = "
 					INSERT IGNORE INTO mdl_role_assignments (roleid,contextid,userid,timemodified,modifierid,component) VALUES  (" . $gmcRoleId . "," . $contextId . "," . $row['userid'] . ",UNIX_TIMESTAMP(NOW()),2,'dynamic-auto')
 				";
 				//echo $sql1 . "<br>";
-				$result1 = mysql_query($sqlInsert);
+				$result1 = mysqli_query($con, $sqlInsert);
 				if($result1){
 					$sql2 = "
 						INSERT IGNORE INTO mdl_dynamic_managers_group (userid,groupid,autocreated) VALUES (" . $row['userid'] . "," . $row['groupid'] . ",1)
 					";
-					if(!mysql_query($sql2)){
-						$mailMessage .= "Error Running Query: " . mysql_error() . "\n";
+					if(!mysqli_query($con, $sql2)){
+						$mailMessage .= "Error Running Query: " . mysqli_error($con) . "\n";
 						$error = TRUE;
 					}else{
 						$userCount2 ++;
 					}
 				}else{
-					$mailMessage .= "Error Running Query: " . mysql_error() . "\n";
+					$mailMessage .= "Error Running Query: " . mysqli_error($con) . "\n";
 					$error = TRUE;
 				}
 				$userCount ++;
@@ -208,7 +208,7 @@
 			echo "- " . $userCount . " users assigned as Group Manager Coaches role.<br>";
 			echo "- " . $userCount2 . " users assigned as Group Managers Coaches to group.<br>";
 		}else{
-			$mailMessage .= "Error Running Query: " . mysql_error() . "\n";
+			$mailMessage .= "Error Running Query: " . mysqli_error($con) . "\n";
 			$error = TRUE;
 		}
 

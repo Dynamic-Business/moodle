@@ -72,13 +72,7 @@ To do
 
 	if(isset($_SESSION['permission:viewusers'])){
     
-
-		//1. First display the Group Name in the table header	
-		//$queryGroupName = "SELECT dynamic_group.name FROM dynamic_group WHERE dynamic_group.id =\"" . $groupId . "\"";
-		//$resultGroupName = mysql_query($queryGroupName);
-		//$groupName = mysql_fetch_row($resultGroupName);
-		
-		//2. Query to show all users in group
+		//Query to show all users in group
 		$queryUsers = "
 		SELECT u.id,idnumber,firstname,lastname,ud.datestarted AS 'datestarted' 
 		FROM mdl_dynamic_usersgroups dug
@@ -110,7 +104,6 @@ To do
             </thead>
             <tbody>
             <?php 
-            //while($row = mysql_fetch_array($resultUsers)){
 			foreach($resultUsers as $row) {
 				
 				if ($row->idnumber == NULL){echo "<tr class='red'>";$showWarningMessage = TRUE;}else{ echo "<tr>";}
@@ -135,9 +128,8 @@ To do
 <?php 
 
 echo $footer;
-//mysql_close($con);
 
- ?>            
+?>            
             
     
 </body>

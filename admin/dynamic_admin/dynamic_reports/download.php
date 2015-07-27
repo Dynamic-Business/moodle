@@ -1,17 +1,9 @@
 <?php
-	/*
-	
-	- To do, code to expect array for overview report.
-	
-	
-	*/
+
 	if(isset($_GET['type'])){
-		//$type = $_GET['type'];
-		$type = filter_var( $_GET['type'], FILTER_SANITIZE_STRING); 
+		$type = $_GET['type'];
 	}
 
-	
-	//My Library
 	require_once('../config.php');
 	require_once('../_lib/sql_lib.php');
 	
@@ -28,23 +20,54 @@
 			$csvContent .= "\n";
 		}
 		
-		mysql_close($con);
+	}else if($type == 'byHRQuiz' || $type == 'byQuiz'){
+		$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+		mysqli_select_db($con,$CFG->dbname);
+			
+		$sql = $_SESSION['query'];
+
+		$csvContent = "";
+		$data = mysqli_query($con,$sql) or die(mysqli_error()); 
+		$numFields = mysqli_num_fields($data);
 		
+		while ($property = mysqli_fetch_field($data)) {
+			$csvContent .= $property->name . ",";
+
+			if(ucfirst($property->name) == "Last_Modified"){
+				$csvContent .= 	"Feedback,";
+			}
+		}
+
+		while ($row = mysqli_fetch_assoc($data)) {
+			$csvContent .= "\n";
+
+			foreach ($row as $key => $value){
+				$csvContent .= $value;
+				$csvContent .= ",";
+				if($key == "Last_Modified"){
+					$csvContent .= str_replace(","," ",strip_tags(getFeedback($row['Quiz_Id'], $row['Score']))) ;
+					$csvContent .= ",";
+				}
+			}
+
+		}
+		mysqli_close($con);
+
 	}else{
 		
-		$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-		mysql_select_db($CFG->dbname, $con);
-		//Don't forget to close further down
+		$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+		mysqli_select_db($con,$CFG->dbname);
 			
 		$sql = $_SESSION['query'];
 		$csvContent = "";
-		$data = mysql_query($sql) or die($CFG->ErrorMessage); 
-		$numFields = mysql_num_fields($data);
-		
-		for($i=0;$i<$numFields;$i++){
-			$csvContent .= 	ucfirst(mysql_field_name($data,$i)) . ",";
+		$data = mysqli_query($con,$sql) or die(mysqli_error()); 
+		$numFields = mysqli_num_fields($data);
+
+		while ($property = mysqli_fetch_field($data)) {
+		    $csvContent .= $property->name . ",";
 		}
-		while ($row = mysql_fetch_array($data)) {
+
+		while ($row = mysqli_fetch_array($data)) {
 			$csvContent .= "\n";
 			for($i=0;$i<$numFields;$i++){
 				$csvContent .= $row[$i];
@@ -53,10 +76,9 @@
 				}
 			}
 		}
-		mysql_close($con);
-	
+		mysqli_close($con);
 	}
-	//echo $csvContent;
+
 	downloadCSV($csvContent);
 
 ?>

@@ -17,20 +17,22 @@
 	require_once(dirname(__FILE__) . '\..\config.php'); //plugin config
 	// ----- //
 	function createUsersGroupsTable(){
-		global $CFG, $db, $reportAdditionalIds, $reportAdditionalColumns,$tableReportEmail,$mail;
+		global $CFG, $DB, $reportAdditionalIds, $reportAdditionalColumns,$mail,$dategroups;
 		$mailMessage = "";
 		$error = FALSE;
 		$noOfFields = count($reportAdditionalIds);
 		
 		//Using normal php/mysql methods here because standard moodle ones don't return errors and no support for drop table
-		$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-		mysql_select_db($CFG->dbname, $con);
+		$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+		mysqli_select_db($con,$CFG->dbname);
+		mysqli_set_charset($con,'utf8');
+		mysqli_query($con,"set names 'utf8'");
 
 		$sql = "DROP TABLE IF EXISTS mdl_dynamic_usersgroups";
-		if (mysql_query($sql)){
-		 	$mailMessage .=  "Table mdl_dynamic_usersgroups deleted successfully (if existed) \n";
+		if (mysqli_query($con,$sql)){
+		 	$mailMessage .=  "&#10004; Table mdl_dynamic_usersgroups deleted successfully (if existed)<br> \n";
 		}else{
-		  	$mailMessage .= "Error deleting table mdl_dynamic_usersgroups: " . mysql_error() . "\n";
+		  	$mailMessage .= "&#10008; deleting table mdl_dynamic_usersgroups: " . mysqli_error($con) . "\n";
 			$error = TRUE;
 		}
 
@@ -44,13 +46,12 @@
 				INDEX (userid ASC),
 				UNIQUE INDEX (groupid, userid ASC)
 			);";
-		if (mysql_query($sql)){
-		 	$mailMessage .=  "Table mdl_dynamic_usersgroups created successfully \n";
+		if (mysqli_query($con,$sql)){
+		 	$mailMessage .=  "&#10004; Table mdl_dynamic_usersgroups created successfully<br> \n";
 		}else{
-		  	$mailMessage .= "Error creating table mdl_dynamic_usersgroups: " . mysql_error() . "\n";
+		  	$mailMessage .= "&#10008; creating table mdl_dynamic_usersgroups: " . mysqli_error($con) . "\n";
 			$error = TRUE;
 		}
-	
 		
 
 		//Get all the group ids of groups with at least one defintion has been set 
@@ -58,54 +59,52 @@
 			SELECT DISTINCT(g.id),dateafter,datebefore FROM mdl_dynamic_group g
 			LEFT JOIN mdl_dynamic_propertiesforgroup pg ON g.id = pg.groupid
 			WHERE groupid IS NOT NULL ";
-		$result = mysql_query($sql);
-		while ($row = mysql_fetch_array($result)) {
-			//Get all the fields for each groupid 
-			$groupid = $row['id'];
-			//$academy = $row['academy'];
-			$sql = " SELECT DISTINCT(field) FROM mdl_dynamic_propertiesforgroup WHERE groupid = " . $groupid;
-			$rs = mysql_query($sql);
-			$ins = array();
-			while ($row2 = mysql_fetch_array($rs)) {
-				//Get all the data for each field for each groupid
-				$tmp = array();
-				$sql = "SELECT * FROM mdl_dynamic_propertiesforgroup WHERE field = '" . $row2['field'] ."' AND groupid = " . $groupid;
-				$rs2 = mysql_query($sql);
-				while ($row3 = mysql_fetch_array($rs2)) {
-					array_push($tmp, "'" .$row3['data']. "'");
+		$result = mysqli_query($con,$sql);
+		if($result){
+			while ($row = mysqli_fetch_array($result)) {
+				//Get all the fields for each groupid 
+				$groupid = $row['id'];
+				$sql = " SELECT DISTINCT(field) FROM mdl_dynamic_propertiesforgroup WHERE groupid = " . $groupid;
+				$rs = mysqli_query($con,$sql);
+				$ins = array();
+				while ($row2 = mysqli_fetch_array($rs)) {
+					//Get all the data for each field for each groupid
+					$tmp = array();
+					$sql = "SELECT * FROM mdl_dynamic_propertiesforgroup WHERE field = '" . $row2['field'] ."' AND groupid = " . $groupid;
+					$rs2 = mysqli_query($con,$sql);
+					while ($row3 = mysqli_fetch_array($rs2)) {
+						array_push($tmp, "'" .$row3['data']. "'");
+					}
+					$ins[$row2['field']] = $tmp;
+					//echo  $row['id'] . " " . $row2['field'] . ": " . $ins . "<br>"; //debug
 				}
-				$ins[$row2['field']] = $tmp;
-				//echo  $row['id'] . " " . $row2['field'] . ": " . $ins . "<br>"; //debug
-			}
-			//Create the combined query
+				//Create the combined query
+				$sql = "INSERT IGNORE INTO mdl_dynamic_usersgroups (userid,groupid) ";
+				$sql .= " SELECT userid," .$groupid. " AS 'groupid' FROM mdl_dynamic_userdata WHERE ";
+				$firstrun = TRUE;
+				foreach($ins as $key => $value){
+					//$i = implode(',',$value);
+					$sql .= $firstrun ? "" : " AND ";
+					$sql .= $key . " IN (" .  implode(',',$value) . ")";
+					$firstrun = FALSE;
+					
+				}
 
-			$sql = "INSERT IGNORE INTO mdl_dynamic_usersgroups (userid,groupid) ";
-			$sql .= " SELECT userid," .$groupid. " AS 'groupid' FROM mdl_dynamic_userdata WHERE ";
-			$firstrun = TRUE;
-			foreach($ins as $key => $value){
-				//$i = implode(',',$value);
-				$sql .= $firstrun ? "" : " AND ";
-				$sql .= $key . " IN (" .  implode(',',$value) . ")";
-				$firstrun = FALSE;		
-			}
-			/*if($academy == 1){
-				$sql .= " AND datestarted > 1335830460 ";
-			}*/
+				if($row['dateafter'] != 0){
+					$sql .= " AND datestarted > {$row['dateafter']} ";
+				}
+				if($row['datebefore'] != 0){
+					$sql .= " AND datestarted < {$row['datebefore']} ";
+				}
 
-			if($row['dateafter'] != 0){
-				$sql .= " AND datestarted > {$row['dateafter']} ";
-			}
-			if($row['datebefore'] != 0){
-				$sql .= " AND datestarted < {$row['datebefore']} ";
-			}
+				echo $sql . "<br>"; //debug
 
-			echo $sql . "<br>"; //debug
-
-			if (mysql_query($sql)){
-		 		$mailMessage .=  "Table mdl_dynamic_usersgroups populated successfully with groupid:" . $groupid   . "<br> \n";
-			}else{
-		  		$mailMessage .= "Error Populating mdl_dynamic_usersgroups with groupid:" . $groupid   . ". Errors: " . mysql_error() . " <br> \n";
-				$error = TRUE;
+				if (mysqli_query($con,$sql)){
+			 		$mailMessage .=  "&#10004; Table mdl_dynamic_usersgroups populated successfully with groupid:" . $groupid   . "<br> \n";
+				}else{
+			  		$mailMessage .= "&#10008; Populating mdl_dynamic_usersgroups with groupid:" . $groupid   . ". Errors: " . mysqli_error($con) . " <br> \n";
+					$error = TRUE;
+				}
 			}
 
 		}

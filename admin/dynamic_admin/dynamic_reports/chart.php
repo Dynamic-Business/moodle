@@ -6,9 +6,7 @@
 	
 	*/
 	if(isset($_GET['type'])){
-		//$type = $_GET['type'];
-		$type = filter_var( $_GET['type'], FILTER_SANITIZE_STRING); 
-
+		$type = $_GET['type'];
 	}
 
 	
@@ -28,24 +26,22 @@
 			}
 			$csvContent .= "\n";
 		}
-		
-		mysql_close($con);
-		
+			
 	}else{
 		
-		$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-		mysql_select_db($CFG->dbname, $con);
-		//Don't forget to close further down
+		$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+		mysqli_select_db($con,$CFG->dbname);
 			
 		$sql = $_SESSION['query'];
 		$csvContent = "";
-		$data = mysql_query($sql) or die($CFG->ErrorMessage); 
-		$numFields = mysql_num_fields($data);
+		$data = mysqli_query($con,$sql) or die(mysqli_error()); 
+		$numFields = mysqli_num_fields($data);
 		
-		for($i=0;$i<$numFields;$i++){
-			$csvContent .= 	ucfirst(mysql_field_name($data,$i)) . ",";
+		while ($property = mysqli_fetch_field($data)) {
+		    $csvContent .= ucfirst($property->name) . ",";
 		}
-		while ($row = mysql_fetch_array($data)) {
+
+		while ($row = mysqli_fetch_array($data)) {
 			$csvContent .= "\n";
 			for($i=0;$i<$numFields;$i++){
 				$csvContent .= $row[$i];
@@ -54,11 +50,9 @@
 				}
 			}
 		}
-		mysql_close($con);
+		mysqli_close($con);
 	
 	}
-	//echo $csvContent;
-	//downloadCSV($csvContent);
 
 ?>
 <html xmlns="http://www.w3.org/1999/xhtml">

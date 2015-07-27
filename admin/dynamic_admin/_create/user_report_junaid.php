@@ -1,5 +1,6 @@
 <?php
 
+define('CLI_SCRIPT', true);
 
 //config
 $dbscript = TRUE;
@@ -10,8 +11,8 @@ $csvPath = 'C:\inetpub\wwwroot\moodle\admin\dynamic_admin\_payincrease';
 
 $academyCatId = 2;
 
-$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-mysql_select_db($CFG->dbname, $con);
+$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpass);
+mysqli_select_db($con,$CFG->dbname);
 
 
 //Query for Experienced CSV output 
@@ -79,24 +80,22 @@ createData($sql, $file);
 
 
 function createData($sql, $file){
-	global $CFG, $db, $query, $csvPath;
+	global $CFG, $db, $query, $csvPath,$con;
 	
 	/*echo "<pre>";
 	echo $sql;
 	echo "</pre>";
 	die;*/
 	$csvContent = "";
-	$data = mysql_query($sql) or die(mysql_error()); 
-	$numFields = mysql_num_fields($data);
+	$data = mysqli_query($con,$sql) or die(mysqli_error($con)); 
+	$numFields = mysqli_num_fields($data);
 	
-	for($i=0;$i<$numFields;$i++){
-		$csvContent .= 	mysql_field_name($data,$i);
-		if($i != ($numFields-1)){
-			$csvContent .= ",";
-		}
+	while ($property = mysqli_fetch_field($data)) {
+		$csvContent .= $property->name . ",";
 	}
+
 	$csvContent .= "\r\n";
-	while ($row = mysql_fetch_array($data)) {
+	while ($row = mysqli_fetch_array($data)) {
 		//$csvContent .= "\r\n";
 		
 		for($i=0;$i<$numFields;$i++){
