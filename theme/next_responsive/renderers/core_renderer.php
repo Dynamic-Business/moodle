@@ -114,7 +114,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                     <?php } ?>
 
                     <?php if($this->showManagementTab()){ ?>
-                    <li class="dropdown"><?php $this->managementAcademyMenu(); ?></li>
+                    <li><?php $this->managementAcademyMenu(); ?></li>
                     <?php } ?>
 
                     <li class="dropdown"><?php $this->howToMenu(); ?></li>
@@ -236,21 +236,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
     protected function managementAcademyMenu(){
         global $CFG; ?>
 
-            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Management Academy</a>
-            <ul class="dropdown-menu">
-                <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=44" ?>">Salesfloor Roles</a>
-                </li>
-                <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=45" ?>">Stockroom Roles</a>
-                </li>
-                <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=46" ?>">Office Roles</a>
-                </li>
-                <li>
-                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=48" ?>">Senior Manager Roles</a>
-                </li>
-            </ul>
+            <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=42" ?>" class="nav-text">Bite-size</a>
 
 <?php }
 
