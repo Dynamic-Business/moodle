@@ -122,9 +122,6 @@ if (isadmin() || ismanager() ) {
 				
 	}
 
-
-	//$result2 = mysql_query($sql);
-	
 	
 	?>
     <div id="admin-buttons">
@@ -157,7 +154,7 @@ if (isadmin() || ismanager() ) {
     <tbody>
     
     <?php 
-   // while($row = mysql_fetch_array($result2))
+
 	foreach ($result2 as $row) 
 	  {
 	  

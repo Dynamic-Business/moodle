@@ -66,7 +66,7 @@ Quiz module is now 16 not 13. Code changed
 	//$csvPath   = 'C:\xampp\htdocs\next2\admin\dynamic_admin\_payincrease';
 	$academyCatId = 2;
 	//
-	$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+	$con = mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpass);
 	mysqli_select_db($con,$CFG->dbname);
 
 //
@@ -285,24 +285,20 @@ function getSQL($condition){
 }
 
 function createData($sql){
-	global $CFG, $db, $query, $csvPath;
+	global $CFG, $db, $query, $csvPath,$con;
 	
-	/*echo "<pre>";
-	echo $sql;
-	echo "</pre>";
-	die;*/
 	$csvContent = "";
 	$data = mysqli_query($con,$sql) or die(mysqli_error($con)); 
-	$numFields = mysql_num_fields($data);
+	$numFields = mysqli_num_fields($data);
 	
-	for($i=0;$i<$numFields;$i++){
-		$csvContent .= 	mysql_field_name($data,$i);
-		if($i != ($numFields-1)){
-			$csvContent .= ",";
+	while ($property = mysqli_fetch_field($data)) {
+		if( $property->name != 'id'){
+	    	$csvContent .= ucfirst($property->name) . ",";
 		}
 	}
+
 	$csvContent .= "\r\n";
-	while ($row = mysql_fetch_array($data)) {
+	while ($row = mysqli_fetch_array($data)) {
 		//$csvContent .= "\r\n";
 		
 		for($i=0;$i<$numFields;$i++){

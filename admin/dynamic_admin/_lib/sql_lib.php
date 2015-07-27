@@ -1299,9 +1299,7 @@
 							<tr><th>" . $profile_field . "</th><th>Number of Enrolments</th><th>Number of Completions</th><th>Completion Rate (%)</th></tr>
 					</thead>
 					<tbody>";
-			array_push($downloadArray, array($profile_field,'Number of Enrolments','Number of Completions','Completion Rate (%)')); 
-			$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-			mysql_select_db($CFG->dbname, $con);
+			array_push($downloadArray, array($profile_field,'Number of Enrolments','Number of Completions','Completion Rate (%)'));
 			
 			for ($i=0;$i<$dataCount ;$i++){
 					
@@ -1317,13 +1315,8 @@
 							ud." . $profile_field  . " = '" . urldecode($profiledata[$i]) .  "' 
 							GROUP BY userid,courseid
 					) ue";
-
-
-					/*echo $sql;
-					echo "<br><br>";*/
 					
-					$data = mysql_query($sql) or die($CFG->ErrorMessage);
-					$data1 = mysql_result ($data,0);
+					$data1 = $DB->get_field_sql($sql);
 					//echo $i;
 					$html .= "<tr><td>"  . urldecode($profiledata[$i]) . "</td><td>" . $data1  . " </td>";
 
@@ -1342,12 +1335,8 @@
 							GROUP BY userid,courseid
 					) ue";
 
+					$data2 = $DB->get_field_sql($sql);
 
-					//echo $sql;
-					//echo "<br><br>";
-
-					$data = mysql_query($sql) or die($CFG->ErrorMessage);
-					$data2 = mysql_result ($data,0);
 					$html .= "<td>". $data2  . "</td>";
 					$pct = round(100/$data1 * $data2);
 					$html .= "<td>". $pct . "</td>";
@@ -1369,7 +1358,6 @@
 					
 			}
 			$html .= "</tbody></table>";
-			mysql_close($con);
 			$_SESSION['downloadArray'] = $downloadArray;
 			$_SESSION['chartArray'] = $chartArray;
 			return $html;
@@ -1383,8 +1371,6 @@
 			$dataCount = count($profiledata);
 			$courseCount = count($courses);
 			$downloadArray =  array();
-			$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-			mysql_select_db($CFG->dbname, $con);
 			//get course title
 			
 			//Chart Stuff ----------
@@ -1393,8 +1379,9 @@
 			array_push($tmpArray, $profile_field);
 			for($j=0;$j<$courseCount;$j++){
 					$courses[$j];
-					$data = mysql_query("SELECT fullname FROM mdl_course WHERE id = ". $courses[$j]) or die($CFG->ErrorMessage);
-					$courseTitle =  mysql_result($data,0);
+
+					$sql = "SELECT fullname FROM mdl_course WHERE id = ?";
+					$courseTitle = $DB->get_field_sql($sql, array($courses[$j]));
 
 					$quotes = array('"' , "'");
 					$courseTitle = str_replace($quotes ,"",$courseTitle);
@@ -1435,11 +1422,10 @@
 											GROUP BY userid,courseid
 									) ue";
 			
-							$data = mysql_query($sql) or die($CFG->ErrorMessage);
-							$data1 = mysql_result ($data,0);
+							$data1 = $DB->get_field_sql($sql);
 							//get course title
-							$data = mysql_query("SELECT fullname FROM mdl_course WHERE id = ". $courses[$j]) or die($CFG->ErrorMessage);
-							$data3 = mysql_result ($data,0);
+							$sql = "SELECT fullname FROM mdl_course WHERE id = ?";
+							$data3 = $DB->get_field_sql($sql, array($courses[$j]));
 
 							$html .= "<tr><td>"  . urldecode($profiledata[$i]) . "</td><td>". $data3  . "</td><td>" . $data1  . " </td>";
 
@@ -1459,9 +1445,7 @@
 											GROUP BY userid,courseid
 									) ue";
 
-
-							$data = mysql_query($sql) or die($CFG->ErrorMessage);
-							$data2 = mysql_result ($data,0);
+							$data2 = $DB->get_field_sql($sql);
 							$html .= "<td>". $data2  . "</td>";
 							$pct = round(100/$data1 * $data2);
 							$html .= "<td>". $pct . "</td>";
@@ -1487,7 +1471,6 @@
 			}
 			//print_r($chartArray);
 			$html .= "</tbody></table>";
-			mysql_close($con);
 			$_SESSION['downloadArray'] = $downloadArray;
 			$_SESSION['chartArray'] = $chartArray;
 			return $html;
@@ -1653,26 +1636,30 @@
 		global $CFG,$page, $resultsPerPage,$DB,$selfPageRef ;
 		
 		//Using normal php/mysql methods here because standard moodle ones don't return errors and no support for drop table
-		$con = @mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-		@mysql_select_db($CFG->dbname, $con);
+		$con = @mysqli_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+		@mysqli_select_db($con, $CFG->dbname);
 		//Don't forget to close further down
 		
-		$data = @mysql_query($sql) or die($CFG->ErrorMessage); 
-		$numFields = mysql_num_fields($data);
+		$data = @mysqli_query($con, $sql) or die($CFG->ErrorMessage); 
+		$numFields = mysqli_num_fields($data);
 		
-		if(@mysql_num_rows($data)!=0){
+		if(@mysqli_num_rows($data)!=0){
 			$html = "<table class='display' id='styled-table'>
 			<thead>
 				<tr>";
-					//Code to make datastarted appear after lastname field
-					for($i=1;$i<$numFields;$i++){
-						if((@mysql_field_name($data,$i) != 'datestarted')){
-							$html .= "<th class='" . ucfirst(@mysql_field_name($data,$i)) ."'>" . ucfirst(mysql_field_name($data,$i)) . "</th>";
+				
+					while ($property = mysqli_fetch_field($data)) {
+						if( $property->name != 'id' && $property->name != 'datestarted'){
+					    	$html .= "<th>" . ucfirst($property->name) . "</th>";
 						}
-						if((@mysql_field_name($data,$i) == 'Last_Name')){
+
+						if(($property->name == 'Last_Name')){
 							$html .= "<th class='DateStarted'>DateStarted</th>";
 						}
+
 					}
+
+
 					
 			$html .= "</tr>
 			</thead>
@@ -1685,7 +1672,7 @@
 			$chk4 = 0;
 
 			//Populate the table with data
-			while ($row = @mysql_fetch_assoc($data)) {
+			while ($row = @mysqli_fetch_assoc($data)) {
 				$html .= "<tr>";
 				foreach($row as $field=>$d){
 					if( $field != 'id' && $field != 'datestarted'){
@@ -1737,28 +1724,29 @@
 			
 		}
 		//echo "html:" . $html;
-		mysql_close($con);
+		mysqli_close($con);
 		return $html;
 	}
 	//Table builder for Quiz reports - needed a custom Feedback column.
 	function buildHTMLTableQuizzes($sql){
 		global $CFG,$page, $resultsPerPage,$DB,$selfPageRef ;
 		//Using normal php/mysql methods here because standard moodle ones don't return errors and no support for drop table
-		$con = mysql_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
-		mysql_select_db($CFG->dbname, $con);
+		$con = mysqlI_connect($CFG->dbhost ,$CFG->dbuser ,$CFG->dbpassword);
+		mysqli_select_db($con, $CFG->dbname);
 		//Don't forget to close further down
 		
-		$data = mysql_query($sql) or die($CFG->ErrorMessage); 
-		$numFields = mysql_num_fields($data);
-		//echo "numrows:" . mysql_num_rows($data);
-		if(mysql_num_rows($data)!=0){
+		$data = mysqli_query($con,$sql) or die($CFG->ErrorMessage); 
+		$numFields = mysqli_num_fields($data);
+
+		if(mysqli_num_rows($data)!=0){
 
 			$html = "<table class='display' id='styled-table'>
 			<thead>
 				<tr>";
-				$numfields = mysql_num_fields($data);
+
+				$numfields = mysqli_num_fields($data);
 				for($i=0;$i< $numfields;$i++){
-					$field =  mysql_fetch_field($data, $i);
+					$field =  mysqli_fetch_field($data, $i);
 					//echo($field->name);
 					if($field->name == "Score"){
 						$html .= "<th class='Feedback'>Feedback</th>";
@@ -1778,7 +1766,7 @@
 			
 			//Populate the table with data
 			$countcss = 0;
-			 while ($row = mysql_fetch_object($data)) {
+			 while ($row = mysqli_fetch_object($data)) {
 				$html .= "<tr>";
 				
 				foreach($row as $key => $value) {
@@ -1804,7 +1792,7 @@
 			$html = FALSE;
 		}
 		//echo "html:" . $html;
-		mysql_close($con);
+		mysqli_close($con);
 		return $html;	
 	}
 	
@@ -1947,8 +1935,8 @@
 		global $CFG,$DB;
 		if ($grade != ''){
 			$sqlStatus = "SELECT feedbacktext FROM mdl_quiz_feedback WHERE quizid = "  . $quizId. " AND mingrade<= "  .  $grade . " AND maxgrade> " . $grade ;
-			$statusData = mysql_query($sqlStatus) or die($CFG->ErrorMessage);
-			$feedback = mysql_fetch_row($statusData);
+			$statusData = mysqli_query($con,$sqlStatus) or die($CFG->ErrorMessage);
+			$feedback = mysqli_fetch_row($statusData);
 			return $feedback[0];
 		}else{
 			return "not started";

@@ -95,8 +95,6 @@ To do
 
 <?php
 
-//$con = mysql_connect("localhost","root","");
-
 	if(isset($_SESSION['permission:creategroup'])){
 	
 		if($action == "add"){
