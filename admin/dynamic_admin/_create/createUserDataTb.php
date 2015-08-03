@@ -124,7 +124,7 @@
 	}
 	
 	//Call function above
-	createUserDataTable();	
+	create_user_data_table();	
 	
 	
 	
