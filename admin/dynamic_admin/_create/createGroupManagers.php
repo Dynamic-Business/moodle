@@ -6,7 +6,7 @@
 	- Are Group Managers defined ONLY by this script? If so then Manually assigned GM's are redundant - REMOVE!
 
 */
-	define('CLI_SCRIPT', true);
+	// define('CLI_SCRIPT', true);
 	
 	$gmRoleId = 99; //Group Manager
 	$gmcRoleId = 100; //Group Manager
@@ -30,7 +30,7 @@
             AND timecompleted IS NOT NULL
         ";
         // echo $sql ."\n\r";
-        $data = $DB->get_records_sql($sql,array($USER->id));
+        $data = $DB->get_records_sql($sql);
         foreach($data as $row) {
 			//echo $row->userid;
 			$table = "user_info_data";
@@ -73,14 +73,14 @@
 
 		$result = mysqli_query($con, $sqldelete);
 		if($result){
-			echo "- " . mysqli_affected_rows() . " users removed as Group Manager/coaches role.<br>";
+			echo "- " . mysqli_affected_rows($con) . " users removed as Group Manager/coaches role.<br>";
 		}
 
 		$sqldelete2 = "DELETE FROM mdl_dynamic_managers_group WHERE autocreated = 1 ";
 		// $sqldelete = "DELETE FROM mdl_role_assignments WHERE roleid = " . $gmRoleId;
 		$result = mysqli_query($con, $sqldelete2);
 		if($result){
-			echo "- " . mysqli_affected_rows() . " users unassigned from dynamic_managers_group<br><br>";
+			echo "- " . mysqli_affected_rows($con) . " users unassigned from dynamic_managers_group<br><br>";
 		}
 
 		//=======================================================================================================
