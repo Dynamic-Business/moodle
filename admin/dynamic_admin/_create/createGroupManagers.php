@@ -6,21 +6,22 @@
 	- Are Group Managers defined ONLY by this script? If so then Manually assigned GM's are redundant - REMOVE!
 
 */
-	// define('CLI_SCRIPT', true);
+	define('CLI_SCRIPT', true);
 	
 	$gmRoleId = 99; //Group Manager
 	$gmcRoleId = 100; //Group Manager
 	$contextId = 1; //top level
 	$fieldForGroupSetup = "storedetails";
-	//$dbscript = TRUE;
+	$dbscript = TRUE;
 
 	require_once(dirname(__FILE__) . '\..\..\..\lib\phpmailer\class.phpmailer.php');
 	require_once(dirname(__FILE__) . '\..\..\..\config.php'); //main moodle config
 	require_once(dirname(__FILE__) . '\..\config.php'); //plugin config
+	require_once(dirname(__FILE__) . '\..\..\..\lib\setup.php'); //may need to remove this line depending on whether it is called in the config file.
 
 	//Update the team coach profile field for any user who has completed the team coach module (id:36)
 	function update_team_coach(){
-		global $CFG, $DB;
+		global $CFG, $DB,$USER;
         $teamcoach_course = 36;
         $teamcoach_field  = 11;
         //get users who have completed the course
@@ -218,7 +219,6 @@
 		}
 
 	}
-	
 	update_team_coach();
 	createGroupManagers();
 
