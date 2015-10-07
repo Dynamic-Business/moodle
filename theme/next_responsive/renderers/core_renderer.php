@@ -236,7 +236,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
     protected function managementAcademyMenu(){
         global $CFG; ?>
 
-            <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=42" ?>" class="nav-text">Bite-size</a>
+            <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=103" ?>" class="nav-text">Bite-size</a>
 
 <?php }
 
