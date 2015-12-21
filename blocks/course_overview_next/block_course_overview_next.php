@@ -209,7 +209,7 @@ class block_course_overview_next extends block_base {
                     LEFT JOIN {course_completions} cc ON  en.courseid = cc.course AND en.userid = cc.userid
                $ccjoin
                 WHERE $wheres
-                ORDER BY status,c.fullname
+                ORDER BY enablecompletion, status,c.fullname
               ";
         $params['userid']  = $USER->id;
         $params['active']  = ENROL_USER_ACTIVE;
