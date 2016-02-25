@@ -1114,6 +1114,7 @@ class completion_info {
      */
     public function get_num_tracked_users($where = '', $whereparams = array(), $groupid = 0,$gm = "false",$groupsList = "0") {
         global $DB;
+        // echo "get_num_tracked_users called<br>";
 
         list($enrolledsql, $enrolledparams) = get_enrolled_sql(
                 context_course::instance($this->course->id), 'moodle/course:isincompletionreports', $groupid, true);
@@ -1146,12 +1147,15 @@ class completion_info {
         
         // inject the group sql into the sql.
         $sql = str_replace(":eu1_courseid)", ":eu1_courseid) {$groupsql}" , $sql );
+
+        $sql .= " JOIN mdl_course_completions cc ON cc.course = ".$this->course->id." AND cc.userid = u.id AND (cc.timecompleted IS NULL OR cc.timecompleted > " .strtotime("-1 month", time()) . ") ";
+                
+
         //dynamic code end --------------------
 
         if ($where) {
             $sql .= " WHERE $where";
         }
-
         $params = array_merge($enrolledparams, $whereparams);
         // echo "<pre>" . $sql . "<br><br>";
         // var_dump($params);
@@ -1181,6 +1185,7 @@ class completion_info {
              $sort = '', $limitfrom = '', $limitnum = '', context $extracontext = null,$gm = "false",$groupsList = "0") {
 
         global $DB;
+        // echo "get_tracked_users called<br>";
         // var_dump($where_params);
 
         list($enrolledsql, $params) = get_enrolled_sql(
@@ -1234,6 +1239,7 @@ class completion_info {
         
         // inject the group sql into the sql.
         $sql = str_replace(":eu3_courseid)", ":eu3_courseid) {$groupsql}" , $sql );
+        $sql .= " JOIN mdl_course_completions cc ON cc.course = ".$this->course->id." AND cc.userid = u.id AND (cc.timecompleted IS NULL OR cc.timecompleted > " .strtotime("-1 month", time()) . ") ";
 
         //---------------------
         if ($where) {
@@ -1245,9 +1251,10 @@ class completion_info {
             $sql .= " ORDER BY $sort";
         }
 		// echo "<pre>";
-        // var_dump($where);
-        // echo $sql;
+  //       var_dump($where);
+  //       echo $sql;
         // echo "</pre>";
+        // var_dump($params);
         
 		// echo "gm in get_tracked_users:" . $gm;
         $users = $DB->get_records_sql($sql, $params, $limitfrom, $limitnum);
@@ -1268,8 +1275,10 @@ class completion_info {
      */
 	 
 	 //dynamic -----
-    function generate_tracked_user_sql($groupid = 0,$gm = "false",$groupsList = "0") { 
+    // THIS IS NEVER CALLED ?
+    /*function generate_tracked_user_sql($groupid = 0,$gm = "false",$groupsList = "0") { 
         global $CFG,$USER,$DB;
+        echo "generate_tracked_user_sql called<br>";
 		// echo "gl:" . $groupsList . "<br>";
 		//echo "gm:" . $gm . "<br>";
         $return = new stdClass();
@@ -1401,7 +1410,7 @@ class completion_info {
 		$return->data['userid'] = $USER->id; //dynamic --------------------
 
         return $return;
-    }
+    }*/
 
     /**
      * Obtains progress information across a course for all users on that course, or
@@ -1434,6 +1443,8 @@ class completion_info {
 		//echo "<br>";
         // Get list of applicable users
         $users = $this->get_tracked_users($where, $where_params, $groupid, $sort, $start, $pagesize,NULL,$gm,$groupsList);
+
+       // echo "<pre>";var_dump($users);echo "</pre>";
 
         // Get progress information for these users in groups of 1, 000 (if needed)
         // to avoid making the SQL IN too long
