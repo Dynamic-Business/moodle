@@ -1148,7 +1148,7 @@ class completion_info {
         // inject the group sql into the sql.
         $sql = str_replace(":eu1_courseid)", ":eu1_courseid) {$groupsql}" , $sql );
 
-        $sql .= " JOIN mdl_course_completions cc ON cc.course = ".$this->course->id." AND cc.userid = u.id AND (cc.timecompleted IS NULL OR cc.timecompleted > " .strtotime("-1 month", time()) . ") ";
+        $sql .= " JOIN mdl_course_completions cc ON cc.course = ".$this->course->id." AND cc.userid = u.id AND (cc.timecompleted IS NULL OR cc.timecompleted > " .time(). ") ";
                 
 
         //dynamic code end --------------------
@@ -1239,7 +1239,7 @@ class completion_info {
         
         // inject the group sql into the sql.
         $sql = str_replace(":eu3_courseid)", ":eu3_courseid) {$groupsql}" , $sql );
-        $sql .= " JOIN mdl_course_completions cc ON cc.course = ".$this->course->id." AND cc.userid = u.id AND (cc.timecompleted IS NULL OR cc.timecompleted > " .strtotime("-1 month", time()) . ") ";
+        $sql .= " JOIN mdl_course_completions cc ON cc.course = ".$this->course->id." AND cc.userid = u.id AND (cc.timecompleted IS NULL OR cc.timecompleted > " .time() . ") ";
 
         //---------------------
         if ($where) {
