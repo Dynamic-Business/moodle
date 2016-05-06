@@ -9,7 +9,7 @@
 	define('CLI_SCRIPT', true);
 	
 	$gmRoleId = 99; //Group Manager
-	$gmcRoleId = 100; //Group Manager
+	$gmcRoleId = 100; //Group Manager KEEP THIS ID AS NAVIGATIOn RELIES ON IT
 	$contextId = 1; //top level
 	$fieldForGroupSetup = "storedetails";
 	$dbscript = TRUE;
@@ -22,7 +22,7 @@
 	//Update the team coach profile field for any user who has completed the team coach module (id:36)
 	function update_team_coach(){
 		global $CFG, $DB,$USER;
-        $teamcoach_course = 1104; //used to be 36
+        $teamcoach_course = 1104; // used to be 36 // dev 1093 // live 1104
         $teamcoach_field  = 11;
         //get users who have completed the course
         $sql = "
