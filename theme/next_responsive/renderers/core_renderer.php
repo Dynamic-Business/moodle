@@ -160,22 +160,22 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Learning Resources</a>
             <ul class="dropdown-menu">
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=5" ?>" >Salesfloor</a>
+                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=36" ?>" >Salesfloor</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=5" ?>" >Home</a>
+                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=37" ?>" >Home</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=5" ?>" >Delivery</a>
+                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=38" ?>" >Delivery</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=5" ?>" >Administration</a>
+                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=39" ?>" >Administration</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=5" ?>" >Health and Safety</a>
+                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=43" ?>" >Health and Safety</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=5" ?>" >HR</a>
+                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=147" ?>" >HR</a>
                 </li>
             </ul>
 
