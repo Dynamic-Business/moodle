@@ -109,9 +109,10 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
 ?>
                     <li><?php $this->myLearningMenu(); ?></li>
 
-                    <?php if($this->showRetailTab()){ ?>
+                    <!-- Learning Resources -->
+                    <?php //if($this->showRetailTab()){ ?>
                     <li class="dropdown"><?php $this->retailAcademyMenu(); ?></li>
-                    <?php } ?>
+                    <?php //} ?>
 
                     <!-- Bitesize -->
                     <?php if($this->showManagementTab() || $this->isTeamCoach() || $this->isHeadTeamCoach()){ ?>
@@ -132,7 +133,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                     <li class="dropdown"><?php $this->reportsMenu(); ?></li>
                     <?php } ?>
 
-                    <?php if($this->showManagementTab() || $this->is_administrator()){ ?>
+                    <?php if($this->is_administrator()){ ?>
                     <li><?php $this->adminMenu(); ?></li>
                     <?php } ?>
                 </ul>
@@ -176,7 +177,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                     <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=43" ?>" >Health and Safety</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=147" ?>" >HR</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=142" ?>" >HR</a>
                 </li>
             </ul>
 
