@@ -113,7 +113,8 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                     <li class="dropdown"><?php $this->retailAcademyMenu(); ?></li>
                     <?php } ?>
 
-                    <?php if($this->showManagementTab()){ ?>
+                    <!-- Bitesize -->
+                    <?php if($this->showManagementTab() || $this->isTeamCoach() || $this->isHeadTeamCoach()){ ?>
                     <li><?php $this->managementAcademyMenu(); ?></li>
                     <?php } ?>
 
@@ -131,7 +132,7 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
                     <li class="dropdown"><?php $this->reportsMenu(); ?></li>
                     <?php } ?>
 
-                    <?php if($this->is_administrator()){ ?>
+                    <?php if($this->showManagementTab() || $this->is_administrator()){ ?>
                     <li><?php $this->adminMenu(); ?></li>
                     <?php } ?>
                 </ul>
@@ -160,22 +161,22 @@ class theme_next_responsive_core_renderer extends theme_dynamicbase_core_rendere
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Learning Resources</a>
             <ul class="dropdown-menu">
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=36" ?>" >Salesfloor</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=36" ?>" >Salesfloor</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=37" ?>" >Home</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=37" ?>" >Home</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=38" ?>" >Delivery</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=38" ?>" >Delivery</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=39" ?>" >Administration</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=39" ?>" >Administration</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=43" ?>" >Health and Safety</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=43" ?>" >Health and Safety</a>
                 </li>
                 <li class="dropdown">
-                    <a href="<?php echo $CFG->wwwroot."course/index.php?categoryid=147" ?>" >HR</a>
+                    <a href="<?php echo $CFG->wwwroot."/course/index.php?categoryid=147" ?>" >HR</a>
                 </li>
             </ul>
 
