@@ -234,7 +234,8 @@
 
 			}*/
 			//category ids of all the categoriesvisible in report dropdown
-			if($catsArray[$i][0] == 60 || $catsArray[$i][0] == 61 || $catsArray[$i][0] == 5 ||$catsArray[$i][0] == 7 ||$catsArray[$i][0] == 8 || $catsArray[$i][0] == 9 || $catsArray[$i][0] == 41 || $catsArray[$i][0] == 103 || $catsArray[$i][0] == 52 || $catsArray[$i][0] == 34 || $catsArray[$i][0] == 35){
+			/*if($catsArray[$i][0] == 60 || $catsArray[$i][0] == 61 || $catsArray[$i][0] == 5 ||$catsArray[$i][0] == 7 ||$catsArray[$i][0] == 8 || $catsArray[$i][0] == 9 || $catsArray[$i][0] == 41 || $catsArray[$i][0] == 103 || $catsArray[$i][0] == 52 || $catsArray[$i][0] == 34 || $catsArray[$i][0] == 35){*/
+			if($catsArray[$i][0] == 60 || $catsArray[$i][0] == 41 || $catsArray[$i][0] == 103 || $catsArray[$i][0] == 52 || $catsArray[$i][0] == 34 || $catsArray[$i][0] == 35){
 					echo "<option value='" . $catsArray[$i][0] . "'>" . $catsArray[$i][1] . "</option>";
 				}
 		}
