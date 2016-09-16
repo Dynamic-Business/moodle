@@ -22,7 +22,7 @@
 	//Update the team coach profile field for any user who has completed the team coach module (id:36)
 	function update_team_coach(){
 		global $CFG, $DB,$USER;
-        $teamcoach_course = 36; // used to be 36 // dev 1093 // live 1104
+        $teamcoach_course = 1251; // used to be 36 // dev 1093 // live 1251
         $teamcoach_field  = 11;
         //get users who have completed the course
         $sql = "
