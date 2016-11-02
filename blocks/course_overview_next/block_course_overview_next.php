@@ -17,6 +17,8 @@ Setup:
 require_once($CFG->dirroot.'/lib/weblib.php');
 require_once($CFG->dirroot . '/lib/formslib.php');
 
+$courses_to_hide = array(47,48); // Oct 2016: Courses to hide from users despite beign enrolled
+
 class block_course_overview_next extends block_base {
     /**
      * block initializations
@@ -126,7 +128,7 @@ class block_course_overview_next extends block_base {
      * @return boolean
      */
     public function has_config() {
-        return false;
+        return true;
     }
 
     /**
@@ -186,6 +188,13 @@ class block_course_overview_next extends block_base {
         $wheres = array("c.id <> :siteid");
         $params = array('siteid'=>SITEID);
 
+        # ========
+        $config = get_config('block_course_overview_next');
+        if (!empty($config->coursehide)) {
+            $wheres[] = "c.id NOT IN ({$config->coursehide})"; 
+        }
+        # ==========
+
         if (isset($USER->loginascontext) and $USER->loginascontext->contextlevel == CONTEXT_COURSE) {
             // list _only_ this course - anything else is asking for trouble...
             $wheres[] = "courseid = :loginas";
@@ -211,6 +220,7 @@ class block_course_overview_next extends block_base {
                 WHERE $wheres
                 ORDER BY enablecompletion, status,c.fullname
               ";
+        // echo "<pre>" . $sql;
         $params['userid']  = $USER->id;
         $params['active']  = ENROL_USER_ACTIVE;
         $params['enabled'] = ENROL_INSTANCE_ENABLED;

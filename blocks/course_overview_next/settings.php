@@ -1,5 +1,4 @@
 <?php
-
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,4 +14,21 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-$plugin->version = 2016110202;
+/**
+ * Course list block settings
+ *
+ * @package    block_course_list
+ * @copyright  2007 Petr Skoda
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die;
+
+if ($ADMIN->fulltree) {
+
+    $settings->add(new admin_setting_configtext('block_course_overview_next/coursehide', 'Hidden course ids',
+                       'Add a list of course ids seperated with a comma. These courses will be hidden from the user within this block.', '', PARAM_TEXT));
+
+}
+
+
