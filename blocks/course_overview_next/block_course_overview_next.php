@@ -17,8 +17,6 @@ Setup:
 require_once($CFG->dirroot.'/lib/weblib.php');
 require_once($CFG->dirroot . '/lib/formslib.php');
 
-$courses_to_hide = array(47,48); // Oct 2016: Courses to hide from users despite beign enrolled
-
 class block_course_overview_next extends block_base {
     /**
      * block initializations
